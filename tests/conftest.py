@@ -5,7 +5,6 @@ El orden de este módulo importa: la URL se resuelve y se exporta ANTES de impor
 """
 
 import os
-import warnings
 from pathlib import Path
 
 import pytest
@@ -14,16 +13,13 @@ from dotenv import load_dotenv
 ROOT = Path(__file__).resolve().parents[1]
 load_dotenv(ROOT / ".env")
 
-DATABASE_URL = os.getenv("TEST_DATABASE_URL") or os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("TEST_DATABASE_URL")
 if not DATABASE_URL:
     pytest.exit(
-        "Falta TEST_DATABASE_URL o DATABASE_URL. Los tests necesitan un PostgreSQL real.",
+        "Falta TEST_DATABASE_URL. Estas pruebas hacen TRUNCATE antes de cada test, "
+        "así que no aceptan DATABASE_URL: define TEST_DATABASE_URL apuntando a una "
+        "base desechable.",
         returncode=1,
-    )
-if not os.getenv("TEST_DATABASE_URL"):
-    warnings.warn(
-        "TEST_DATABASE_URL no está definida: los tests limpian tablas en DATABASE_URL.",
-        stacklevel=1,
     )
 os.environ["DATABASE_URL"] = DATABASE_URL
 
