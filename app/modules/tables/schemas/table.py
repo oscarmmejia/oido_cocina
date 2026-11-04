@@ -9,8 +9,6 @@ class TableLocation(str, Enum):
 
 
 class TableCreate(BaseModel):
-    # TEMPORAL: mientras no exista autenticación, el restaurante se puede indicar a mano.
-    restaurant_id: int | None = None
     number: int
     min_capacity: int = Field(ge=1)
     max_capacity: int

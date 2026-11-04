@@ -24,7 +24,7 @@ class DiningTable(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     restaurant_id: Mapped[int] = mapped_column(
-        ForeignKey("restaurant.id", ondelete="CASCADE"), index=True, nullable=False
+        ForeignKey("restaurants.id", ondelete="CASCADE"), index=True, nullable=False
     )
     number: Mapped[int] = mapped_column(nullable=False)
     min_capacity: Mapped[int] = mapped_column(nullable=False)
