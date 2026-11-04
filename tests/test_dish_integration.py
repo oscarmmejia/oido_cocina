@@ -38,12 +38,18 @@ def db():
     session = TestingSession()
 
     session.execute(
-        CategoryTest.insert().values(id=1, restaurantId=10)
+    CategoryTest.insert().values(
+        id=1,
+        restaurantId=10,
+        name="Platos principales",
+        sortOrder=0,
+        isActive=True
     )
+)
     session.execute(AllergenTest.insert(), [
-        {"id": 1},
-        {"id": 2},
-    ])
+    {"id": 1, "code": "GLUTEN", "name": "Gluten"},
+    {"id": 2, "code": "CRUSTACEOS", "name": "Crustáceos"},
+])
     session.commit()
 
     yield session
