@@ -1,3 +1,7 @@
+from app.core.database_connection import Base, engine
+from app.modules.settings.models import restaurant
+from app.models import test_model
+
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
