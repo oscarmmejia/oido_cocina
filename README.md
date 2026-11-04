@@ -1,5 +1,5 @@
 <img width="2048" height="2048" alt="Gemini_Generated_Image_rvdkajrvdkajrvdk" src="https://github.com/user-attachments/assets/f43fd916-fd87-4163-b0af-9c01c21ac5f2" />
-```
+
 <p align="center">
   <img src="https://via.placeholder.com/800x160/0a0a0a/FF6600?text=%C2%A1O%C3%8DDO+COCINA!+%E2%80%A2+BYTE+%26+BITE" alt="Oído Cocina Banner" />
 </p>
