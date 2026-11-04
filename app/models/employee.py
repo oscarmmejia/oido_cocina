@@ -1,7 +1,9 @@
-from sqlalchemy import Boolean, ForeignKey, String
+from sqlalchemy import Boolean, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 from app.core.database_connection import Base
 
+# TODO(HU-AUT-06): añadir ForeignKey("users.id") cuando exista la tabla users
+user_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
 class Employee(Base):
     __tablename__ = "employees"
