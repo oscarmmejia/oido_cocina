@@ -1,5 +1,5 @@
 import pytest
-from sqlalchemy import Column, Integer, Table, create_engine
+from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from app.core.database_connection import Base
@@ -9,9 +9,6 @@ from app.models.employee import Employee
 from app.modules.settings.models import restaurant  # noqa: F401  (tabla "restaurant")
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate
 
-# Mientras no exista el modelo User, creamos una tabla mínima para resolver la FK
-if "users" not in Base.metadata.tables:
-    Table("users", Base.metadata, Column("id", Integer, primary_key=True))
 
 RESTAURANT_ID = 1
 OTHER_RESTAURANT_ID = 2
