@@ -1,8 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.errors.codes import ErrorCode
-from app.core.errors.exceptions import AppError, EmployeeNotFoundError
+from app.core.kernel.errors import AppError
 from app.models.employee import Employee
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate
 
@@ -11,9 +10,7 @@ def _validate_user_link(db: Session, restaurant_id: int, user_id: int | None) ->
     if user_id is None:                       # vínculo opcional
         return
     # TODO(HU-AUT-06): validar que el usuario existe y es del mismo restaurante (CA2)
-    raise AppError(
-        ErrorCode.BAD_REQUEST, "El vínculo con usuario aún no está disponible", 400
-    )
+    raise AppError("BAD_REQUEST", "El vínculo con usuario aún no está disponible.", 400)
 
 
 def get_employee(db: Session, restaurant_id: int, employee_id: int) -> Employee:
@@ -23,7 +20,7 @@ def get_employee(db: Session, restaurant_id: int, employee_id: int) -> Employee:
         )
     )
     if emp is None:
-        raise EmployeeNotFoundError()
+        raise AppError("EMPLOYEE_NOT_FOUND", "Empleado no encontrado.", 404)
     return emp
 
 

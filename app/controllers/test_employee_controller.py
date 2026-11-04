@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from app.core.database_connection import Base
-from app.core.errors.exceptions import EmployeeNotFoundError
+from app.core.kernel.errors import AppError
 from app.controllers import employee_controller as controller
 from app.models.employee import Employee
 from app.modules.settings.models import restaurant  # noqa: F401  (tabla "restaurant")
@@ -69,8 +69,11 @@ def test_list_filters_by_restaurant_and_status(db):
 def test_cannot_read_employee_from_another_restaurant(db):
     emp = _create(db, restaurant_id=OTHER_RESTAURANT_ID)
 
-    with pytest.raises(EmployeeNotFoundError):
+    with pytest.raises(AppError) as error:
         controller.get_employee(db, RESTAURANT_ID, emp.id)
+
+    assert error.value.status_code == 404
+    assert error.value.code == "EMPLOYEE_NOT_FOUND"
 
 
 def test_update_employee(db):
