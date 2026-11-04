@@ -1,5 +1,11 @@
-# 🍳 ¡OÍDO COCINA! — ERP de Gestión Operativa para Restaurantes
+<img width="2048" height="2048" alt="Gemini_Generated_Image_rvdkajrvdkajrvdk" src="https://github.com/user-attachments/assets/f43fd916-fd87-4163-b0af-9c01c21ac5f2" />
+```
+<p align="center">
+  <img src="https://via.placeholder.com/800x160/0a0a0a/FF6600?text=%C2%A1O%C3%8DDO+COCINA!+%E2%80%A2+BYTE+%26+BITE" alt="Oído Cocina Banner" />
+</p>
 
+# 🍳 ¡OÍDO COCINA! — ERP de Gestión Operativa para Restaurantes
+-----
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.11+-FF6B00?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
   <img src="https://img.shields.io/badge/FastAPI-0.110+-121212?style=for-the-badge&logo=fastapi&logoColor=FF6B00" alt="FastAPI" />
@@ -228,6 +234,16 @@ Proyecto diseñado y desarrollado por el equipo **Byte & Bite**:
     </td>
   </tr>
 </table>
+
+-----
+---
+
+### 🏛️ Propósito Educativo e Institucional
+
+* **Naturaleza del Proyecto**: Este software ha sido desarrollado en el marco del programa formativo de **Full Stack Web Development**, concebido y ejecutado con estrictos fines académicos y de experimentación tecnológica.
+* **Ámbito de Aplicación**: **Oído Cocina** opera como un entorno simulado de planificación de recursos empresariales (ERP) para el sector de la restauración. Su arquitectura, modelos de datos e integraciones están diseñados para validar competencias avanzadas en ingeniería de software, arquitectura backend y desarrollo de interfaces.
+* **Uso No Comercial**: Las funcionalidades implementadas tienen un carácter puramente demostrativo y formativo, reflejando las buenas prácticas del equipo de desarrollo **Byte & Bite** en la aplicación de metodologías ágiles, control de calidad y diseño de sistemas escalables.
+
 
 ---
 <p align="center">
