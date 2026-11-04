@@ -11,4 +11,4 @@ register_error_handlers(app)
 app.include_router(health_router, prefix=settings.api_prefix)
 
 # TODO (CA3): añadir lifespan que llame a seed_minimum_data
-# cuando existan los modelos y la sesión de base de datos.
+# TODO: cuando existan los modelos y la sesión de base de datos.
