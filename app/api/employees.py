@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, Query
-from app.core.deps import get_current_user, get_db, require_permission
 from app.controllers import employee_controller as controller
+from app.core.database_connection import get_db
+from app.core.kernel.identity import CurrentUser, get_current_user
+from app.core.kernel.permissions import require_permission
 from app.schemas.employee import EmployeeCreate, EmployeeRead, EmployeeUpdate
 
 router = APIRouter(prefix="/api/v1/employees", tags=["employees"])
