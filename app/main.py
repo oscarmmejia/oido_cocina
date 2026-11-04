@@ -3,8 +3,6 @@ from app.core.database_connection import engine, Base
 from app.models.user import User 
 from app.api.auth import router as auth_router
 
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(title="Oído Cocina API")
 
 
