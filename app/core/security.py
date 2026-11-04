@@ -1,8 +1,9 @@
+import os
 from datetime import datetime, timedelta, timezone
 from jose import jwt
 from passlib.context import CryptContext
 
-SECRET_KEY = "clave_secreta_super_segura_para_oido_cocina"
+SECRET_KEY = os.getenv("SECRET_KEY", "clave_secreta_super_segura_para_oido_cocina")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
