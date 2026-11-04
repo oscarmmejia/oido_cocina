@@ -31,9 +31,6 @@ from app.core.database_connection import Base, get_db  # noqa: E402
 from app.core.kernel.identity import DEV_RESTAURANT_ID  # noqa: E402
 from app.main import app  # noqa: E402
 from app.modules.settings.models.restaurant import Restaurant  # noqa: E402
-from app.modules.settings.models.restaurant_settings import (  # noqa: E402,F401
-    RestaurantSettings,
-)
 from app.modules.tables.models.table import DiningTable  # noqa: E402,F401  (registra la tabla)
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
@@ -46,10 +43,7 @@ Base.metadata.create_all(bind=engine)
 def clean_database():
     with engine.begin() as connection:
         connection.execute(
-            text(
-                "TRUNCATE restaurant_settings, tables, restaurants "
-                "RESTART IDENTITY CASCADE"
-            )
+            text("TRUNCATE tables, restaurant RESTART IDENTITY CASCADE")
         )
     yield
 
@@ -80,7 +74,7 @@ def restaurant(db):
     demo = Restaurant(
         id=DEV_RESTAURANT_ID,
         name="Demo",
-        timezone="Europe/Madrid",
+        time_zone="Europe/Madrid",
     )
     db.add(demo)
     db.commit()
