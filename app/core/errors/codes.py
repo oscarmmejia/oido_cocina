@@ -1,7 +1,7 @@
 from enum import Enum
 
 class ErrorCode(str, Enum):
-    # Genéricos por tipo de HTTP
+    # TODO: Genéricos por tipo de HTTP
     BAD_REQUEST = "BAD_REQUEST"
     UNAUTHORIZED = "UNAUTHORIZED"
     FORBIDDEN = "FORBIDDEN"
@@ -9,7 +9,7 @@ class ErrorCode(str, Enum):
     CONFLICT = "CONFLICT"
     VALIDATION_ERROR = "VALIDATION_ERROR"
     INTERNAL_ERROR = "INTERNAL_ERROR"
-    # Negocio (briefing)
+    # TODO: Negocio (briefing)
     TABLE_NOT_AVAILABLE = "TABLE_NOT_AVAILABLE"
     DUPLICATE_RESERVATION = "DUPLICATE_RESERVATION"
     # Personal y horarios
