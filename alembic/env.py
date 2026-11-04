@@ -1,6 +1,7 @@
 from app.core.database_connection import Base, engine
 from app.modules.settings.models import restaurant
 from app.models import test_model
+from app.models import employee  # noqa: F401   <-- NUEVA
 
 from logging.config import fileConfig
 
