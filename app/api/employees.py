@@ -5,7 +5,7 @@ from app.core.kernel.identity import CurrentUser, get_current_user
 from app.core.kernel.permissions import require_permission
 from app.schemas.employee import EmployeeCreate, EmployeeRead, EmployeeUpdate
 
-router = APIRouter(prefix="/api/v1/employees", tags=["employees"])
+router = APIRouter(prefix="/employees", tags=["employees"])
 manage = Depends(require_permission("employee:manage"))
 
 

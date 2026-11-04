@@ -1,14 +1,12 @@
 from fastapi import FastAPI
 
+from app.api import employees
 from app.api.test_routes import router as health_router
 from app.api.dish_routes import router as dish_router
 from app.api.category_routes import router as category_router
 from app.core.config import get_settings
 from app.core.kernel.errors import register_error_handlers
 from app.modules.tables.routes.table import router as tables_router
-from app.api import employees
-
-app.include_router(employees.router)
 
 settings = get_settings()
 
@@ -18,6 +16,7 @@ app.include_router(health_router, prefix=settings.api_prefix)
 app.include_router(tables_router, prefix=settings.api_prefix)
 app.include_router(dish_router, prefix=settings.api_prefix)
 app.include_router(category_router, prefix=settings.api_prefix)
+app.include_router(employees.router, prefix=settings.api_prefix)
 
 # TODO (CA3): añadir lifespan que llame a seed_minimum_data
 # TODO: cuando existan los modelos y la sesión de base de datos.
