@@ -17,4 +17,4 @@ app.include_router(dish_router, prefix=settings.api_prefix)
 app.include_router(category_router, prefix=settings.api_prefix)
 
 # TODO (CA3): añadir lifespan que llame a seed_minimum_data
-# cuando existan los modelos y la sesión de base de datos.
+# TODO: cuando existan los modelos y la sesión de base de datos.
