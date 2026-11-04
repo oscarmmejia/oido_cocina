@@ -1,16 +1,14 @@
-# This is a sample Python script.
+from fastapi import FastAPI
 
-# Press Ctrl+F5 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from app.api.test_routes import router as health_router
+from app.core.config import get_settings
+from app.core.kernel.errors import register_error_handlers
 
+settings = get_settings()
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press F9 to toggle the breakpoint.
+app = FastAPI(title=settings.app_name)
+register_error_handlers(app)
+app.include_router(health_router, prefix=settings.api_prefix)
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# TODO (CA3): añadir lifespan que llame a seed_minimum_data
+# cuando existan los modelos y la sesión de base de datos.
