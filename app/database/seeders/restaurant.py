@@ -13,6 +13,7 @@ DEMO_TIMEZONE = "Europe/Madrid"
 DEMO_SETTINGS = {
     "courtesy_minutes": 5,
     "slot_minutes": 60,
+    "default_reservation_minutes": 60,
     "min_break_between_shifts": 720,  # minutes; demo value, to be validated against the labour agreement
 }
 

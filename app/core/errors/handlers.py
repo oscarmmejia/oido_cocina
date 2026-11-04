@@ -15,6 +15,7 @@ HTTP_DEFAULTS = {
     403: (ErrorCode.FORBIDDEN, "No tienes permisos"),
     404: (ErrorCode.NOT_FOUND, "Recurso no encontrado"),
     409: (ErrorCode.CONFLICT, "Conflicto con el estado actual"),
+    503: (ErrorCode.SERVICE_UNAVAILABLE, "Servicio no disponible"),
 }
 
 def _response(status: int, code: ErrorCode, message: str) -> JSONResponse:
@@ -25,7 +26,15 @@ async def app_error_handler(request: Request, exc: AppError):
     return _response(exc.status_code, exc.code, exc.message)
 
 async def http_error_handler(request: Request, exc: StarletteHTTPException):
-    code, msg = HTTP_DEFAULTS.get(exc.status_code, (ErrorCode.BAD_REQUEST, "Solicitud incorrecta"))
+    default = HTTP_DEFAULTS.get(exc.status_code)
+    if default is None:
+        # Any other 5xx must not look like a client error; details never reach the client.
+        default = (
+            (ErrorCode.INTERNAL_ERROR, "Error interno del servidor")
+            if exc.status_code >= 500
+            else (ErrorCode.BAD_REQUEST, "Solicitud incorrecta")
+        )
+    code, msg = default
     return _response(exc.status_code, code, msg)
 
 async def validation_error_handler(request: Request, exc: RequestValidationError):

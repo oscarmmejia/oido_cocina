@@ -1,5 +1,4 @@
 import pytest
-from pydantic import ValidationError
 from sqlalchemy import inspect
 
 from app.core.config import get_settings
@@ -15,7 +14,7 @@ def session():
     """
     try:
         get_settings()
-    except ValidationError:
+    except SystemExit:  # get_settings() exits with a clear message when DATABASE_URL is missing
         pytest.skip("DATABASE_URL is not configured.")
 
     if not inspect(get_engine()).has_table("roles"):

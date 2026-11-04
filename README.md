@@ -4,7 +4,8 @@ Backend (FastAPI + PostgreSQL) para la gestión de restaurantes: carta y menús,
 usuarios y permisos, configuración por restaurante y personal y horarios.
 
 > **Estado:** Sprint 1. Está hecha la base de datos (HU-AUT-02): migraciones versionadas, seeders
-> idempotentes y sus tests. La API, la autenticación y el resto de módulos llegan en las siguientes historias.
+> idempotentes y sus tests. Hay además un esqueleto de API (`/api/v1/health`), un formato de error común y una
+> identidad **provisional** para desarrollo. La autenticación real y el resto de módulos llegan en las siguientes historias.
 
 ## Requisitos
 
@@ -42,6 +43,7 @@ Copiar `.env.example` a `.env` y rellenarlo. **El `.env` nunca se sube al reposi
 |---|---|
 | `DATABASE_URL` | Conexión a PostgreSQL. Formato: `postgresql+psycopg://usuario:contraseña@localhost:5432/oido_cocina` |
 | `SEED_DEMO_PASSWORD` | Contraseña que tendrán los usuarios de demostración. Solo para desarrollo |
+| `AUTH_STUBS_ENABLED` | Opcional (por defecto `true`). Activa la identidad provisional de desarrollo. **Temporal:** se elimina con HU-AUT-04 |
 
 Si la contraseña de la base de datos contiene símbolos como `@`, `:`, `/` o `#`, hay que codificarlos en la URL
 (por ejemplo `@` se escribe `%40`).
@@ -74,28 +76,41 @@ SELECT count(*) FROM allergens;   -- 14
 ```
 alembic.ini                       Configuración de Alembic (la URL no va aquí)
 app/
+  main.py                         Aplicación FastAPI (prefijo /api/v1)
+  api/, controllers/, schemas/    Esqueleto de la API (por ahora solo /health)
   core/
     config.py                     Settings desde variables de entorno (.env)
     database_connection.py        Engine y sesiones (dependencia get_db)
     security.py                   hash_password / verify_password (Argon2id)
+    errors/                       Formato de error común, códigos y manejadores (único sistema de errores)
+    kernel/                       Identidad y permisos PROVISIONALES (HU-AUT-04 y HU-AUT-05)
   database/
-    base.py                       Base declarativa, convención de nombres y TimestampMixin
-    migrations/                   Entorno de Alembic y versiones
+    base.py                       Base declarativa única, convención de nombres y TimestampMixin
+    migrations/                   Único historial de Alembic: entorno y versiones
     seeders/                      Datos de demostración (idempotentes)
-  models/                         Modelos SQLAlchemy por módulo
+  models/                         Modelos SQLAlchemy (users, dishes) y reexportación de los demás
+  modules/
+    settings/models/              Restaurante, configuración y horarios
 tests/
+  api/, core/, kernel/            Tests de la API, errores, configuración y stubs
   database/                       Tests de migraciones y seeders
+  test_restaurant_settings.py     Una sola configuración por restaurante
 ```
+
+Hay **un único historial de Alembic** (`app/database/migrations/`) y **una única `Base`** (`app/database/base.py`).
+No crear otro directorio `alembic/` ni otra `Base`: dos historiales sobre la misma base de datos se bloquean entre sí.
 
 ## Modelo de datos
 
-Diez tablas, agrupadas por módulo (`app/models/`):
+Diez tablas, agrupadas por módulo:
 
 | Módulo | Tablas |
 |---|---|
-| `restaurant.py` | `restaurants`, `restaurant_settings`, `opening_hours` |
-| `users.py` | `roles`, `permissions`, `role_permissions`, `users`, `audit_logs` |
-| `dishes.py` | `allergens`, `categories` |
+| `app/modules/settings/models/` | `restaurants`, `restaurant_settings`, `opening_hours` |
+| `app/models/users.py` | `roles`, `permissions`, `role_permissions`, `users`, `audit_logs` |
+| `app/models/dishes.py` | `allergens`, `categories` |
+
+Los modelos nuevos se importan desde `app.models`, que reexporta todos y es lo que lee Alembic.
 
 Convenciones:
 
@@ -172,6 +187,11 @@ configurada pero sin migrar, fallan con un mensaje claro.
 |---|---|
 | `tests/database/test_seeders_idempotency.py` | Ejecutar los seeders dos veces deja el mismo estado: mismos conteos, inserción de 0 filas en la segunda ejecución y contenido de las filas sin cambios |
 | `tests/database/test_seeded_data.py` | Los 14 alérgenos, las categorías, un usuario por rol, contraseñas cifradas y el aborto si falta la contraseña |
+| `tests/test_restaurant_settings.py` | Un restaurante solo puede tener una fila de configuración |
+| `tests/core/test_errors.py` | Formato de error común: 409, 422, 404 y 500 sin detalles internos |
+| `tests/core/test_config.py` | Si falta `DATABASE_URL`, el programa termina con un mensaje claro |
+| `tests/api/test_health.py` | `/api/v1/health` responde 200 y, si la base falla, 503 con el formato común y sin filtrar detalles |
+| `tests/kernel/test_kernel_stubs.py` | Las firmas de la identidad provisional no cambian |
 
 ## Problemas frecuentes
 
@@ -180,7 +200,9 @@ configurada pero sin migrar, fallan con un mensaje claro.
 | `Connection refused` | El servicio de PostgreSQL no está arrancado |
 | `password authentication failed` | Usuario o contraseña distintos en `.env` y en PostgreSQL |
 | `database "oido_cocina" does not exist` | Falta crear la base de datos (paso 1) |
-| `ValidationError ... database_url` | No existe `.env`, está vacío o no estás en la raíz del proyecto |
+| `ERROR de configuración: falta o no es válida la variable DATABASE_URL` | No existe `.env`, está vacío o no estás en la raíz del proyecto |
+| `Can't locate revision identified by ...` | La base se creó con otro historial de Alembic. Recrearla: `DROP DATABASE` y `CREATE DATABASE`, y `alembic upgrade head` |
+| `requires the httpx2 package` | Dependencias desactualizadas: `pip install -r requirements.txt` |
 | `No module named 'argon2'` | Dependencias sin instalar: `pip install -r requirements.txt` |
 | El seeder indica que falta `SEED_DEMO_PASSWORD` | Falta esa variable en `.env` |
 | Los tests fallan con «database is not migrated» | Falta `alembic upgrade head` |

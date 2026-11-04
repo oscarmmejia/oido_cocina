@@ -1,7 +1,8 @@
 from pydantic import BaseModel
 
 from app.core.config import get_settings
-from app.core.kernel.errors import AppError
+from app.core.errors.codes import ErrorCode
+from app.core.errors.exceptions import AppError
 
 DEV_RESTAURANT_ID = 1
 DEV_USER_ID = 1
@@ -18,7 +19,7 @@ class CurrentUser(BaseModel):
 async def get_current_user() -> CurrentUser:
     # TEMPORAL: sustituir en HU-AUT-04 (leer el token JWT y buscar el usuario)
     if not get_settings().auth_stubs_enabled:
-        raise AppError("UNAUTHORIZED", "Autenticación requerida.", 401)
+        raise AppError(ErrorCode.UNAUTHORIZED, "Autenticación requerida.", 401)
 
     return CurrentUser(
         id=DEV_USER_ID,

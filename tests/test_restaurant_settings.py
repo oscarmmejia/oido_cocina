@@ -2,12 +2,14 @@ import pytest
 from sqlalchemy import insert
 from sqlalchemy.exc import IntegrityError
 
-from app.core.database_connection import engine
+from app.core.database_connection import get_engine
 from app.modules.settings.models.restaurant import Restaurant
 from app.modules.settings.models.restaurant_settings import RestaurantSettings
 
 
 def test_one_settings_per_restaurant():
+    engine = get_engine()
+
     # Evitamos ejecutar esta prueba en un servidor remoto.
     assert engine.url.host in ("localhost", "127.0.0.1")
 
