@@ -13,7 +13,6 @@ def create_category(
     restaurant_id: int
 ):
     try:
-        # Comprobar que el nombre no existe en este restaurante
         existing_category = db.query(Category).filter(
             Category.restaurant_id == restaurant_id,
             Category.name == category_data.name
