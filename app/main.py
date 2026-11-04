@@ -4,6 +4,9 @@ from app.api.test_routes import router as health_router
 from app.core.config import get_settings
 from app.core.kernel.errors import register_error_handlers
 from app.modules.tables.routes.table import router as tables_router
+from app.api import employees
+
+app.include_router(employees.router)
 
 settings = get_settings()
 
