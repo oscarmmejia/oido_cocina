@@ -55,3 +55,26 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 @router.get("/me", response_model=UserResponse)
 def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+class RequirePermission:
+    def __init__(self, required_permission: str):
+        self.required_permission = required_permission
+
+    def __call__(self, current_user: User = Depends(get_current_user)):
+        has_permission = False
+        
+        for role in current_user.roles:
+            for perm in role.permissions:
+                if perm.name == self.required_permission:
+                    has_permission = True
+                    break
+            if has_permission:
+                break
+        
+        if not has_permission:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Forbidden"
+            )
+        
+        return current_user
