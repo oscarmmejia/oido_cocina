@@ -2,7 +2,7 @@
 
 Revision ID: 0001
 Revises: 
-Create Date: 2026-11-04 12:27:45.869477
+Create Date: 2026-11-03 10:58:45.237851
 
 """
 from typing import Sequence, Union
@@ -38,7 +38,7 @@ def upgrade() -> None:
     )
     op.create_table('restaurants',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=150), nullable=False),
+    sa.Column('name', sa.String(length=120), nullable=False),
     sa.Column('timezone', sa.String(length=64), nullable=False),
     sa.Column('is_active', sa.Boolean(), server_default=sa.text('true'), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
@@ -85,12 +85,10 @@ def upgrade() -> None:
     sa.Column('restaurant_id', sa.Integer(), nullable=False),
     sa.Column('courtesy_minutes', sa.Integer(), server_default='5', nullable=False),
     sa.Column('slot_minutes', sa.Integer(), server_default='60', nullable=False),
-    sa.Column('default_reservation_minutes', sa.Integer(), server_default='60', nullable=False),
     sa.Column('min_break_between_shifts', sa.Integer(), nullable=True, comment='Minutes'),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('updated_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.CheckConstraint('courtesy_minutes >= 0', name=op.f('ck_restaurant_settings_courtesy_minutes_non_negative')),
-    sa.CheckConstraint('default_reservation_minutes > 0', name=op.f('ck_restaurant_settings_default_reservation_minutes_positive')),
     sa.CheckConstraint('min_break_between_shifts IS NULL OR min_break_between_shifts >= 0', name=op.f('ck_restaurant_settings_min_break_non_negative')),
     sa.CheckConstraint('slot_minutes > 0', name=op.f('ck_restaurant_settings_slot_minutes_positive')),
     sa.ForeignKeyConstraint(['restaurant_id'], ['restaurants.id'], name=op.f('fk_restaurant_settings_restaurant_id_restaurants')),
