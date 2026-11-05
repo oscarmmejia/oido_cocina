@@ -20,6 +20,8 @@ class Settings(BaseSettings):
 
     # TEMPORAL: fake authentication for development. Removed with HU-AUT-04.
     auth_stubs_enabled: bool = True
+    database_url: str  # TODO: obligatoria: sin valor por defecto
+    auth_stubs_enabled: bool = True  # TODO: TEMPORAL: se elimina con HU-AUT-04
 
 
 @lru_cache
