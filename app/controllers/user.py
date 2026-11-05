@@ -15,8 +15,12 @@ def create_user(db: Session, user_data: UserCreate):
     hashed_password = hash_password(user_data.password)
     
     new_user = User(
+        name=user_data.name,
         email=user_data.email,
-        hashed_password=hashed_password
+        phone_number=user_data.phone_number,
+        password_hash=hashed_password,
+        role_id=user_data.role_id,
+        restaurant_id=user_data.restaurant_id
     )
     
     db.add(new_user)
