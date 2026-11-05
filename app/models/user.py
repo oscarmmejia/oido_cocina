@@ -12,7 +12,7 @@ class User(Base):
     phone_number = Column(String, nullable=True)
     password_hash = Column(String, nullable=False)
     role_id = Column(Integer, nullable=False)
-    restaurant_id = Column(Integer, ForeignKey("restaurants.id"), nullable=True)
+    restaurant_id = Column(Integer, ForeignKey("restaurant.id"), nullable=True)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
