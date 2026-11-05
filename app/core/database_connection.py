@@ -1,14 +1,15 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:107579@localhost:5432/oido_cocina"
+from app.core.config import get_settings
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(get_settings().database_url, pool_pre_ping=True)
+SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    """Clase base de la que heredarán los modelos de tablas."""
+
 
 def get_db():
     db = SessionLocal()
