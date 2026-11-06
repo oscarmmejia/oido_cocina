@@ -9,7 +9,6 @@ settings = get_settings()
 PREFIX = f"{settings.api_prefix}/schedules"
 
 
-# Función auxiliar que asocia el empleado al restaurant_id proporcionado
 def create_dummy_employee(db, restaurant_id):
     employee = db.query(Employee).filter(Employee.id == 1).first()
     if not employee:
@@ -25,12 +24,8 @@ def create_dummy_employee(db, restaurant_id):
     return employee
 
 
-# ==========================================
-# 1. PRUEBAS DE LA CAPA DE ESQUEMA / MODELO
-# ==========================================
-
 def test_schedule_schema_valid_dates():
-    """CA1: Un periodo con fechas coherentes (inicio <= fin) es válido."""
+
     from app.schemas.schedule_schema import ScheduleCreate
 
     today = date.today()
@@ -46,7 +41,7 @@ def test_schedule_schema_valid_dates():
 
 
 def test_schedule_schema_invalid_dates_raises_value_error():
-    """Escenario periodo inválido: fin anterior a inicio debe lanzar ValueError (produce 422 en FastAPI)."""
+
     from pydantic import ValidationError
     from app.schemas.schedule_schema import ScheduleCreate
 
@@ -63,12 +58,9 @@ def test_schedule_schema_invalid_dates_raises_value_error():
     assert "La fecha de inicio del periodo no puede ser posterior a la fecha de fin." in str(exc_info.value)
 
 
-# ==========================================
-# 2. PRUEBAS DE ENDPOINTS / INTEGRACIÓN (API)
-# ==========================================
 
 def test_create_schedule_success(client, db, restaurant):
-    """Escenario cuadrante nuevo: crea un cuadrante semanal y queda en estado borrador (CA2)."""
+
     create_dummy_employee(db, restaurant_id=restaurant.id)
 
     today = date.today()
@@ -91,7 +83,7 @@ def test_create_schedule_success(client, db, restaurant):
 
 
 def test_create_schedule_invalid_period_returns_422(client):
-    """CA1 / Escenario periodo inválido: indica fin anterior al inicio, se rechaza con 422."""
+
     today = date.today()
     yesterday = today - timedelta(days=1)
 
@@ -107,7 +99,7 @@ def test_create_schedule_invalid_period_returns_422(client):
 
 
 def test_publish_schedule_success(client, db, restaurant):
-    """CA3 & CA4: Publica el cuadrante registrando responsable y fecha de publicación."""
+
     create_dummy_employee(db, restaurant_id=restaurant.id)
 
     today = date.today()
@@ -133,7 +125,7 @@ def test_publish_schedule_success(client, db, restaurant):
 
 
 def test_publish_already_published_schedule_returns_400(client, db, restaurant):
-    """Validación de negocio: Intentar publicar un cuadrante ya publicado debe fallar."""
+
     create_dummy_employee(db, restaurant_id=restaurant.id)
 
     today = date.today()
@@ -154,6 +146,6 @@ def test_publish_already_published_schedule_returns_400(client, db, restaurant):
 
 
 def test_get_nonexistent_schedule_returns_404(client):
-    """Manejo de errores: Consultar un cuadrante que no existe devuelve 404."""
+
     response = client.get(f"{PREFIX}/99999")
     assert response.status_code == status.HTTP_404_NOT_FOUND
