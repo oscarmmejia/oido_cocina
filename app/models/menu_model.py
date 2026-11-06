@@ -6,7 +6,6 @@ from sqlalchemy import (
     CheckConstraint,
     Date,
     ForeignKey,
-    Integer,
     Numeric,
     String,
     UniqueConstraint,

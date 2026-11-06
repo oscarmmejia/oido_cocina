@@ -18,6 +18,7 @@ DEMO_RESTAURANT_ID = DEV_RESTAURANT_ID
 DEMO_RESTAURANT_NAME = "Oido Cocina"
 DEMO_TIME_ZONE = "Europe/Madrid"
 DEMO_PASSWORD = "Demo1234!"
+SUPERADMIN_EMAIL = "superadmin@oidocina.local"
 
 # Catálogo oficial de los catorce alérgenos de declaración obligatoria en la UE.
 EU_ALLERGENS: list[dict[str, str]] = [
@@ -177,7 +178,7 @@ MENUS: tuple[dict[str, object], ...] = (
 
 USERS: tuple[dict[str, str], ...] = (
     {
-        "email": "superadmin@oidocina.local",
+        "email": SUPERADMIN_EMAIL,
         "name": "Superadministrador Demo",
         "role": ROLE_SUPERADMIN,
         "phone": "600000001",

@@ -9,6 +9,7 @@ from app.database.seeders.catalog import (
     DEMO_RESTAURANT_ID,
     DEMO_RESTAURANT_NAME,
     DEMO_TIME_ZONE,
+    SUPERADMIN_EMAIL,
     USERS,
 )
 from app.models import (
@@ -113,7 +114,7 @@ def seed_users(
         user.email: user for user in db.scalars(select(User))
     }
     result: dict[str, User] = {}
-    for index, spec in enumerate(USERS):
+    for spec in USERS:
         user = existing.get(spec["email"])
         if user is None:
             user = User(
@@ -126,9 +127,9 @@ def seed_users(
                 is_active=True,
             )
             db.add(user)
-            # El primer usuario del catálogo es el superadministrador y debe
-            # quedar con DEV_USER_ID en una base recién sembrada.
-            if index == 0:
+            # El superadministrador debe quedar con DEV_USER_ID en una base
+            # recién sembrada.
+            if spec["email"] == SUPERADMIN_EMAIL:
                 db.flush()
         else:
             user.restaurant_id = restaurant.id
