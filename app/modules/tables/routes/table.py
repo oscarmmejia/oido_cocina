@@ -23,6 +23,21 @@ def list_tables(
     return table_service.list_tables(db, user.restaurant_id)
 
 
+@router.get(
+    "/{table_id}",
+    response_model=TableRead,
+    summary="Consultar una mesa",
+    description="Devuelve una mesa del restaurante autenticado por su identificador.",
+    responses={404: {"description": "No existe la mesa o pertenece a otro restaurante."}},
+)
+def get_table(
+    table_id: int,
+    user: CurrentUser = Depends(require_permission("table:manage")),
+    db: Session = Depends(get_db),
+) -> TableRead:
+    return table_service.get_table(db, table_id, user.restaurant_id)
+
+
 @router.post(
     "",
     response_model=TableRead,
