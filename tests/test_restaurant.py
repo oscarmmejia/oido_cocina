@@ -7,7 +7,7 @@ from sqlalchemy import insert, select, update
 from sqlalchemy.exc import IntegrityError
 
 from app.core.database_connection import engine
-from app.modules.settings.models.restaurant import Restaurant
+from app.models import Restaurant
 
 
 def test_restaurant_stores_settings_and_validates_slot():

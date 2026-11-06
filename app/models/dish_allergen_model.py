@@ -5,16 +5,15 @@ from app.core.database_connection import Base
 
 
 class DishAllergen(Base):
-    __tablename__ = "DishAllergen"
+    """Alérgenos declarados por un plato."""
+
+    __tablename__ = "dish_allergens"
 
     dish_id: Mapped[int] = mapped_column(
-        "dishId",
-        ForeignKey("Dish.id"),
-        primary_key=True
+        ForeignKey("dishes.id", ondelete="CASCADE"),
+        primary_key=True,
     )
-
     allergen_id: Mapped[int] = mapped_column(
-        "allergenId",
-        ForeignKey("Allergen.id"),
-        primary_key=True
+        ForeignKey("allergens.id", ondelete="CASCADE"),
+        primary_key=True,
     )

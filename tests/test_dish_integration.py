@@ -1,32 +1,13 @@
 from decimal import Decimal
 
 import pytest
-from sqlalchemy import Column, Integer, MetaData, Table, create_engine
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.core.database_connection import Base
-from app.models.dish_model import Dish
-from app.models.dish_allergen_model import DishAllergen
+from app.models import Allergen, Category, Dish, DishAllergen, Restaurant
 from app.controllers.dish_controller import create_dish, get_dish
 from app.schemas.dish_schema import DishCreate
-
-
-# Tablas auxiliares exclusivas para las pruebas.
-# No son modelos de producción.
-CategoryTest = Table(
-    "Category",
-    Base.metadata,
-    Column("id", Integer, primary_key=True),
-    Column("restaurantId", Integer, nullable=False),
-    extend_existing=True,
-)
-
-AllergenTest = Table(
-    "Allergen",
-    Base.metadata,
-    Column("id", Integer, primary_key=True),
-    extend_existing=True,
-)
 
 
 @pytest.fixture
@@ -37,19 +18,22 @@ def db():
     TestingSession = sessionmaker(bind=engine)
     session = TestingSession()
 
-    session.execute(
-    CategoryTest.insert().values(
-        id=1,
-        restaurantId=10,
-        name="Platos principales",
-        sortOrder=0,
-        isActive=True
+    session.add(Restaurant(id=10, name="Pruebas", time_zone="Europe/Madrid"))
+    session.add(
+        Category(
+            id=1,
+            restaurant_id=10,
+            name="Platos principales",
+            sort_order=0,
+            is_active=True,
+        )
     )
-)
-    session.execute(AllergenTest.insert(), [
-    {"id": 1, "code": "GLUTEN", "name": "Gluten"},
-    {"id": 2, "code": "CRUSTACEOS", "name": "Crustáceos"},
-])
+    session.add_all(
+        [
+            Allergen(id=1, code="GLUTEN", name="Gluten"),
+            Allergen(id=2, code="CRUSTACEOS", name="Crustáceos"),
+        ]
+    )
     session.commit()
 
     yield session
