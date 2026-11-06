@@ -112,7 +112,7 @@ class ScheduleController:
             employee_id=shift_in.employee_id,
             start_at=shift_in.start_at,
             end_at=shift_in.end_at,
-            type=shift_in.type,
+            type=ShiftType,
             status=ShiftStatus.BORRADOR,
         )
 
