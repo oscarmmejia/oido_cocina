@@ -1,3 +1,4 @@
+from app.modules.settings.models.restaurant import Restaurant
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -18,4 +19,4 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
 
     
-    restaurant = relationship("Restaurant")
+    restaurant = relationship(Restaurant)

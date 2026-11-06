@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI
 
 from app.api.auth import router as auth_router
@@ -18,7 +21,3 @@ app.include_router(auth_router, prefix=settings.api_prefix)
 @app.get("/")
 def read_root():
     return {"message": "Bienvenido a la API de Oído Cocina"}
-
-
-# TODO (CA3): añadir lifespan que llame a seed_minimum_data
-# TODO: cuando existan los modelos y la sesión de base de datos.
