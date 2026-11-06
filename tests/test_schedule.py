@@ -149,3 +149,19 @@ def test_get_nonexistent_schedule_returns_404(client):
 
     response = client.get(f"{PREFIX}/99999")
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
+def test_create_shift_nocturno_returns_201(client, db, restaurant):
+    # crear empleado activo, crear schedule borrador, crear shift 22:00 -> 02:00 (siguiente día)
+    ...
+
+def test_create_shift_jornada_partida_returns_201(client, db, restaurant):
+    # crear dos shifts: 12:00-16:00 y 20:00-23:00, duración total 7h
+    ...
+
+def test_delete_shift_in_published_schedule_returns_409(client, db, restaurant):
+    # publish, crear shift, delete shift -> 409, sigue existiendo
+    ...
+
+def test_create_shift_inactive_employee_returns_422(client, db, restaurant):
+    # empleado inactivo, shift -> 422, no se guarda
+    ...
