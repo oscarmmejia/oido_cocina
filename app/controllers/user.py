@@ -19,8 +19,8 @@ def create_user(db: Session, user_data: UserCreate):
         email=user_data.email,
         phone_number=user_data.phone_number,
         password_hash=hashed_password,
-        role_id=user_data.role_id,
-        restaurant_id=user_data.restaurant_id
+        role_id=1,
+        restaurant_id=None
     )
     
     db.add(new_user)
