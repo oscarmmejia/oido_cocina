@@ -10,7 +10,12 @@ from app.modules.tables.services import table as table_service
 router = APIRouter(prefix="/tables", tags=["tables"])
 
 
-@router.get("", response_model=list[TableRead])
+@router.get(
+    "",
+    response_model=list[TableRead],
+    summary="Listar mesas",
+    description="Devuelve las mesas del restaurante autenticado, ordenadas por número.",
+)
 def list_tables(
     user: CurrentUser = Depends(require_permission("table:manage")),
     db: Session = Depends(get_db),
@@ -18,7 +23,21 @@ def list_tables(
     return table_service.list_tables(db, user.restaurant_id)
 
 
-@router.post("", response_model=TableRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=TableRead,
+    status_code=status.HTTP_201_CREATED,
+    summary="Crear una mesa",
+    description=(
+        "Crea una mesa en el restaurante autenticado. El número debe ser único dentro "
+        "del restaurante, la capacidad mínima debe ser al menos 1 y la capacidad máxima "
+        "no puede ser menor que la mínima."
+    ),
+    responses={
+        409: {"description": "Ya existe una mesa con ese número en el restaurante."},
+        422: {"description": "Los datos de la mesa no son válidos."},
+    },
+)
 def create_table(
     payload: TableCreate,
     user: CurrentUser = Depends(require_permission("table:manage")),
@@ -27,7 +46,21 @@ def create_table(
     return table_service.create_table(db, user.restaurant_id, payload)
 
 
-@router.patch("/{table_id}", response_model=TableRead)
+@router.patch(
+    "/{table_id}",
+    response_model=TableRead,
+    summary="Actualizar una mesa",
+    description=(
+        "Actualiza parcialmente una mesa. Si se modifican las capacidades, el rango "
+        "resultante debe seguir siendo válido y el número no puede repetirse dentro "
+        "del restaurante."
+    ),
+    responses={
+        404: {"description": "No existe la mesa o pertenece a otro restaurante."},
+        409: {"description": "Ya existe otra mesa con ese número en el restaurante."},
+        422: {"description": "Los datos enviados no son válidos."},
+    },
+)
 def update_table(
     table_id: int,
     payload: TableUpdate,
@@ -35,3 +68,40 @@ def update_table(
     db: Session = Depends(get_db),
 ) -> TableRead:
     return table_service.update_table(db, table_id, user.restaurant_id, payload)
+
+
+@router.post(
+    "/{table_id}/enable",
+    response_model=TableRead,
+    summary="Habilitar una mesa",
+    description=(
+        "Marca la mesa como habilitada. Una mesa habilitada puede recibir reservas nuevas. "
+        "La operación es idempotente: habilitar una mesa ya habilitada devuelve el mismo estado."
+    ),
+    responses={404: {"description": "No existe la mesa o pertenece a otro restaurante."}},
+)
+def enable_table(
+    table_id: int,
+    user: CurrentUser = Depends(require_permission("table:manage")),
+    db: Session = Depends(get_db),
+) -> TableRead:
+    return table_service.enable_table(db, table_id, user.restaurant_id)
+
+
+@router.post(
+    "/{table_id}/disable",
+    response_model=TableRead,
+    summary="Inhabilitar una mesa",
+    description=(
+        "Marca la mesa como inhabilitada para que no reciba reservas nuevas. "
+        "No se reasigna automáticamente ninguna reserva existente. "
+        "La operación es idempotente: inhabilitar una mesa ya inhabilitada devuelve el mismo estado."
+    ),
+    responses={404: {"description": "No existe la mesa o pertenece a otro restaurante."}},
+)
+def disable_table(
+    table_id: int,
+    user: CurrentUser = Depends(require_permission("table:manage")),
+    db: Session = Depends(get_db),
+) -> TableRead:
+    return table_service.disable_table(db, table_id, user.restaurant_id)
