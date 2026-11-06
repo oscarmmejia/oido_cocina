@@ -7,8 +7,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     phone_number: Optional[str] = None
     password: str
-    role_id: int
-    restaurant_id: Optional[int] = None
+    
 
 class UserResponse(BaseModel):
     """Esquema para definir qué datos del usuario devolvemos (ocultando la contraseña)."""
