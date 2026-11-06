@@ -14,7 +14,7 @@ def _number_taken() -> AppError:
 
 
 def _is_duplicate_number(error: IntegrityError) -> bool:
-    """Solo el índice único de número es un 409; otra violación se propaga."""
+
     diag = getattr(error.orig, "diag", None)
     return getattr(diag, "constraint_name", None) == UNIQUE_NUMBER_CONSTRAINT
 
@@ -61,8 +61,6 @@ def update_table(
     table = get_table(db, table_id, restaurant_id)
     changes = payload.model_dump(exclude_unset=True, mode="json")
 
-    # La validación cruzada no puede vivir en Pydantic: el payload es parcial y el rango
-    # válido depende de la fila guardada.
     min_capacity = changes.get("min_capacity", table.min_capacity)
     max_capacity = changes.get("max_capacity", table.max_capacity)
     if max_capacity < min_capacity:

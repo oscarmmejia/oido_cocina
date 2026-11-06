@@ -34,10 +34,7 @@ class TableUpdate(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def reject_explicit_nulls(cls, data: object) -> object:
-        """`null` explícito no es un valor válido: todas las columnas son NOT NULL.
 
-        Sin esto, un `{"min_capacity": null}` acaba en un TypeError y un 500.
-        """
         if isinstance(data, dict):
             nulls = sorted(key for key, value in data.items() if value is None)
             if nulls:
