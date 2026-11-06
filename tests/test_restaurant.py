@@ -1,7 +1,3 @@
-"""Prueba de integración mínima para el modelo unificado.
-
-Se ejecuta contra PostgreSQL LOCAL; transacción revertida al finalizar.
-"""
 import pytest
 from sqlalchemy import insert, select, update
 from sqlalchemy.exc import IntegrityError

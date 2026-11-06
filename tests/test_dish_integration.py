@@ -11,8 +11,6 @@ from app.controllers.dish_controller import create_dish, get_dish
 from app.schemas.dish_schema import DishCreate
 
 
-# Tablas auxiliares exclusivas para las pruebas.
-# No son modelos de producción.
 CategoryTest = Table(
     "Category",
     Base.metadata,
