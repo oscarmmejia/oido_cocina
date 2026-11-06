@@ -20,3 +20,27 @@ class ScheduleModel(Base):
     published_at = Column(DateTime(timezone=True), nullable=True)
 
     responsible = relationship("Employee", backref="schedules")
+
+class ShiftStatus(str, enum.Enum):
+    BORRADOR = "borrador"
+    PUBLICADO = "publicado"
+
+
+class ShiftType(str, enum.Enum):
+    NORMAL = "normal"
+    NOCTURNO = "nocturno"
+    PARTO = "partido"
+
+
+class ShiftModel(Base):
+    __tablename__ = "shifts"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    schedule_id = Column(Integer, ForeignKey("schedules.id"), nullable=False, index=True)
+    employee_id = Column(Integer, ForeignKey("employees.id"), nullable=False, index=True)
+    start_at = Column(DateTime(timezone=True), nullable=False)
+    end_at = Column(DateTime(timezone=True), nullable=False)
+    type = Column(String(20), default=ShiftType.NORMAL, nullable=False)
+    status = Column(String(20), default=ShiftStatus.BORRADOR, nullable=False)
+
+    schedule = relationship("ScheduleModel", backref="shifts")
