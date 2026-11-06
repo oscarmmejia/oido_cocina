@@ -1,11 +1,39 @@
 import pytest
 
+from app.core.kernel.identity import DEV_RESTAURANT_ID, CurrentUser, get_current_user
+from app.main import app
+
 VALID_TABLE = {
     "number": 5,
     "min_capacity": 2,
     "max_capacity": 4,
     "location": "interior",
 }
+
+PROTECTED_REQUESTS = [
+    ("GET", "/api/v1/tables", None),
+    ("POST", "/api/v1/tables", VALID_TABLE),
+    ("GET", "/api/v1/tables/9999", None),
+    ("PATCH", "/api/v1/tables/9999", {"number": 7}),
+    ("POST", "/api/v1/tables/9999/enable", None),
+    ("POST", "/api/v1/tables/9999/disable", None),
+]
+
+
+@pytest.fixture
+def user_without_permissions():
+    def override() -> CurrentUser:
+        return CurrentUser(
+            id=2,
+            restaurant_id=DEV_RESTAURANT_ID,
+            email="sin-permisos@example.com",
+            role="viewer",
+            permissions=set(),
+        )
+
+    app.dependency_overrides[get_current_user] = override
+    yield
+    app.dependency_overrides.pop(get_current_user, None)
 
 
 def create_table(client, payload=None):
@@ -56,6 +84,35 @@ def test_list_tables_returns_created_tables(client, restaurant):
 
     assert response.status_code == 200
     assert [table["number"] for table in response.json()] == [VALID_TABLE["number"]]
+
+
+def test_get_table_returns_200(client, restaurant):
+    created = create_table(client).json()
+
+    response = client.get(f"/api/v1/tables/{created['id']}")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["id"] == created["id"]
+    assert body["number"] == VALID_TABLE["number"]
+    assert body["restaurant_id"] == restaurant.id
+
+
+def test_get_missing_table_returns_404(client, restaurant):
+    response = client.get("/api/v1/tables/9999")
+
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "TABLE_NOT_FOUND"
+
+
+@pytest.mark.parametrize("method,url,payload", PROTECTED_REQUESTS)
+def test_endpoint_without_table_manage_returns_403(
+    client, restaurant, user_without_permissions, method, url, payload
+):
+    response = client.request(method, url, json=payload)
+
+    assert response.status_code == 403
+    assert response.json()["error"]["code"] == "FORBIDDEN"
 
 
 def test_update_table_returns_200(client, restaurant):
