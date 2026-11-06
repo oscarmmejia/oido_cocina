@@ -146,3 +146,48 @@ def test_rejected_duplicate_is_not_persisted(client, restaurant):
     assert [table["number"] for table in list_tables(client).json()] == [
         VALID_TABLE["number"]
     ]
+
+
+def change_table_status(client, table_id, action):
+    return client.post(f"/api/v1/tables/{table_id}/{action}")
+
+
+def test_disable_table_returns_200_and_deactivates(client, restaurant):
+    table_id = create_table(client).json()["id"]
+
+    response = change_table_status(client, table_id, "disable")
+
+    assert response.status_code == 200
+    assert response.json()["is_active"] is False
+    assert list_tables(client).json()[0]["is_active"] is False
+
+
+def test_enable_table_returns_200_and_reactivates(client, restaurant):
+    table_id = create_table(client).json()["id"]
+    assert change_table_status(client, table_id, "disable").status_code == 200
+
+    response = change_table_status(client, table_id, "enable")
+
+    assert response.status_code == 200
+    assert response.json()["is_active"] is True
+    assert list_tables(client).json()[0]["is_active"] is True
+
+
+@pytest.mark.parametrize("action", ["enable", "disable"])
+def test_repeated_status_change_is_idempotent(client, restaurant, action):
+    table_id = create_table(client).json()["id"]
+
+    first = change_table_status(client, table_id, action)
+    second = change_table_status(client, table_id, action)
+
+    assert first.status_code == 200
+    assert second.status_code == 200
+    assert first.json()["is_active"] == second.json()["is_active"]
+
+
+@pytest.mark.parametrize("action", ["enable", "disable"])
+def test_status_change_missing_table_returns_404(client, restaurant, action):
+    response = change_table_status(client, 9999, action)
+
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "TABLE_NOT_FOUND"
