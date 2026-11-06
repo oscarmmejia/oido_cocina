@@ -9,10 +9,6 @@ LOCATIONS = (LOCATION_INTERIOR, LOCATION_EXTERIOR)
 
 
 class DiningTable(Base):
-    """Mesa física del restaurante.
-
-    No se llama ``Table`` a propósito: choca con ``sqlalchemy.Table``.
-    """
 
     __tablename__ = "tables"
     __table_args__ = (

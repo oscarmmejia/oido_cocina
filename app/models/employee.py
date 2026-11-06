@@ -9,7 +9,7 @@ class Employee(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     restaurant_id: Mapped[int] = mapped_column(ForeignKey("restaurant.id"), index=True)
-    # TODO(HU-AUT-06): añadir ForeignKey("users.id") cuando exista la tabla users
+
     user_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
     full_name: Mapped[str] = mapped_column(String(120))
     job_position: Mapped[str] = mapped_column(String(50))

@@ -1,4 +1,3 @@
-"""Modelo unificado de restaurante conforme al DER actualizado del equipo."""
 from datetime import time
 
 from sqlalchemy import Boolean, CheckConstraint, Integer, String, Time, text
@@ -17,19 +16,14 @@ class Restaurant(Base):
         Boolean, nullable=False, server_default=text("true")
     )
 
-    # El DER escribe "curtesy_minutes"; el atributo Python se llama correctamente
-    # "courtesy_minutes" y se mapea a la columna literal del DER.
     courtesy_minutes: Mapped[int] = mapped_column(
         "curtesy_minutes", Integer, nullable=False, server_default=text("5")
     )
-    # Según acuerdo del equipo, no existe default_reservation_minutes separado.
+
     slot_minutes: Mapped[int] = mapped_column(
         Integer, nullable=False, server_default=text("60")
     )
 
-    # Campos descritos en restaurant dentro del DER.
-    # DER no determina obligatoriedad/tipos exactos para estos campos:
-    # se dejan opcionales hasta definir el contrato de uso.
     min_break_between_shifts: Mapped[int | None] = mapped_column(Integer)
     day_of_week: Mapped[int | None] = mapped_column(Integer)
     period: Mapped[str | None] = mapped_column(String(16))
