@@ -28,7 +28,7 @@ def _create(db, name="Ana López", position="cook", restaurant_id=RESTAURANT_ID)
     )
 
 
-# Escenario: empleado sin cuenta
+
 def test_create_employee_without_user(db):
     emp = _create(db)
 
@@ -38,7 +38,7 @@ def test_create_employee_without_user(db):
     assert emp.is_active is True
 
 
-# Escenario: inactivar empleado (se conserva, no se borra)
+
 def test_deactivate_keeps_employee(db):
     emp = _create(db)
 
