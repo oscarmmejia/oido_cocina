@@ -8,8 +8,6 @@ SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 
 class Base(DeclarativeBase):
-    """Clase base de la que heredarán los modelos de tablas."""
-
 
 def get_db():
     db = SessionLocal()

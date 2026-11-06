@@ -10,10 +10,9 @@ from app.api.schedule_routes import router as schedule_router
 
 settings = get_settings()
 
-# Inicialización única de la aplicación FastAPI
 app = FastAPI(title=settings.app_name)
 
-# Registro de manejadores de errores y routers con el prefijo global
+
 register_error_handlers(app)
 
 app.include_router(health_router, prefix=settings.api_prefix)
@@ -24,5 +23,3 @@ app.include_router(employees.router, prefix=settings.api_prefix)
 app.include_router(schedule_router, prefix=settings.api_prefix)
 
 
-# TODO (CA3): añadir lifespan que llame a seed_minimum_data
-# TODO: cuando existan los modelos y la sesión de base de datos.
