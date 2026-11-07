@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 import pytest
 from fastapi import status
-from app.models.schedule_model import ScheduleStatus
+from app.modules.schedules.models.schedule import ScheduleStatus
 from app.models.employee import Employee
 from app.core.config import get_settings
 
@@ -26,7 +26,7 @@ def create_dummy_employee(db, restaurant_id):
 
 def test_schedule_schema_valid_dates():
 
-    from app.schemas.schedule_schema import ScheduleCreate
+    from app.modules.schedules.schemas.schedule import ScheduleCreate
 
     today = date.today()
     next_week = today + timedelta(days=7)
@@ -43,7 +43,7 @@ def test_schedule_schema_valid_dates():
 def test_schedule_schema_invalid_dates_raises_value_error():
 
     from pydantic import ValidationError
-    from app.schemas.schedule_schema import ScheduleCreate
+    from app.modules.schedules.schemas.schedule import ScheduleCreate
 
     today = date.today()
     yesterday = today - timedelta(days=1)
