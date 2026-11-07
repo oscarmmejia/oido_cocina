@@ -1,18 +1,11 @@
-from app.core.database_connection import Base, engine
-from app.modules.settings.models import restaurant
-from app.models import test_model
-from app.models import employee
-from app.models import schedule_model
-from app.models import Category, Dish, DishAllergen, Allergen
+from app.core.database_connection import Base, engine  # noqa: F401
+from app.models import Allergen, Category, Dish, DishAllergen  # noqa: F401
+from app.models import employee  # noqa: F401
+from app.modules.schedules.models import schedule, work_shift  # noqa: F401
+from app.modules.settings.models import restaurant  # noqa: F401
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-from app.core.database_connection import Base, engine
-from app.models import Category, Dish, DishAllergen, Allergen
-
 from alembic import context
-
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -26,8 +19,6 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-
-
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
