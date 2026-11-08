@@ -68,6 +68,22 @@ def test_create_table_with_invalid_location_returns_422(client, restaurant):
     assert response.status_code == 422
 
 
+def test_create_table_with_bar_location_returns_201(client, restaurant):
+    response = create_table(client, {**VALID_TABLE, "location": "bar"})
+
+    assert response.status_code == 201
+    assert response.json()["location"] == "bar"
+
+
+def test_update_table_to_bar_location_returns_200(client, restaurant):
+    table_id = create_table(client).json()["id"]
+
+    response = client.patch(f"/api/v1/tables/{table_id}", json={"location": "bar"})
+
+    assert response.status_code == 200
+    assert response.json()["location"] == "bar"
+
+
 def test_create_duplicate_number_in_same_restaurant_returns_409(client, restaurant):
     assert create_table(client).status_code == 201
 
