@@ -7,3 +7,4 @@ __pycache__/
 docs
 odd
 .pytest_cache/
+INFORME*.md
