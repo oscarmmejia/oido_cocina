@@ -86,6 +86,9 @@ def test_create_dish_rejects_duplicate_allergens_before_database_queries():
 
 
 def test_create_dish_rejects_unknown_allergen_without_saving():
+    from app.models.category_model import Category
+    from app.models.allergen_model import Allergen
+
     class FakeQuery:
         def __init__(self, result):
             self.result = result
@@ -100,17 +103,13 @@ def test_create_dish_rejects_unknown_allergen_without_saving():
         def __init__(self):
             self.rollback_called = False
             self.add_called = False
-            self.query_count = 0
 
         def query(self, model):
-            from app.models.category_model import Category
-            from app.models.allergen_model import Allergen
-            self.query_count += 1
             if model is Category:
-                return FakeQuery((1,))
+                return FakeQuery(object())
             if model is Allergen:
                 return FakeQuery(None)
-            return FakeQuery(None)
+            raise AssertionError("Consulta inesperada")
 
         def rollback(self):
             self.rollback_called = True
@@ -146,29 +145,22 @@ def test_create_dish_saves_valid_dish_with_allergens():
     from app.models.allergen_model import Allergen
 
     class FakeQuery:
-        def __init__(self, result):
-            self.result = result
-
         def filter(self, *conditions):
             return self
 
         def first(self):
-            return self.result
+            return object()
 
     class FakeDB:
         def __init__(self):
             self.added_objects = []
             self.committed = False
             self.refreshed = False
-            self.query_count = 0
 
         def query(self, model):
-            self.query_count += 1
-            if model is Category:
-                return FakeQuery((1,))
-            if model is Allergen:
-                return FakeQuery((1,))
-            return FakeQuery(None)
+            if model in (Category, Allergen):
+                return FakeQuery()
+            raise AssertionError("Consulta inesperada")
 
         def add(self, item):
             self.added_objects.append(item)
@@ -370,7 +362,6 @@ def test_get_dishes_returns_only_restaurant_dishes_with_allergens():
     assert result[1]["allergen_ids"] == [3]
 
 
-
 def test_update_dish_changes_name_and_price():
     from types import SimpleNamespace
     from app.controllers.dish_controller import update_dish
@@ -404,7 +395,6 @@ def test_update_dish_changes_name_and_price():
         def __init__(self):
             self.committed = False
             self.refreshed = False
-            self.query_count = 0
 
         def query(self, model):
             from app.models.dish_model import Dish
@@ -531,7 +521,7 @@ def test_update_dish_rejects_unknown_allergen_without_committing():
                 return FakeQuery(dish)
             if model is Allergen:
                 return FakeQuery(None)
-            return FakeQuery(None)
+            raise AssertionError("Consulta inesperada")
 
         def commit(self):
             self.committed = True
@@ -557,7 +547,6 @@ def test_update_dish_rejects_unknown_allergen_without_committing():
     assert error.value.detail == "El alérgeno 999 no existe"
     assert db.committed is False
     assert db.rollback_called is True
-
 
 
 def test_update_dish_can_remove_all_allergens():
@@ -689,12 +678,16 @@ def test_update_dish_replaces_allergens():
         def query(self, model):
             if model is Dish:
                 return FakeQuery(dish)
-            if model is DishAllergen:
-                return FakeQuery([])
+
             if model is Allergen:
-                return FakeQuery(SimpleNamespace(id=1))
+                return FakeQuery(SimpleNamespace())
+
             if model is DishAllergen.allergen_id:
                 return FakeQuery([(2,), (3,)])
+
+            if model is DishAllergen:
+                return FakeQuery([])
+
             raise AssertionError("Consulta inesperada")
 
         def add(self, item):
@@ -721,6 +714,7 @@ def test_update_dish_replaces_allergens():
     assert result["allergen_ids"] == [2, 3]
     assert len(db.added) == 2
     assert db.committed is True
+
 
 def test_update_dish_rejects_duplicate_allergens():
     from fastapi import HTTPException
@@ -771,13 +765,12 @@ def test_update_dish_rejects_duplicate_allergens():
     assert error.value.status_code == 422
     assert db.committed is False
 
+
 def test_create_dish_rejects_category_from_another_restaurant():
-    from fastapi import HTTPException
-    from app.controllers.dish_controller import create_dish
     from app.models.category_model import Category
 
     class FakeQuery:
-        def filter(self, *conditions):
+        def filter(self, *args):
             return self
 
         def first(self):
@@ -788,6 +781,7 @@ def test_create_dish_rejects_category_from_another_restaurant():
         added = []
 
         def query(self, model):
+            assert model is Category
             return FakeQuery()
 
         def add(self, item):

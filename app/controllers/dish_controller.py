@@ -7,9 +7,14 @@ from sqlalchemy.orm import Session
 from app.models.allergen_model import Allergen
 from app.models.category_model import Category
 from app.models.dish_allergen_model import DishAllergen
-from app.models.dish_model import Dish
-from app.schemas.dish_schema import DishCreate, DishPublicResponse, DishUpdate, PaginatedDishesResponse
 
+from app.models.dish_model import Dish
+from app.schemas.dish_schema import (
+    DishCreate,
+    DishPublicResponse,
+    DishUpdate,
+    PaginatedDishesResponse,
+)
 
 
 def create_dish(
@@ -92,7 +97,6 @@ def create_dish(
             status_code=500,
             detail="No se pudo guardar el plato"
         )
-
 
 
 def get_dish(
