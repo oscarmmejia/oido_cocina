@@ -19,5 +19,5 @@ async def get_current_user(user: User = Depends(get_authenticated_user)) -> Curr
         restaurant_id=user.restaurant_id,
         email=user.email,
         role=role_name,
-        permissions={"*"}
+        permissions=set()
     )
