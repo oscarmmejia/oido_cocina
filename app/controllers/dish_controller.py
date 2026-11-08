@@ -7,14 +7,8 @@ from sqlalchemy.orm import Session
 from app.models.allergen_model import Allergen
 from app.models.category_model import Category
 from app.models.dish_allergen_model import DishAllergen
-
 from app.models.dish_model import Dish
-from app.schemas.dish_schema import (
-    DishCreate,
-    DishPublicResponse,
-    DishUpdate,
-    PaginatedDishesResponse,
-)
+from app.schemas.dish_schema import DishCreate, DishUpdate
 
 
 def create_dish(
@@ -49,7 +43,7 @@ def create_dish(
                 raise HTTPException(
                     status_code=422,
                     detail=f"El alérgeno {allergen_id} no existe"
-                )       
+                )
 
         dish = Dish(
             restaurant_id=restaurant_id,
@@ -314,8 +308,9 @@ def deactivate_dish(
         raise HTTPException(
             status_code=500,
             detail="No se pudo desactivar el plato"
-        )    
-        
+        )
+
+
 def get_public_dishes(
     db: Session,
     restaurant_id: int,
@@ -327,8 +322,8 @@ def get_public_dishes(
 ):
     query = db.query(Dish).filter(
         Dish.restaurant_id == restaurant_id,
-        Dish.is_active == True,
-        Dish.is_published == True
+        Dish.is_active.is_(True),
+        Dish.is_published.is_(True)
     )
 
     if category_id is not None:
@@ -344,7 +339,7 @@ def get_public_dishes(
         query = query.filter(Dish.id.in_(subquery))
 
     total = query.count()
-    dishes = query.offset((page - 1) * page_size).limit(page_size).all()
+    dishes = query.order_by(Dish.id).offset((page - 1) * page_size).limit(page_size).all()
 
     items = []
     for dish in dishes:
@@ -380,8 +375,8 @@ def get_public_dish(
     dish = db.query(Dish).filter(
         Dish.id == dish_id,
         Dish.restaurant_id == restaurant_id,
-        Dish.is_active == True,
-        Dish.is_published == True
+        Dish.is_active.is_(True),
+        Dish.is_published.is_(True)
     ).first()
 
     if dish is None:
@@ -404,4 +399,4 @@ def get_public_dish(
         "category_id": dish.category_id,
         "is_available": dish.is_available,
         "allergen_ids": allergen_ids
-    }        
+    }
