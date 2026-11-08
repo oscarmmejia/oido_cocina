@@ -43,7 +43,7 @@ Copiar `.env.example` a `.env` y rellenarlo. **El `.env` nunca se sube al reposi
 |---|---|
 | `DATABASE_URL` | Conexión a PostgreSQL. Formato: `postgresql+psycopg://usuario:contraseña@localhost:5432/oido_cocina` |
 | `SEED_DEMO_PASSWORD` | Contraseña que tendrán los usuarios de demostración. Solo para desarrollo |
-| `AUTH_STUBS_ENABLED` | Opcional (por defecto `true`). Activa la identidad provisional de desarrollo. **Temporal:** se elimina con HU-AUT-04 |
+| `AUTH_STUBS_ENABLED` | Opcional (por defecto `false`). Actívala solo en desarrollo local para usar la identidad provisional. **Temporal:** se elimina con HU-AUT-04. Nunca debe estar activa en producción |
 
 Si la contraseña de la base de datos contiene símbolos como `@`, `:`, `/` o `#`, hay que codificarlos en la URL
 (por ejemplo `@` se escribe `%40`).
@@ -135,12 +135,17 @@ Toda modificación de estructura se hace con una migración versionada, nunca a 
 |---|---|
 | `alembic upgrade head` | Aplicar todas las migraciones |
 | `alembic downgrade base` | Volver a una base vacía (deja solo `alembic_version`) |
-| `alembic current` | Ver la versión aplicada (ahora `0001 (head)`) |
+| `alembic current` | Ver la versión aplicada |
 | `alembic check` | Comprobar que los modelos y la base de datos coinciden |
 | `alembic revision --autogenerate -m "descripcion"` | Generar una migración nueva a partir de los modelos |
 
 Después de autogenerar, **revisar siempre el archivo** antes de aplicarlo, y probar también el `downgrade`.
 Los modelos nuevos deben importarse en `app/models/__init__.py` para que Alembic los vea.
+
+> **Historial residual.** `alembic.ini` apunta únicamente a `app/database/migrations/`. El directorio
+> `alembic/` de la raíz llegó con la fusión de `epic/authentication`, no está referenciado y su `env.py`
+> no es ejecutable con el código actual. Se conserva de forma temporal porque otras ramas del equipo
+> todavía lo usan; no debe contener migraciones nuevas ni usarse para generar revisiones.
 
 ## Seeders (`app/database/seeders/`)
 
@@ -186,8 +191,11 @@ configurada pero sin migrar, fallan con un mensaje claro.
 | Archivo | Comprueba |
 |---|---|
 | `tests/database/test_seeders_idempotency.py` | Ejecutar los seeders dos veces deja el mismo estado: mismos conteos, inserción de 0 filas en la segunda ejecución y contenido de las filas sin cambios |
-| `tests/database/test_seeded_data.py` | Los 14 alérgenos, las categorías, un usuario por rol, contraseñas cifradas y el aborto si falta la contraseña |
-| `tests/test_restaurant_settings.py` | Un restaurante solo puede tener una fila de configuración |
+| `tests/database/test_seeded_data.py` | Los 14 alérgenos, las categorías, el restaurante demo con su configuración y 14 horarios, un usuario por rol, contraseñas cifradas y el aborto si falta la contraseña |
+| `tests/database/test_models.py` | Metadatos: 10 tablas, claves primarias y foráneas y relaciones del esquema normalizado |
+| `tests/database/test_migrations.py` | Un único historial lineal; el SQL offline de `upgrade` crea las 10 tablas y el de `downgrade` las elimina |
+| `tests/test_restaurant.py` | `Restaurant` solo guarda identidad y aplica los valores por defecto de la base de datos |
+| `tests/test_restaurant_settings.py` | Una sola configuración por restaurante, valores por defecto, checks y relación con el restaurante |
 | `tests/core/test_errors.py` | Formato de error común: 409, 422, 404 y 500 sin detalles internos |
 | `tests/core/test_config.py` | Si falta `DATABASE_URL`, el programa termina con un mensaje claro |
 | `tests/api/test_health.py` | `/api/v1/health` responde 200 y, si la base falla, 503 con el formato común y sin filtrar detalles |

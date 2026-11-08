@@ -6,8 +6,17 @@ from sqlalchemy import select, text
 from app.database.seeders._helpers import SeedError
 from app.database.seeders.access import ROLES
 from app.database.seeders.dishes import ALLERGENS, CATEGORIES
+from app.database.seeders.restaurant import DEMO_PERIODS, DEMO_RESTAURANT_NAME, DEMO_TIMEZONE
 from app.database.seeders.runner import run_all
-from app.models import Allergen, Category, Role, User
+from app.models import (
+    Allergen,
+    Category,
+    OpeningHours,
+    Restaurant,
+    RestaurantSettings,
+    Role,
+    User,
+)
 
 DEMO_PASSWORD = "test-only-password"
 
@@ -42,6 +51,38 @@ def test_demo_user_passwords_are_stored_hashed(session):
     hashes = session.scalars(select(User.password_hash).where(User.email.like("demo-%"))).all()
     assert hashes
     assert all(h.startswith("$argon2id$") and DEMO_PASSWORD not in h for h in hashes)
+
+
+def test_demo_restaurant_configuration_and_opening_hours_are_loaded(session):
+    session.execute(text("TRUNCATE restaurants, roles, allergens CASCADE"))
+
+    run_all(session, DEMO_PASSWORD)
+    run_all(session, DEMO_PASSWORD)  # second run must not duplicate anything
+
+    restaurants = session.scalars(
+        select(Restaurant).where(Restaurant.name == DEMO_RESTAURANT_NAME)
+    ).all()
+    assert len(restaurants) == 1
+
+    restaurant = restaurants[0]
+    assert restaurant.timezone == DEMO_TIMEZONE
+    assert restaurant.is_active is True
+
+    settings = session.get(RestaurantSettings, restaurant.id)
+    assert settings is not None
+    assert (
+        settings.courtesy_minutes,
+        settings.slot_minutes,
+        settings.default_reservation_minutes,
+    ) == (5, 60, 60)
+
+    hours = session.scalars(
+        select(OpeningHours).where(OpeningHours.restaurant_id == restaurant.id)
+    ).all()
+    assert len(hours) == 14
+    assert {(hour.day_of_week, hour.period) for hour in hours} == {
+        (day, period) for day in range(1, 8) for period, *_ in DEMO_PERIODS
+    }
 
 
 def test_missing_password_aborts_when_users_must_be_created(session):
