@@ -3,15 +3,21 @@ from sqlalchemy.orm import Session
 
 from app.controllers.dish_controller import (
     create_dish,
+    deactivate_dish,
     get_dish,
     get_dishes,
+    get_public_dish,
+    get_public_dishes,
     update_dish,
 )
 from app.core.database_connection import get_db
+from app.core.kernel.permissions import require_permission
 from app.schemas.dish_schema import (
     DishCreate,
+    DishPublicResponse,
     DishResponse,
     DishUpdate,
+    PaginatedDishesResponse,
 )
 
 router = APIRouter(
@@ -27,6 +33,28 @@ def create_dish_route(
     db: Session = Depends(get_db)
 ):
     return create_dish(db, dish_data, restaurant_id)
+
+
+@router.get("/public", response_model=PaginatedDishesResponse)
+def get_public_dishes_route(
+    restaurant_id: int,
+    category_id: int | None = None,
+    is_available: bool | None = None,
+    allergen_id: int | None = None,
+    page: int = 1,
+    page_size: int = 20,
+    db: Session = Depends(get_db)
+):
+    return get_public_dishes(db, restaurant_id, category_id, is_available, allergen_id, page, page_size)
+
+
+@router.get("/public/{dish_id}", response_model=DishPublicResponse)
+def get_public_dish_route(
+    dish_id: int,
+    restaurant_id: int,
+    db: Session = Depends(get_db)
+):
+    return get_public_dish(db, dish_id, restaurant_id)
 
 
 @router.get("/", response_model=list[DishResponse])
@@ -54,3 +82,13 @@ def update_dish_route(
     db: Session = Depends(get_db)
 ):
     return update_dish(db, dish_id, dish_data, restaurant_id)
+
+
+@router.patch("/{dish_id}/deactivate")
+def deactivate_dish_route(
+    dish_id: int,
+    restaurant_id: int,
+    _=Depends(require_permission("dish:deactivate")),
+    db: Session = Depends(get_db)
+):
+    return deactivate_dish(db, dish_id, restaurant_id)

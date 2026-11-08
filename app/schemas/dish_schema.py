@@ -17,6 +17,8 @@ class DishUpdate(BaseModel):
     price: Decimal | None = Field(default=None, ge=0, decimal_places=2)
     category_id: int | None = None
     allergen_ids: list[int] | None = None
+    is_published: bool | None = None
+    is_available: bool | None = None
 
     @field_validator(
         "name",
@@ -45,3 +47,23 @@ class DishResponse(BaseModel):
     is_published: bool
     is_available: bool
     allergen_ids: list[int] = Field(default_factory=list)
+
+
+class DishPublicResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    category_id: int
+    name: str
+    description: str | None
+    price: Decimal
+    is_available: bool
+    allergen_ids: list[int] = Field(default_factory=list)
+
+
+class PaginatedDishesResponse(BaseModel):
+    items: list[DishPublicResponse]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int
