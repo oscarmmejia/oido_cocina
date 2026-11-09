@@ -212,3 +212,47 @@ def test_deactivating_a_dish_of_another_restaurant_returns_404(db):
         deactivate_dish(db, dish.id, RESTAURANT_ID)
 
     assert error.value.status_code == 404
+    
+def update_status(client, dish_id, body, restaurant_id=RESTAURANT_ID):
+    return client.patch(
+        f"/dishes/{dish_id}/status",
+        params={"restaurant_id": restaurant_id},
+        json=body,
+    )
+
+
+def test_status_update_publishes_dish_and_shows_it_in_public_menu(client, db):
+    dish = add_dish(db, is_published=False)
+
+    response = update_status(client, dish.id, {"is_published": True})
+
+    assert response.status_code == 200
+    assert response.json()["is_published"] is True
+    assert get_public(client).json()["total"] == 1
+
+
+def test_status_update_marks_dish_as_unavailable(client, db):
+    dish = add_dish(db)
+
+    response = update_status(client, dish.id, {"is_available": False})
+
+    assert response.json()["is_available"] is False
+    assert response.json()["is_published"] is True
+
+
+def test_status_update_rejects_null_values(client, db):
+    dish = add_dish(db)
+
+    assert update_status(client, dish.id, {"is_published": None}).status_code == 422
+
+
+def test_status_update_rejects_empty_body(client, db):
+    dish = add_dish(db)
+
+    assert update_status(client, dish.id, {}).status_code == 422
+
+
+def test_status_update_of_another_restaurant_returns_404(client, db):
+    dish = add_dish(db, restaurant_id=99)
+
+    assert update_status(client, dish.id, {"is_published": False}).status_code == 404    
