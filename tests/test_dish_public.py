@@ -1,241 +1,214 @@
 from decimal import Decimal
-from types import SimpleNamespace
 
 import pytest
-from fastapi import HTTPException
+from fastapi import FastAPI, HTTPException
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
-from app.controllers.dish_controller import (
-    deactivate_dish,
-    get_public_dish,
-    get_public_dishes,
-)
+from app.api.dish_routes import router
+from app.controllers.dish_controller import deactivate_dish
+from app.core.database_connection import Base, get_db
+from app.models.allergen_model import Allergen
+from app.models.category_model import Category
+from app.models.dish_allergen_model import DishAllergen
+from app.models.dish_model import Dish
+
+RESTAURANT_ID = 10
 
 
-def make_dish(**kwargs):
-    defaults = dict(
-        id=1,
-        restaurant_id=10,
-        category_id=1,
-        name="Pizza",
-        description=None,
-        price=Decimal("9.50"),
-        is_active=True,
-        is_published=True,
-        is_available=True,
+@pytest.fixture
+def db():
+    engine = create_engine(
+        "sqlite://",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
     )
-    defaults.update(kwargs)
-    return SimpleNamespace(**defaults)
+    Base.metadata.create_all(engine)
+    session = sessionmaker(bind=engine)()
+    session.add_all([
+        Category(id=1, restaurant_id=RESTAURANT_ID, name="Mains"),
+        Category(id=2, restaurant_id=RESTAURANT_ID, name="Desserts"),
+        Allergen(id=1, code="GLUTEN", name="Gluten"),
+        Allergen(id=2, code="EGG", name="Egg"),
+    ])
+    session.commit()
+    yield session
+    session.close()
+    Base.metadata.drop_all(engine)
+    engine.dispose()
 
 
-class FakeQuery:
-    def __init__(self, result):
-        self._result = result
-
-    def filter(self, *args):
-        return self
-
-    def offset(self, n):
-        return self
-
-    def limit(self, n):
-        return self
-
-    def order_by(self, *args):
-        return self
-
-    def count(self):
-        if isinstance(self._result, list):
-            return len(self._result)
-        return 0 if self._result is None else 1
-
-    def first(self):
-        if isinstance(self._result, list):
-            return self._result[0] if self._result else None
-        return self._result
-
-    def all(self):
-        if isinstance(self._result, list):
-            return self._result
-        return [self._result] if self._result is not None else []
-
-    def subquery(self):
-        return self
-
-    def in_(self, subquery):
-        return True
+@pytest.fixture
+def client(db):
+    app = FastAPI()
+    app.include_router(router)
+    app.dependency_overrides[get_db] = lambda: db
+    return TestClient(app)
 
 
-def test_public_menu_hides_unpublished_dishes():
-    class FakeDB:
-        def query(self, model):
-            from app.models.dish_model import Dish
-            if model is Dish:
-                return FakeQuery([])
-            return FakeQuery([])
-
-    result = get_public_dishes(db=FakeDB(), restaurant_id=10)
-    assert result["total"] == 0
-    assert result["items"] == []
-
-
-def test_public_menu_shows_unavailable_dishes_with_flag():
-    dish = make_dish(is_available=False)
-
-    class FakeDB:
-        def query(self, model):
-            from app.models.dish_model import Dish
-            from app.models.dish_allergen_model import DishAllergen
-            if model is Dish:
-                return FakeQuery([dish])
-            if model is DishAllergen.allergen_id:
-                return FakeQuery([])
-            return FakeQuery([])
-
-    result = get_public_dishes(db=FakeDB(), restaurant_id=10)
-    assert result["total"] == 1
-    assert result["items"][0]["is_available"] is False
+def add_dish(db, name="Pizza", **overrides):
+    values = {
+        "restaurant_id": RESTAURANT_ID,
+        "category_id": 1,
+        "name": name,
+        "price": Decimal("9.50"),
+        "is_active": True,
+        "is_published": True,
+        "is_available": True,
+    }
+    values.update(overrides)
+    dish = Dish(**values)
+    db.add(dish)
+    db.commit()
+    return dish
 
 
-def test_public_menu_filters_by_category():
-    dish = make_dish(category_id=5)
-
-    class FakeDB:
-        def query(self, model):
-            from app.models.dish_model import Dish
-            from app.models.dish_allergen_model import DishAllergen
-            if model is Dish:
-                return FakeQuery([dish])
-            if model is DishAllergen.allergen_id:
-                return FakeQuery([])
-            return FakeQuery([])
-
-    result = get_public_dishes(db=FakeDB(), restaurant_id=10, category_id=5)
-    assert result["total"] == 1
-    assert result["items"][0]["category_id"] == 5
+def get_public(client, **params):
+    return client.get(
+        "/dishes/public",
+        params={"restaurant_id": RESTAURANT_ID, **params},
+    )
 
 
-def test_public_menu_filters_by_allergen():
-    dish = make_dish()
+def test_public_menu_hides_unpublished_dishes(client, db):
+    add_dish(db, "Visible")
+    add_dish(db, "Hidden", is_published=False)
 
-    class FakeDB:
-        def query(self, model):
-            from app.models.dish_model import Dish
-            from app.models.dish_allergen_model import DishAllergen
-            if model is Dish:
-                return FakeQuery([dish])
-            if model is DishAllergen.dish_id:
-                return FakeQuery([dish.id])
-            if model is DishAllergen.allergen_id:
-                return FakeQuery([(1,)])
-            return FakeQuery([])
+    body = get_public(client).json()
 
-    result = get_public_dishes(db=FakeDB(), restaurant_id=10, allergen_id=1)
-    assert result["total"] == 1
-    assert 1 in result["items"][0]["allergen_ids"]
+    assert body["total"] == 1
+    assert [item["name"] for item in body["items"]] == ["Visible"]
 
 
-def test_public_menu_pagination():
-    dishes = [make_dish(id=i) for i in range(1, 6)]
+def test_public_menu_hides_inactive_dishes(client, db):
+    add_dish(db, "Visible")
+    add_dish(db, "Removed", is_active=False)
 
-    class FakeDB:
-        def query(self, model):
-            from app.models.dish_model import Dish
-            from app.models.dish_allergen_model import DishAllergen
-            if model is Dish:
-                return FakeQuery(dishes)
-            if model is DishAllergen.allergen_id:
-                return FakeQuery([])
-            return FakeQuery([])
+    body = get_public(client).json()
 
-    result = get_public_dishes(db=FakeDB(), restaurant_id=10, page=1, page_size=5)
-    assert result["total"] == 5
-    assert result["page"] == 1
-    assert result["page_size"] == 5
-    assert result["total_pages"] == 1
+    assert [item["name"] for item in body["items"]] == ["Visible"]
 
 
-def test_deactivate_dish_sets_is_active_false():
-    dish = make_dish(is_active=True)
+def test_public_menu_shows_unavailable_dishes_as_unavailable(client, db):
+    add_dish(db, "Sold out", is_available=False)
 
-    class FakeDB:
-        committed = False
+    body = get_public(client).json()
 
-        def query(self, model):
-            return FakeQuery(dish)
-
-        def commit(self):
-            self.committed = True
-
-        def rollback(self):
-            pass
-
-    db = FakeDB()
-    result = deactivate_dish(db=db, dish_id=1, restaurant_id=10)
-
-    assert dish.is_active is False
-    assert db.committed is True
-    assert result["id"] == 1
+    assert body["total"] == 1
+    assert body["items"][0]["is_available"] is False
 
 
-def test_deactivate_dish_returns_404_for_other_restaurant():
-    class FakeDB:
-        def query(self, model):
-            return FakeQuery(None)
+def test_public_menu_filters_by_category(client, db):
+    add_dish(db, "Steak", category_id=1)
+    add_dish(db, "Cake", category_id=2)
 
-        def rollback(self):
-            pass
+    body = get_public(client, category_id=2).json()
 
-    with pytest.raises(HTTPException) as error:
-        deactivate_dish(db=FakeDB(), dish_id=1, restaurant_id=99)
-
-    assert error.value.status_code == 404
+    assert [item["name"] for item in body["items"]] == ["Cake"]
 
 
-def test_deactivate_already_inactive_dish_returns_409():
-    dish = make_dish(is_active=False)
+def test_public_menu_filters_by_availability(client, db):
+    add_dish(db, "Available")
+    add_dish(db, "Sold out", is_available=False)
 
-    class FakeDB:
-        def query(self, model):
-            return FakeQuery(dish)
+    body = get_public(client, is_available="false").json()
 
-        def rollback(self):
-            pass
+    assert [item["name"] for item in body["items"]] == ["Sold out"]
+
+
+def test_public_menu_filters_by_allergen(client, db):
+    with_gluten = add_dish(db, "Bread")
+    add_dish(db, "Salad")
+    db.add(DishAllergen(dish_id=with_gluten.id, allergen_id=1))
+    db.commit()
+
+    body = get_public(client, allergen_id=1).json()
+
+    assert [item["name"] for item in body["items"]] == ["Bread"]
+    assert body["items"][0]["allergen_ids"] == [1]
+
+
+def test_public_menu_paginates_results_in_stable_order(client, db):
+    for number in range(1, 6):
+        add_dish(db, f"Dish {number}")
+
+    body = get_public(client, page=2, page_size=2).json()
+
+    assert [item["name"] for item in body["items"]] == ["Dish 3", "Dish 4"]
+    assert body["total"] == 5
+    assert body["page"] == 2
+    assert body["total_pages"] == 3
+
+
+def test_public_menu_only_shows_dishes_of_the_requested_restaurant(client, db):
+    add_dish(db, "Mine")
+    add_dish(db, "Other", restaurant_id=99)
+
+    body = get_public(client).json()
+
+    assert [item["name"] for item in body["items"]] == ["Mine"]
+
+
+@pytest.mark.parametrize(
+    "params",
+    [{"page": 0}, {"page_size": 0}, {"page_size": 101}],
+)
+def test_public_menu_rejects_invalid_pagination(client, params):
+    assert get_public(client, **params).status_code == 422
+
+
+def test_public_dish_detail_returns_dish_with_allergens(client, db):
+    dish = add_dish(db, "Tortilla")
+    db.add_all([
+        DishAllergen(dish_id=dish.id, allergen_id=1),
+        DishAllergen(dish_id=dish.id, allergen_id=2),
+    ])
+    db.commit()
+
+    response = client.get(
+        f"/dishes/public/{dish.id}",
+        params={"restaurant_id": RESTAURANT_ID},
+    )
+
+    assert response.status_code == 200
+    assert sorted(response.json()["allergen_ids"]) == [1, 2]
+
+
+def test_public_dish_detail_hides_unpublished_dish(client, db):
+    dish = add_dish(db, "Hidden", is_published=False)
+
+    response = client.get(
+        f"/dishes/public/{dish.id}",
+        params={"restaurant_id": RESTAURANT_ID},
+    )
+
+    assert response.status_code == 404
+
+
+def test_deactivated_dish_is_kept_but_hidden_from_public_menu(client, db):
+    dish = add_dish(db)
+
+    deactivate_dish(db, dish.id, RESTAURANT_ID)
+
+    assert db.query(Dish).count() == 1
+    assert get_public(client).json()["total"] == 0
+
+
+def test_deactivating_an_inactive_dish_returns_409(db):
+    dish = add_dish(db, is_active=False)
 
     with pytest.raises(HTTPException) as error:
-        deactivate_dish(db=FakeDB(), dish_id=1, restaurant_id=10)
+        deactivate_dish(db, dish.id, RESTAURANT_ID)
 
     assert error.value.status_code == 409
-    assert error.value.detail == "El plato ya está desactivado"
 
 
-def test_get_public_dish_returns_dish():
-    dish = make_dish()
-
-    class FakeDB:
-        def query(self, model):
-            from app.models.dish_model import Dish
-            from app.models.dish_allergen_model import DishAllergen
-            if model is Dish:
-                return FakeQuery(dish)
-            if model is DishAllergen.allergen_id:
-                return FakeQuery([(1,), (2,)])
-            return FakeQuery([])
-
-    result = get_public_dish(db=FakeDB(), dish_id=1, restaurant_id=10)
-    assert result["id"] == 1
-    assert result["allergen_ids"] == [1, 2]
-
-
-def test_get_public_dish_returns_404_if_not_published():
-    class FakeDB:
-        def query(self, model):
-            return FakeQuery(None)
-
-        def rollback(self):
-            pass
+def test_deactivating_a_dish_of_another_restaurant_returns_404(db):
+    dish = add_dish(db, restaurant_id=99)
 
     with pytest.raises(HTTPException) as error:
-        get_public_dish(db=FakeDB(), dish_id=1, restaurant_id=10)
+        deactivate_dish(db, dish.id, RESTAURANT_ID)
 
     assert error.value.status_code == 404
-
