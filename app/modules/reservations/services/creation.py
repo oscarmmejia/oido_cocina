@@ -134,7 +134,13 @@ def create_reservation(
     *,
     created_by_user_id: int | None = None,
 ) -> ReservationDetail:
-    """Crea reserva, ocupaciones e historial inicial en una sola transacción."""
+    """Crea reserva, ocupaciones e historial inicial en una sola transacción.
+
+    ``end_at`` procede de la validación y se calcula con ``slot_minutes``.
+    ``created_at`` lo fija la base de datos y ``created_by_user_id`` solo se
+    escribe en esta operación; el esquema de actualización rechaza ambos
+    campos para que no puedan modificarse posteriormente.
+    """
 
     try:
         validated = validate_reservation(db, restaurant, payload)
