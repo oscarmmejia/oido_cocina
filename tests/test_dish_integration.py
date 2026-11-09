@@ -62,6 +62,7 @@ def db():
 def test_integration_create_dish_with_allergens(db):
     dish_data = DishCreate(
         name="Tortilla",
+        description="Tortilla de patatas",
         price=Decimal("9.50"),
         category_id=1,
         allergen_ids=[1, 2],
@@ -76,6 +77,7 @@ def test_integration_create_dish_with_allergens(db):
 
     assert saved_dish is not None
     assert saved_dish.name == "Tortilla"
+    assert saved_dish.description == "Tortilla de patatas"
     assert saved_dish.price == Decimal("9.50")
     assert len(saved_relations) == 2
     assert {relation.allergen_id for relation in saved_relations} == {1, 2}
@@ -118,6 +120,22 @@ def test_integration_unknown_allergen_does_not_save_dish(db):
     assert db.query(Dish).count() == 0
     assert db.query(DishAllergen).count() == 0
 
+def test_integration_unknown_category_does_not_save_dish(db):
+    dish_data = DishCreate(
+        name="Plato no válido",
+        price=Decimal("9.50"),
+        category_id=999,
+        allergen_ids=[],
+    )
+
+    from fastapi import HTTPException
+
+    with pytest.raises(HTTPException) as error:
+        create_dish(db, dish_data, restaurant_id=10)
+
+    assert error.value.status_code == 422
+    assert db.query(Dish).count() == 0
+    assert db.query(DishAllergen).count() == 0
 
 def test_integration_failed_update_preserves_previous_allergens(db):
     from fastapi import HTTPException
