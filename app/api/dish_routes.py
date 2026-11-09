@@ -107,4 +107,3 @@ def update_dish_status_route(
     db: Session = Depends(get_db)
 ):
     return update_dish_status(db, dish_id, status_data, restaurant_id)
-
