@@ -43,7 +43,9 @@ ALLOWED_TRANSITIONS: dict[
 }
 
 
-def _coerce_status(status: ReservationStatus | str) -> ReservationStatus:
+def coerce_status(status: ReservationStatus | str) -> ReservationStatus:
+    """Normaliza un estado de reserva a ``ReservationStatus``."""
+
     if isinstance(status, ReservationStatus):
         return status
 
@@ -60,7 +62,7 @@ def _coerce_status(status: ReservationStatus | str) -> ReservationStatus:
 def is_final_status(status: ReservationStatus | str) -> bool:
     """Indica si la reserva está en un estado terminal."""
 
-    return _coerce_status(status) in FINAL_STATUSES
+    return coerce_status(status) in FINAL_STATUSES
 
 
 def allowed_targets(
@@ -68,7 +70,7 @@ def allowed_targets(
 ) -> frozenset[ReservationStatus]:
     """Devuelve los estados alcanzables desde el estado indicado."""
 
-    return ALLOWED_TRANSITIONS[_coerce_status(status)]
+    return ALLOWED_TRANSITIONS[coerce_status(status)]
 
 
 def can_transition(
@@ -77,8 +79,8 @@ def can_transition(
 ) -> bool:
     """Indica si la transición está permitida."""
 
-    current_status = _coerce_status(current)
-    target_status = _coerce_status(target)
+    current_status = coerce_status(current)
+    target_status = coerce_status(target)
     return target_status in ALLOWED_TRANSITIONS[current_status]
 
 
@@ -88,8 +90,8 @@ def ensure_transition_allowed(
 ) -> None:
     """Valida la transición o lanza un conflicto de negocio."""
 
-    current_status = _coerce_status(current)
-    target_status = _coerce_status(target)
+    current_status = coerce_status(current)
+    target_status = coerce_status(target)
 
     if target_status in ALLOWED_TRANSITIONS[current_status]:
         return
