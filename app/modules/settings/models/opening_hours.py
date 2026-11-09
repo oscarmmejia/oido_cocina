@@ -1,9 +1,13 @@
 from datetime import time
+from typing import TYPE_CHECKING
 
 from sqlalchemy import CheckConstraint, ForeignKey, SmallInteger, String, Time, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base, TimestampMixin
+
+if TYPE_CHECKING:
+    from app.modules.settings.models.restaurant import Restaurant
 
 
 class OpeningHours(TimestampMixin, Base):
@@ -23,3 +27,5 @@ class OpeningHours(TimestampMixin, Base):
     open_time: Mapped[time] = mapped_column(Time, nullable=False)
     close_time: Mapped[time] = mapped_column(Time, nullable=False)
     kitchen_close_time: Mapped[time | None] = mapped_column(Time, nullable=True)
+
+    restaurant: Mapped["Restaurant"] = relationship(back_populates="opening_hours")

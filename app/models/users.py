@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import (
     BigInteger,
@@ -12,9 +12,12 @@ from sqlalchemy import (
     true,
 )
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Base, TimestampMixin
+
+if TYPE_CHECKING:
+    from app.modules.settings.models.restaurant import Restaurant
 
 
 class Role(TimestampMixin, Base):
@@ -22,6 +25,9 @@ class Role(TimestampMixin, Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False, unique=True)
+
+    # One role can be assigned to many users (users.role_id is the only link).
+    users: Mapped[list["User"]] = relationship(back_populates="role")
 
 
 class Permission(TimestampMixin, Base):
@@ -52,6 +58,11 @@ class User(TimestampMixin, Base):
     email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=true())
+
+    # A user has exactly one role: a direct FK, never a many-to-many table.
+    role: Mapped["Role"] = relationship(back_populates="users")
+    # NULL for superadmins and customers, who do not belong to a single restaurant.
+    restaurant: Mapped["Restaurant | None"] = relationship(back_populates="users")
 
 
 class AuditLog(Base):
