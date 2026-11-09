@@ -9,6 +9,7 @@ ocupaciones y el historial se consultan de forma explícita.
 """
 
 from dataclasses import dataclass
+from datetime import datetime
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -21,6 +22,7 @@ from app.models import (
     TableCombination,
     TableCombinationTable,
 )
+from app.models.enums import ReservationTableStatus
 
 
 @dataclass
@@ -149,6 +151,49 @@ def get_tables_by_ids(db: Session, table_ids: list[int]) -> list[DiningTable]:
             .order_by(DiningTable.id)
         )
     )
+
+
+def lock_tables(db: Session, table_ids: list[int]) -> list[DiningTable]:
+    """Bloquea las mesas indicadas en orden estable por ID."""
+
+    if not table_ids:
+        return []
+
+    return list(
+        db.scalars(
+            select(DiningTable)
+            .where(DiningTable.id.in_(table_ids))
+            .order_by(DiningTable.id)
+            .with_for_update()
+        )
+    )
+
+
+def list_table_conflicts(
+    db: Session,
+    table_ids: list[int],
+    start_at: datetime,
+    end_at: datetime,
+    *,
+    exclude_reservation_id: int | None = None,
+) -> list[ReservationTable]:
+    """Devuelve ocupaciones activas que solapan el intervalo indicado."""
+
+    if not table_ids:
+        return []
+
+    statement = select(ReservationTable).where(
+        ReservationTable.table_id.in_(table_ids),
+        ReservationTable.status == ReservationTableStatus.ACTIVE.value,
+        ReservationTable.start_at < end_at,
+        ReservationTable.end_at > start_at,
+    )
+    if exclude_reservation_id is not None:
+        statement = statement.where(
+            ReservationTable.reservation_id != exclude_reservation_id
+        )
+
+    return list(db.scalars(statement.order_by(ReservationTable.id)))
 
 
 def list_occupations(db: Session, reservation_id: int) -> list[ReservationTable]:
