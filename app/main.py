@@ -10,6 +10,9 @@ from app.core.config import get_settings
 from app.core.database_connection import SessionLocal
 from app.core.kernel.errors import register_error_handlers
 from app.core.kernel.seed import seed_minimum_data
+from app.modules.reservations.routes.reservation import (
+    router as reservations_router,
+)
 from app.modules.tables.routes.table import router as tables_router
 
 settings = get_settings()
@@ -31,3 +34,4 @@ app.include_router(tables_router, prefix=settings.api_prefix)
 app.include_router(dish_router, prefix=settings.api_prefix)
 app.include_router(category_router, prefix=settings.api_prefix)
 app.include_router(allergen_router, prefix=settings.api_prefix)
+app.include_router(reservations_router, prefix=settings.api_prefix)

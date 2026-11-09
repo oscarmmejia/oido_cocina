@@ -11,7 +11,7 @@ ocupaciones y el historial se consultan de forma explícita.
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from app.models import (
@@ -194,6 +194,25 @@ def list_table_conflicts(
         )
 
     return list(db.scalars(statement.order_by(ReservationTable.id)))
+
+
+def release_occupations(db: Session, reservation_id: int) -> int:
+    """Libera todas las ocupaciones activas de una reserva.
+
+    El esquema compartido no tiene un estado ``released``; se usa
+    ``cancelled`` como estado no activo. La restricción de exclusión solo
+    considera las ocupaciones ``active``.
+    """
+
+    result = db.execute(
+        update(ReservationTable)
+        .where(
+            ReservationTable.reservation_id == reservation_id,
+            ReservationTable.status == ReservationTableStatus.ACTIVE.value,
+        )
+        .values(status=ReservationTableStatus.CANCELLED.value)
+    )
+    return result.rowcount or 0
 
 
 def list_occupations(db: Session, reservation_id: int) -> list[ReservationTable]:

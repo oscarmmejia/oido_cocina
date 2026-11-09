@@ -12,6 +12,7 @@ from app.modules.reservations.repositories.reservation import ReservationDetail
 from app.modules.reservations.services.state_machine import (
     coerce_status,
     ensure_transition_allowed,
+    is_final_status,
 )
 
 AUDIT_ACTION = "reservation.status_changed"
@@ -58,6 +59,9 @@ def transition_reservation(
                 reason=reason,
             ),
         )
+        if is_final_status(target):
+            reservation_repo.release_occupations(db, reservation.id)
+
         audit_repo.add_audit_log(
             db,
             AuditLog(
