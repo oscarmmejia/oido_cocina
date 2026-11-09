@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.controllers.dish_controller import (
@@ -41,8 +41,8 @@ def get_public_dishes_route(
     category_id: int | None = None,
     is_available: bool | None = None,
     allergen_id: int | None = None,
-    page: int = 1,
-    page_size: int = 20,
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db)
 ):
     return get_public_dishes(db, restaurant_id, category_id, is_available, allergen_id, page, page_size)
