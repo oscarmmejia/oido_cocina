@@ -17,8 +17,6 @@ class DishUpdate(BaseModel):
     price: Decimal | None = Field(default=None, ge=0, decimal_places=2)
     category_id: int | None = None
     allergen_ids: list[int] | None = None
-    is_published: bool | None = None
-    is_available: bool | None = None
 
     @field_validator(
         "name",
@@ -29,6 +27,18 @@ class DishUpdate(BaseModel):
     )
     @classmethod
     def reject_null_required_fields(cls, value):
+        if value is None:
+            raise ValueError("Este campo no puede ser null")
+        return value
+
+
+class DishStatusUpdate(BaseModel):
+    is_published: bool | None = None
+    is_available: bool | None = None
+
+    @field_validator("is_published", "is_available", mode="before")
+    @classmethod
+    def reject_null_status(cls, value):
         if value is None:
             raise ValueError("Este campo no puede ser null")
         return value

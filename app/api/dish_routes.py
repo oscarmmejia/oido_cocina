@@ -9,6 +9,7 @@ from app.controllers.dish_controller import (
     get_public_dish,
     get_public_dishes,
     update_dish,
+    update_dish_status,
 )
 from app.core.database_connection import get_db
 from app.core.kernel.permissions import require_permission
@@ -16,6 +17,7 @@ from app.schemas.dish_schema import (
     DishCreate,
     DishPublicResponse,
     DishResponse,
+    DishStatusUpdate,
     DishUpdate,
     PaginatedDishesResponse,
 )
@@ -92,3 +94,17 @@ def deactivate_dish_route(
     db: Session = Depends(get_db)
 ):
     return deactivate_dish(db, dish_id, restaurant_id)
+
+
+
+
+@router.patch("/{dish_id}/status", response_model=DishResponse)
+def update_dish_status_route(
+    dish_id: int,
+    status_data: DishStatusUpdate,
+    restaurant_id: int,
+    _=Depends(require_permission("dish:deactivate")),
+    db: Session = Depends(get_db)
+):
+    return update_dish_status(db, dish_id, status_data, restaurant_id)
+

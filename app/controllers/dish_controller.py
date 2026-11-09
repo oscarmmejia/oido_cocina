@@ -9,8 +9,7 @@ from app.models.allergen_model import Allergen
 from app.models.category_model import Category
 from app.models.dish_allergen_model import DishAllergen
 from app.models.dish_model import Dish
-from app.schemas.dish_schema import DishCreate, DishUpdate
-
+from app.schemas.dish_schema import DishCreate, DishStatusUpdate, DishUpdate
 
 def create_dish(
     db: Session,
@@ -310,6 +309,50 @@ def deactivate_dish(
             status_code=500,
             detail="No se pudo desactivar el plato"
         )
+        
+def update_dish_status(
+    db: Session,
+    dish_id: int,
+    status_data: DishStatusUpdate,
+    restaurant_id: int
+):
+    try:
+        dish = db.query(Dish).filter(
+            Dish.id == dish_id,
+            Dish.restaurant_id == restaurant_id
+        ).first()
+
+        if dish is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Plato no encontrado"
+            )
+
+        changes = status_data.model_dump(exclude_unset=True)
+
+        if not changes:
+            raise HTTPException(
+                status_code=422,
+                detail="Debe indicar al menos un estado"
+            )
+
+        for field, value in changes.items():
+            setattr(dish, field, value)
+
+        db.commit()
+
+        return get_dish(db, dish.id, restaurant_id)
+
+    except HTTPException:
+        db.rollback()
+        raise
+
+    except SQLAlchemyError:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail="No se pudo actualizar el estado del plato"
+        )       
 
 
 def get_public_dishes(
