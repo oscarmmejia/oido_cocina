@@ -1,6 +1,7 @@
 import math
 
 from fastapi import HTTPException
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
@@ -333,11 +334,11 @@ def get_public_dishes(
         query = query.filter(Dish.is_available == is_available)
 
     if allergen_id is not None:
-        subquery = db.query(DishAllergen.dish_id).filter(
+        dishIdsWithAllergen = select(DishAllergen.dish_id).where(
             DishAllergen.allergen_id == allergen_id
-        ).subquery()
-        query = query.filter(Dish.id.in_(subquery))
-
+        )
+        
+        query = query.filter(Dish.id.in_(dishIdsWithAllergen))
     total = query.count()
     dishes = query.order_by(Dish.id).offset((page - 1) * page_size).limit(page_size).all()
 
