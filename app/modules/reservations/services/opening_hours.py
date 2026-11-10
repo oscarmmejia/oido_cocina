@@ -1,18 +1,15 @@
 """Reglas de horario de apertura aplicadas a las reservas.
 
-La configuración vive en ``opening_hours`` (esquema compartido de HU-AUT-02).
-Cada fila representa una franja de un día concreto; un día puede tener varias
-franjas y una franja puede cruzar medianoche.
+El esquema compartido guarda el horario en ``restaurant``. No existe la tabla
+``opening_hours``: el horario es una única ventana configurable con un día
+opcional, hora de apertura y hora de cierre.
 """
 
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
 from app.core.kernel.errors import AppError
-from app.models import OpeningHours, Restaurant
+from app.models import Restaurant
 
 
 def restaurant_timezone(restaurant: Restaurant) -> ZoneInfo:
@@ -46,51 +43,41 @@ def calculate_end_at(start_at: datetime, slot_minutes: int) -> datetime:
 
 
 def list_opening_windows(
-    db: Session,
     restaurant: Restaurant,
     local_date: date,
 ) -> list[tuple[datetime, datetime]]:
     """Devuelve las ventanas de apertura que pueden contener ``local_date``.
 
-    Se incluyen las franjas del día anterior para poder validar reservas de
-    madrugada que pertenecen a una franja nocturna que cruza medianoche.
+    Se incluye la ventana del día anterior para validar reservas de madrugada
+    cuando el cierre es anterior a la apertura y cruza medianoche.
     """
 
+    if restaurant.open_time is None or restaurant.close_time is None:
+        return []
+
     time_zone = restaurant_timezone(restaurant)
-    previous_date = local_date - timedelta(days=1)
-
-    rows = list(
-        db.scalars(
-            select(OpeningHours).where(
-                OpeningHours.restaurant_id == restaurant.id,
-                OpeningHours.is_active.is_(True),
-                OpeningHours.day_of_week.in_(
-                    (local_date.isoweekday(), previous_date.isoweekday())
-                ),
-            )
-        )
-    )
-
     windows: list[tuple[datetime, datetime]] = []
-    for row in rows:
-        anchor_date = (
-            local_date
-            if row.day_of_week == local_date.isoweekday()
-            else previous_date
-        )
+
+    for anchor_date in (local_date - timedelta(days=1), local_date):
+        if (
+            restaurant.day_of_week is not None
+            and restaurant.day_of_week != anchor_date.isoweekday()
+        ):
+            continue
+
         window_start = datetime.combine(
             anchor_date,
-            row.open_time,
+            restaurant.open_time,
             tzinfo=time_zone,
         )
         close_date = (
             anchor_date + timedelta(days=1)
-            if row.close_time <= row.open_time
+            if restaurant.close_time <= restaurant.open_time
             else anchor_date
         )
         window_end = datetime.combine(
             close_date,
-            row.close_time,
+            restaurant.close_time,
             tzinfo=time_zone,
         )
         windows.append((window_start, window_end))
@@ -100,19 +87,17 @@ def list_opening_windows(
 
 
 def is_within_opening_hours(
-    db: Session,
     restaurant: Restaurant,
     start_at: datetime,
     end_at: datetime,
 ) -> bool:
-    """Comprueba que la reserva completa cabe en una sola ventana activa."""
+    """Comprueba que la reserva completa cabe en una ventana activa."""
 
     time_zone = restaurant_timezone(restaurant)
     local_start = to_restaurant_timezone(start_at, time_zone)
     local_end = to_restaurant_timezone(end_at, time_zone)
 
     for window_start, window_end in list_opening_windows(
-        db,
         restaurant,
         local_start.date(),
     ):

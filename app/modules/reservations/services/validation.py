@@ -262,7 +262,7 @@ def validate_reservation(
     )
     _validate_capacity(payload.party_size, tables, combination)
 
-    if not is_within_opening_hours(db, restaurant, local_start, local_end):
+    if not is_within_opening_hours(restaurant, local_start, local_end):
         raise AppError(
             "OUTSIDE_OPENING_HOURS",
             "La reserva está fuera del horario de apertura",
@@ -350,7 +350,7 @@ def validate_reservation_update(
     )
     _validate_capacity(party_size, tables, combination)
 
-    if not is_within_opening_hours(db, restaurant, local_start, local_end):
+    if not is_within_opening_hours(restaurant, local_start, local_end):
         raise AppError(
             "OUTSIDE_OPENING_HOURS",
             "La reserva está fuera del horario de apertura",
