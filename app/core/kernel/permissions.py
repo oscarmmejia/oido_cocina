@@ -18,8 +18,15 @@ def require_permission(permission: str) -> Callable[..., CurrentUser]:
                 detail="El usuario no tiene un rol asignado."
             )
 
-        user_permissions = [p.name for p in user.role.permissions]
+        user_permissions = set()
         
+        if hasattr(user, "permissions") and user.permissions:
+            user_permissions = set(user.permissions)
+        elif hasattr(user.role, "permissions") and user.role.permissions:
+            user_permissions = {p.name for p in user.role.permissions}
+        elif isinstance(user.role, str) and user.role == "superadmin":
+            user_permissions = {permission}
+
         if permission not in user_permissions:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
