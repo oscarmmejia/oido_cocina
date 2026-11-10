@@ -11,7 +11,7 @@ ocupaciones y el historial se consultan de forma explícita.
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import delete, select, update
+from sqlalchemy import delete, exists, func, or_, select, update
 from sqlalchemy.orm import Session
 
 from app.models import (
@@ -151,6 +151,68 @@ def get_tables_by_ids(db: Session, table_ids: list[int]) -> list[DiningTable]:
             .order_by(DiningTable.id)
         )
     )
+
+
+def list_reservations(
+    db: Session,
+    *,
+    restaurant_id: int,
+    status: str | None = None,
+    table_id: int | None = None,
+    customer: str | None = None,
+    customer_email: str | None = None,
+    start_from: datetime | None = None,
+    start_to: datetime | None = None,
+    offset: int = 0,
+    limit: int = 20,
+) -> tuple[list[Reservation], int]:
+    """Devuelve reservas filtradas y el total de coincidencias."""
+
+    conditions = [Reservation.restaurant_id == restaurant_id]
+
+    if status is not None:
+        conditions.append(Reservation.status == status)
+    if start_from is not None:
+        conditions.append(Reservation.start_at >= start_from)
+    if start_to is not None:
+        conditions.append(Reservation.start_at < start_to)
+    if table_id is not None:
+        conditions.append(
+            exists().where(
+                ReservationTable.reservation_id == Reservation.id,
+                ReservationTable.table_id == table_id,
+            )
+        )
+    if customer:
+        pattern = f"%{customer}%"
+        conditions.append(
+            or_(
+                Reservation.customer_name.ilike(pattern),
+                Reservation.phone.ilike(pattern),
+                Reservation.email.ilike(pattern),
+            )
+        )
+    if customer_email is not None:
+        conditions.append(func.lower(Reservation.email) == customer_email)
+
+    total = (
+        db.scalar(
+            select(func.count())
+            .select_from(Reservation)
+            .where(*conditions)
+        )
+        or 0
+    )
+    items = list(
+        db.scalars(
+            select(Reservation)
+            .where(*conditions)
+            .order_by(Reservation.start_at, Reservation.id)
+            .offset(offset)
+            .limit(limit)
+        )
+    )
+    return items, total
 
 
 def lock_tables(db: Session, table_ids: list[int]) -> list[DiningTable]:
