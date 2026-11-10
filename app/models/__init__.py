@@ -9,7 +9,7 @@ from app.models.reservation_model import (
     ReservationStatusHistory,
     ReservationTable,
 )
-from app.models.restaurant_model import OpeningHours, Restaurant
+from app.models.restaurant_model import Restaurant
 from app.models.schedule_model import (
     Employee,
     Schedule,
@@ -40,7 +40,6 @@ __all__ = [
     "Menu",
     "MenuCollection",
     "MenuDish",
-    "OpeningHours",
     "Permission",
     "PriceHistory",
     "Reservation",

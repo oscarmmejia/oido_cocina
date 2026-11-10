@@ -16,7 +16,6 @@ EXPECTED_TABLES = {
     "menu_collections",
     "menu_dishes",
     "menus",
-    "opening_hours",
     "permissions",
     "price_history",
     "reservation_status_history",

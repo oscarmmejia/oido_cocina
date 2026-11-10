@@ -3,7 +3,7 @@ from sqlalchemy import func, select
 from app.core.database_connection import Base
 from app.core.permissions import PERMISSIONS
 from app.database.seeders import seed_all
-from app.models import Allergen, OpeningHours, Permission, Role, User
+from app.models import Allergen, Permission, Restaurant, Role, User
 
 
 def _counts(db) -> dict[str, int]:
@@ -45,7 +45,14 @@ def test_seed_loads_required_catalogs(db) -> None:
     )
     assert db.scalar(select(func.count()).select_from(Role)) == 5
     assert db.scalar(select(func.count()).select_from(User)) == 5
-    assert db.scalar(select(func.count()).select_from(OpeningHours)) == 14
+
+    restaurant = db.scalar(select(Restaurant))
+    assert restaurant is not None
+    assert restaurant.day_of_week == 1
+    assert restaurant.period == "morning"
+    assert restaurant.open_time is not None
+    assert restaurant.close_time is not None
+    assert restaurant.kitchen_close_time is not None
 
     roles = db.scalars(select(Role)).all()
     for role in roles:
