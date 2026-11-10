@@ -44,9 +44,6 @@ def seed_categories(
             )
             db.add(category)
             existing[name] = category
-        else:
-            category.sort_order = sort_order
-            category.is_active = True
         result[name] = category
     db.flush()
     return result
@@ -79,12 +76,6 @@ def seed_tables(
                 adjustable_capacity=bool(spec["adjustable_capacity"]),
             )
             db.add(table)
-        else:
-            table.min_capacity = int(spec["min_capacity"])
-            table.max_capacity = int(spec["max_capacity"])
-            table.location = str(spec["location"])
-            table.adjustable_capacity = bool(spec["adjustable_capacity"])
-            table.is_active = True
         result[number] = table
     db.flush()
     return result
@@ -106,29 +97,24 @@ def seed_dishes(
     for spec in DISHES:
         name = str(spec["name"])
         dish = existing.get(name)
-        if dish is None:
-            dish = Dish(
-                restaurant_id=restaurant.id,
-                category_id=categories[str(spec["category"])].id,
-                name=name,
-                description=str(spec["description"]),
-                price=spec["price"],
-                is_active=True,
-                is_published=True,
-                is_available=True,
-            )
-            db.add(dish)
-            db.flush()
-            existing[name] = dish
-        else:
-            dish.category_id = categories[str(spec["category"])].id
-            dish.description = str(spec["description"])
-            dish.price = spec["price"]
-            dish.is_active = True
-            dish.is_published = True
-            dish.is_available = True
+        if dish is not None:
+            result[name] = dish
+            continue
 
-        db.execute(delete(DishAllergen).where(DishAllergen.dish_id == dish.id))
+        dish = Dish(
+            restaurant_id=restaurant.id,
+            category_id=categories[str(spec["category"])].id,
+            name=name,
+            description=str(spec["description"]),
+            price=spec["price"],
+            is_active=True,
+            is_published=True,
+            is_available=True,
+        )
+        db.add(dish)
+        db.flush()
+        existing[name] = dish
+
         for code in spec["allergens"]:
             db.add(
                 DishAllergen(
@@ -167,11 +153,6 @@ def seed_menu_collections(
                 is_active=True,
             )
             db.add(collection)
-        else:
-            collection.type = str(spec["type"])
-            collection.valid_from = spec["valid_from"]
-            collection.valid_to = spec["valid_to"]
-            collection.is_active = True
         result[name] = collection
     db.flush()
     return result
@@ -191,23 +172,21 @@ def seed_menus(
         collection = collections[str(spec["collection"])]
         name = str(spec["name"])
         menu = existing.get((collection.id, name))
-        if menu is None:
-            menu = Menu(
-                collection_id=collection.id,
-                name=name,
-                own_price=spec["own_price"],
-                is_active=True,
-                is_available=True,
-            )
-            db.add(menu)
-            db.flush()
-            existing[(collection.id, name)] = menu
-        else:
-            menu.own_price = spec["own_price"]
-            menu.is_active = True
-            menu.is_available = True
+        if menu is not None:
+            result.append(menu)
+            continue
 
-        db.execute(delete(MenuDish).where(MenuDish.menu_id == menu.id))
+        menu = Menu(
+            collection_id=collection.id,
+            name=name,
+            own_price=spec["own_price"],
+            is_active=True,
+            is_available=True,
+        )
+        db.add(menu)
+        db.flush()
+        existing[(collection.id, name)] = menu
+
         for dish_name, role, is_required, includes_drink in spec["dishes"]:
             db.add(
                 MenuDish(

@@ -24,22 +24,18 @@ from app.models import (
 
 def seed_restaurant(db: Session) -> Restaurant:
     restaurant = db.get(Restaurant, DEMO_RESTAURANT_ID)
-    if restaurant is None:
-        restaurant = Restaurant(
-            id=DEMO_RESTAURANT_ID,
-            name=DEMO_RESTAURANT_NAME,
-            time_zone=DEMO_TIME_ZONE,
-            is_active=True,
-            **DEFAULT_SCHEDULE,
-        )
-        db.add(restaurant)
-        db.flush()
-    else:
-        restaurant.name = DEMO_RESTAURANT_NAME
-        restaurant.time_zone = DEMO_TIME_ZONE
-        restaurant.is_active = True
-        for field, value in DEFAULT_SCHEDULE.items():
-            setattr(restaurant, field, value)
+    if restaurant is not None:
+        return restaurant
+
+    restaurant = Restaurant(
+        id=DEMO_RESTAURANT_ID,
+        name=DEMO_RESTAURANT_NAME,
+        time_zone=DEMO_TIME_ZONE,
+        is_active=True,
+        **DEFAULT_SCHEDULE,
+    )
+    db.add(restaurant)
+    db.flush()
     return restaurant
 
 
@@ -131,12 +127,6 @@ def seed_users(
             # recién sembrada.
             if spec["email"] == SUPERADMIN_EMAIL:
                 db.flush()
-        else:
-            user.restaurant_id = restaurant.id
-            user.role_id = roles[spec["role"]].id
-            user.name = spec["name"]
-            user.phone_number = spec["phone"]
-            user.is_active = True
         result[spec["email"]] = user
     db.flush()
     return result
@@ -166,10 +156,6 @@ def seed_employees(
                 is_active=True,
             )
             db.add(employee)
-        else:
-            employee.full_name = spec["name"]
-            employee.job_position = spec["job_position"]
-            employee.is_active = True
         result.append(employee)
     db.flush()
     return result

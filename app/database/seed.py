@@ -87,7 +87,7 @@ def main() -> int:
     parser.add_argument(
         "--no-demo",
         action="store_true",
-        help="carga solo catálogos, restaurante, roles, permisos y usuarios",
+        help="carga solo catálogos, restaurante, roles y permisos",
     )
     parser.add_argument(
         "--reset",

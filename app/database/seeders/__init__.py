@@ -35,7 +35,6 @@ def seed_minimum(db: Session) -> dict[str, Any]:
     permissions = seed_permissions(db)
     roles = seed_roles(db, restaurant)
     seed_role_permissions(db, roles, permissions)
-    users = seed_users(db, restaurant, roles)
     allergen_rows = seed_allergens(db)
     allergens = {row.code: row for row in allergen_rows}
     categories = seed_categories(db, restaurant)
@@ -43,7 +42,6 @@ def seed_minimum(db: Session) -> dict[str, Any]:
         "restaurant": restaurant,
         "permissions": permissions,
         "roles": roles,
-        "users": users,
         "allergens": allergens,
         "categories": categories,
     }
@@ -61,7 +59,7 @@ def seed_demo(
     restaurant = context["restaurant"]
     categories = context["categories"]
     allergens = context["allergens"]
-    users = context["users"]
+    users = seed_users(db, restaurant, context["roles"])
 
     tables = seed_tables(db, restaurant)
     dishes = seed_dishes(db, restaurant, categories, allergens)
@@ -70,6 +68,7 @@ def seed_demo(
     employees = seed_employees(db, restaurant, users)
     return {
         **context,
+        "users": users,
         "tables": tables,
         "dishes": dishes,
         "collections": collections,
