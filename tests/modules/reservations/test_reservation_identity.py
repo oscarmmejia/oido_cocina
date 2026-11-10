@@ -12,7 +12,7 @@ from zoneinfo import ZoneInfo  # noqa: E402
 
 from pydantic import ValidationError  # noqa: E402
 
-from app.models import DiningTable, OpeningHours, Role, User  # noqa: E402
+from app.models import DiningTable, Role, User  # noqa: E402
 from app.modules.reservations.schemas.reservation import (  # noqa: E402
     ReservationCreate,
     ReservationUpdate,
@@ -33,26 +33,11 @@ SERVER_MANAGED_FIELDS = {
 
 @pytest.fixture
 def open_restaurant(db, restaurant):
-    for day in range(1, 8):
-        db.add_all(
-            [
-                OpeningHours(
-                    restaurant_id=restaurant.id,
-                    day_of_week=day,
-                    period="morning",
-                    open_time=time(13, 0),
-                    close_time=time(16, 0),
-                ),
-                OpeningHours(
-                    restaurant_id=restaurant.id,
-                    day_of_week=day,
-                    period="afternoon",
-                    open_time=time(20, 0),
-                    close_time=time(23, 0),
-                ),
-            ]
-        )
-    db.flush()
+    restaurant.open_time = time(20, 0)
+    restaurant.close_time = time(23, 0)
+    restaurant.day_of_week = None
+    restaurant.period = "afternoon"
+    db.commit()
     return restaurant
 
 
