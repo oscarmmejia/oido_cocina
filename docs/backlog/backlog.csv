@@ -1,0 +1,3941 @@
+﻿ID,Issue Type,Summary,Priority,Story Points,Sprint,Parent,Labels,Description
+EP-05,Epic,"EP-05 · Gestión del proyecto, documentación y trazabilidad",Highest,39,1,,EP-05;flow-docs;sprint-1,"OBJETIVO
+Dejar cerrado, versionado y trazable el marco del proyecto antes y durante el desarrollo: briefing, repositorio, modelo de datos, diagramas de flujo y backlog.
+
+ALCANCE
+- Briefing funcional y técnico consolidado.
+- Repositorio con ramas protegidas, dependencias fijadas y convenciones de trabajo.
+- Modelo entidad-relación revisado contra las reglas de negocio.
+- Diagramas de flujo de los procesos críticos.
+- Backlog priorizado, estimado y con dependencias registradas.
+
+MÓDULOS AFECTADOS
+Transversal. No implementa código de negocio, pero define el contrato que consumen las otras cuatro épicas.
+
+DEPENDENCIAS
+Ninguna. Es la base documental del resto del proyecto.
+
+CRITERIO DE CIERRE
+El briefing está validado, el repositorio funciona en un equipo limpio, el DER cubre todas las reglas del briefing y cada requisito funcional tiene al menos una historia asociada con criterios de aceptación verificables."
+HU-GES-01,Story,HU-GES-01 · Briefing funcional y técnico consolidado,Highest,7,1,EP-05,HU-GES-01;flow-docs;sprint-1,"Como miembro del equipo, quiero disponer de un único briefing funcional y técnico consolidado, para tomar decisiones de desarrollo sobre una referencia sin contradicciones.
+
+CONTEXTO
+El proyecto nace de un briefing 1.0 ampliado por las indicaciones de la profesora. Sin una versión consolidada, los squads implementan reglas distintas para el mismo concepto, y la evaluación no puede rastrear qué requisito cubre cada historia.
+
+ALCANCE
+- Requisitos de los cinco bloques unificados y numerados (RF).
+- Matriz de trazabilidad indicación de la profesora a requisito, regla e historia.
+- Decisiones técnicas registradas con su justificación.
+- Versión del documento y control de cambios.
+
+FUERA DE ALCANCE
+- El contenido funcional nuevo fuera del alcance del proyecto.
+- La redacción de manuales de usuario.
+
+DEPENDENCIAS
+- Ninguna. Es la primera historia del proyecto.
+
+RELACIONADO CON
+- HU-GES-03: el DER se deriva de las entidades descritas aquí.
+- HU-GES-05: las historias de Jira se derivan de los RF de este documento.
+- HU-AUT-03: la configuración por restaurante se define en el briefing.
+
+REGLAS DE NEGOCIO
+CFG-01, CFG-02, CFG-03, CFG-04.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: Cada indicación de la profesora aparece al menos una vez en la matriz de trazabilidad.
+CA2: Ningún requisito funcional queda sin código único identificable.
+CA3: Toda decisión abierta figura como pendiente y no como decidida.
+CA4: El documento está versionado en el repositorio y su historial es consultable.
+
+ESCENARIOS
+Escenario: requisito sin trazabilidad
+  Dado el briefing consolidado
+  Cuando se revisa la matriz de trazabilidad
+  Entonces cada indicación de la profesora apunta a un requisito y a una historia
+Escenario: decisión abierta presentada como cerrada
+  Dado un tema sin decisión del equipo
+  Cuando se revisa el briefing
+  Entonces figura como pendiente de decisión y no como decidido"
+ST-GES-01.1,Sub-task,Consolidar requisitos por módulo,Highest,2,1,HU-GES-01,ST-GES-01.1,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Unificar los requisitos de platos, menús, mesas y reservas, configuración, usuarios y personal/horarios en un único documento sin duplicados.
+
+DÓNDE
+docs/briefing/
+
+RELACIONADO CON
+Precede a ST-GES-01.2 y ST-GES-01.3. Alimenta HU-GES-03 y HU-GES-05.
+
+VERIFICACIÓN
+Revisión cruzada: ninguna regla aparece dos veces y ninguna indicación queda fuera."
+ST-GES-01.2,Sub-task,"Trazar indicación, requisito, regla e historia",Highest,2,1,HU-GES-01,ST-GES-01.2,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Construir la matriz que relaciona cada indicación de la profesora con su requisito, su regla de negocio y su historia de usuario.
+
+DÓNDE
+docs/briefing/
+
+RELACIONADO CON
+Depende de ST-GES-01.1. Se completa cuando existen las historias de HU-GES-05.
+
+VERIFICACIÓN
+La matriz no deja filas vacías ni requisitos sin historia asociada."
+ST-GES-01.3,Sub-task,Registrar decisiones técnicas justificadas,Highest,2,1,HU-GES-01,ST-GES-01.3,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Documentar monolito modular, categorías como tabla, estrategia de cortesía y cualquier decisión estructural con su alternativa descartada.
+
+DÓNDE
+docs/decisiones/
+
+RELACIONADO CON
+Se nutre de HU-GES-03 y condiciona HU-AUT-01 y HU-CAR-01.
+
+VERIFICACIÓN
+Cada decisión tiene contexto, opciones, elección y consecuencia."
+ST-GES-01.4,Sub-task,Validar el briefing con el equipo,Highest,1,1,HU-GES-01,ST-GES-01.4,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Revisar el documento completo en equipo y cerrar las observaciones abiertas.
+
+DÓNDE
+docs/briefing/
+
+RELACIONADO CON
+Cierra HU-GES-01 y habilita HU-GES-05.
+
+VERIFICACIÓN
+Acta de revisión con observaciones resueltas o registradas como pendientes."
+HU-GES-02,Story,"HU-GES-02 · Repositorio, ramas y convenciones de trabajo",Highest,6,1,EP-05,HU-GES-02;flow-docs;sprint-1,"Como equipo de desarrollo, quiero trabajar sobre un repositorio con ramas, dependencias y convenciones definidas, para evitar conflictos y poder levantar el proyecto en un equipo limpio.
+
+CONTEXTO
+El repositorio actual contiene un esqueleto generado por el IDE, un archivo .env versionado y ninguna dependencia fijada. Sin una base común, cada persona instala versiones distintas y el proyecto deja de ser reproducible.
+
+ALCANCE
+- Ramas main y dev con reglas de integración.
+- Archivo .env fuera del control de versiones.
+- requirements.txt con dependencias fijadas.
+- Convención de nombres de rama y mensajes de commit en inglés.
+- Plantilla de Pull Request con checklist.
+
+FUERA DE ALCANCE
+- Configuración de un pipeline de integración continua.
+- Gestión de secretos en un almacén dedicado.
+
+DEPENDENCIAS
+- Ninguna.
+
+RELACIONADO CON
+- HU-AUT-01: consume la estructura de carpetas y la configuración.
+- HU-AUT-02: usa requirements.txt y el entorno reproducible.
+
+REGLAS DE NEGOCIO
+RNF-07, RNF-08.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: El repositorio se clona y el proyecto se instala siguiendo el README sin pasos ocultos.
+CA2: El archivo .env no está versionado y existe una plantilla de variables.
+CA3: Las dependencias tienen versión fijada en requirements.txt.
+CA4: Toda Pull Request usa la plantilla y declara pruebas ejecutadas.
+
+ESCENARIOS
+Escenario: entorno limpio
+  Dado un equipo sin el proyecto instalado
+  Cuando se siguen los pasos del README
+  Entonces la aplicación arranca y responde al healthcheck
+Escenario: secreto versionado
+  Dado el repositorio clonado
+  Cuando se busca el archivo .env en el historial
+  Entonces no aparece y existe una plantilla sin valores reales"
+ST-GES-02.1,Sub-task,Crear las ramas main y dev,Highest,1,1,HU-GES-02,ST-GES-02.1,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Definir main como rama estable y dev como rama de integración, con la regla de que todo cambio entra por Pull Request.
+
+DÓNDE
+Repositorio GitHub.
+
+RELACIONADO CON
+Base de HU-AUT-01. Se relaciona con ST-GES-02.5.
+
+VERIFICACIÓN
+Ambas ramas existen y están protegidas contra push directo."
+ST-GES-02.2,Sub-task,Sacar el archivo .env del control de versiones,Highest,1,1,HU-GES-02,ST-GES-02.2,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Dejar de rastrear .env, eliminarlo del índice sin borrarlo del disco y añadir la regla al .gitignore junto con __pycache__ y los entornos virtuales.
+
+DÓNDE
+.gitignore
+
+RELACIONADO CON
+Se relaciona con ST-GES-02.3 y con HU-AUT-01.
+
+VERIFICACIÓN
+git ls-files no devuelve .env y el archivo sigue existiendo en local."
+ST-GES-02.3,Sub-task,Fijar dependencias y versión de Python,Highest,2,1,HU-GES-02,ST-GES-02.3,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Declarar en requirements.txt las dependencias con versión fijada: FastAPI, SQLAlchemy, Alembic, Pydantic Settings, psycopg, passlib y pytest.
+
+DÓNDE
+requirements.txt
+
+RELACIONADO CON
+Consume ST-GES-02.2. Habilita HU-AUT-01 y HU-AUT-02.
+
+VERIFICACIÓN
+pip install -r requirements.txt funciona en un entorno limpio con la versión de Python indicada."
+ST-GES-02.4,Sub-task,Documentar ramas y mensajes de commit,Highest,1,1,HU-GES-02,ST-GES-02.4,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Escribir la convención de nombres de rama y el formato de commit en inglés, con ejemplos de cada tipo.
+
+DÓNDE
+README.md
+
+RELACIONADO CON
+Se relaciona con ST-GES-02.1 y ST-GES-02.5.
+
+VERIFICACIÓN
+El README contiene la convención y un ejemplo por tipo de commit."
+ST-GES-02.5,Sub-task,Añadir la plantilla de Pull Request,Highest,1,1,HU-GES-02,ST-GES-02.5,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Crear la plantilla con criterios de aceptación, pruebas ejecutadas, migraciones y comprobación de que no se suben secretos.
+
+DÓNDE
+.github/pull_request_template.md
+
+RELACIONADO CON
+Se relaciona con ST-GES-02.4 y con la definición de hecho de cada historia.
+
+VERIFICACIÓN
+Al abrir una Pull Request la plantilla aparece con el checklist completo."
+HU-GES-03,Story,HU-GES-03 · Modelo entidad-relación,Highest,8,1,EP-05,HU-GES-03;flow-docs;sprint-1,"Como equipo de desarrollo, quiero disponer de un modelo entidad-relación revisado, para construir las migraciones sobre un modelo coherente con las reglas del briefing.
+
+CONTEXTO
+El briefing propone entidades y relaciones, pero no está validado contra las reglas de negocio. Diseñar la base de datos sin ese contraste produce restricciones imposibles de aplicar y relaciones que no soportan los flujos reales.
+
+ALCANCE
+- Entidades con atributos, tipos y obligatoriedad.
+- Relaciones con cardinalidad y política de borrado.
+- Claves primarias, claves foráneas y claves compuestas.
+- Índices y restricciones CHECK y de exclusión.
+- Un rol por usuario, permisos granulares y reservas con una o varias mesas.
+- Diagrama versionado en el repositorio y notas de cambio en docs/modelo/cambios-der.md.
+
+FUERA DE ALCANCE
+- Scripts de migración concretos, que corresponden a HU-AUT-02.
+- Optimización de rendimiento basada en volúmenes reales.
+- Lista de espera: queda fuera del alcance y se elimina del modelo.
+
+DEPENDENCIAS
+- HU-GES-01: el modelo se deriva del briefing consolidado.
+
+RELACIONADO CON
+- HU-AUT-02: materializa el esquema y los modelos compartidos.
+- HU-AUT-03: define Restaurant, RestaurantSettings y OpeningHours.
+- HU-CAR-01, HU-CAR-02, HU-CAR-04: consumen Category, Dish, Menu y sus relaciones.
+- HU-RES-01, HU-RES-03 y HU-RES-04: consumen Table, TableCombination, Reservation y ReservationTable.
+- HU-HOR-02, HU-HOR-03 y HU-HOR-04: consumen Shift, TimeOffRequest y ShiftSwapRequest.
+
+REGLAS DE NEGOCIO
+CAR-01, CAR-08, MEN-01, MEN-06, MES-01, MES-02, RES-04, RES-08, HOR-02, AUT-09; COM-01 a COM-07.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: Toda entidad de negocio incluye restaurantId, createdAt, updatedAt e isActive cuando procede.
+CA2: Las cardinalidades reflejan que una reserva puede tener una o varias mesas y que un menú puede tener varios platos.
+CA3: El modelo usa users.role_id (un rol por usuario), permissions y role_permissions, sin user_roles.
+CA4: El modelo incluye table_combinations, reservation_tables, opening_hours, time_off_requests, shift_swap_requests, price_history, audit_logs y reservation_status_history.
+CA5: El modelo no contiene lista de espera.
+CA6: Cada regla de la sección 10.3 del briefing tiene su restricción o índice representado.
+CA7: El diagrama está versionado y coincide con el modelo documentado.
+
+ESCENARIOS
+Escenario: regla sin restricción
+  Dado el modelo revisado
+  Cuando se contrasta con las reglas de la sección 10.3
+  Entonces cada regla crítica tiene una restricción o índice asociado
+Escenario: entidad sin restaurante
+  Dado el modelo revisado
+  Cuando se revisan las entidades de negocio
+  Entonces todas incluyen restaurantId"
+ST-GES-03.1,Sub-task,Modelar entidades y atributos,Highest,2,1,HU-GES-03,ST-GES-03.1,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Listar cada entidad con sus atributos, tipos, obligatoriedad y valor por defecto, incluyendo las columnas comunes de auditoría.
+
+DÓNDE
+docs/modelo/
+
+RELACIONADO CON
+Se relaciona con HU-GES-01. Alimenta ST-GES-03.2 y HU-AUT-03.
+
+VERIFICACIÓN
+Ninguna entidad del briefing queda sin atributos definidos."
+ST-GES-03.2,Sub-task,Definir relaciones y cardinalidades,Highest,2,1,HU-GES-03,ST-GES-03.2,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Especificar las relaciones uno a muchos y muchos a muchos, incluidas las tablas intermedias DishAllergen, MenuDish, RolePermission, table_combination_tables y reservation_tables.
+
+DÓNDE
+docs/modelo/
+
+RELACIONADO CON
+Depende de ST-GES-03.1. Se valida con ST-GES-03.3.
+
+VERIFICACIÓN
+Cada relación indica cardinalidad y política de borrado o baja lógica."
+ST-GES-03.3,Sub-task,"Definir claves, índices y restricciones",Highest,2,1,HU-GES-03,ST-GES-03.3,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Precisar claves primarias, únicas y compuestas, los CHECK de precio y capacidad, y las restricciones de exclusión para reservas y turnos.
+
+DÓNDE
+docs/modelo/
+
+RELACIONADO CON
+Depende de ST-GES-03.2. Habilita HU-RES-04 y HU-HOR-03.
+
+VERIFICACIÓN
+Cada restricción de la sección 10.3 del briefing aparece con su definición técnica."
+ST-GES-03.4,Sub-task,Dibujar y versionar el diagrama,Highest,2,1,HU-GES-03,ST-GES-03.4,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Producir el diagrama entidad-relación, exportarlo y guardarlo junto al modelo en texto dentro del repositorio.
+
+DÓNDE
+docs/modelo/
+
+RELACIONADO CON
+Cierra HU-GES-03. Se relaciona con ST-GES-03.1 a ST-GES-03.3.
+
+VERIFICACIÓN
+El diagrama coincide con el modelo documentado y ambos están versionados."
+HU-GES-04,Story,HU-GES-04 · Diagramas de flujo de los procesos críticos,Highest,7,1,EP-05,HU-GES-04;flow-docs;sprint-1,"Como equipo de desarrollo, quiero disponer de diagramas de flujo de los procesos críticos, para acordar el comportamiento antes de implementarlo y detectar errores de diseño a tiempo.
+
+CONTEXTO
+Los procesos con más riesgo son los que combinan estado, concurrencia y reglas configurables. Sin un diagrama acordado, cada persona implementa una secuencia distinta y los errores aparecen en la integración.
+
+ALCANCE
+- Flujo de autenticación y verificación de permisos.
+- Flujo de reserva con una o varias mesas, cortesía y no-show, sin lista de espera.
+- Flujo de cascada al desactivar un plato.
+- Flujo de cuadrante, ausencia y publicación.
+- Flujo de error y comportamiento transaccional.
+
+FUERA DE ALCANCE
+- Diagramas de despliegue e infraestructura.
+- Diagramas de secuencia de bajo nivel por endpoint.
+
+DEPENDENCIAS
+- HU-GES-01.
+
+RELACIONADO CON
+- HU-AUT-04 y HU-AUT-05: consumen el flujo de autenticación y permisos.
+- HU-RES-03 y HU-RES-05: consumen el flujo de reserva, cortesía y no-show.
+- HU-CAR-04: consume el flujo de cascada.
+- HU-HOR-03: consume el flujo de publicación.
+
+REGLAS DE NEGOCIO
+AUT-01, AUT-02, RES-06, RES-10, MEN-04, HOR-07.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: Cada proceso crítico tiene un diagrama con inicio, decisiones y salidas.
+CA2: Cada decisión del diagrama se corresponde con una regla de negocio codificada.
+CA3: Los caminos de error aparecen representados, no solo el camino feliz.
+CA4: Los diagramas están versionados en el repositorio.
+
+ESCENARIOS
+Escenario: camino de error no representado
+  Dado un diagrama de flujo crítico
+  Cuando se revisa contra las reglas de negocio
+  Entonces incluye al menos una salida por error o conflicto
+Escenario: diagrama desactualizado
+  Dado un cambio en una regla de negocio
+  Cuando se modifica el servicio correspondiente
+  Entonces el diagrama se actualiza en la misma Pull Request"
+ST-GES-04.1,Sub-task,Dibujar el flujo de autenticación y permisos,Highest,1,1,HU-GES-04,ST-GES-04.1,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Representar login, validación de token, comprobación de permiso y respuesta 401 o 403.
+
+DÓNDE
+docs/flujos/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-01, HU-AUT-04 y HU-AUT-05.
+
+VERIFICACIÓN
+El diagrama distingue no autenticado de autenticado sin permiso."
+ST-GES-04.2,Sub-task,"Dibujar el flujo de reserva, cortesía y no-show",Highest,2,1,HU-GES-04,ST-GES-04.2,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Representar validación, búsqueda de mesa, transacción, conflicto 409, estado confirmado, paso a sentado y liberación por cortesía.
+
+DÓNDE
+docs/flujos/
+
+RELACIONADO CON
+Se relaciona con HU-RES-03, HU-RES-04 y HU-RES-05.
+
+VERIFICACIÓN
+El diagrama incluye el camino de conflicto y el de no-show, sin lista de espera."
+ST-GES-04.3,Sub-task,Dibujar el flujo de cascada plato-menú,Highest,1,1,HU-GES-04,ST-GES-04.3,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Representar la desactivación de un plato, la búsqueda de menús afectados, el cambio a no disponible y el registro de auditoría en una sola transacción.
+
+DÓNDE
+docs/flujos/
+
+RELACIONADO CON
+Se relaciona con HU-CAR-04 y HU-AUT-06.
+
+VERIFICACIÓN
+El diagrama muestra que la operación es atómica."
+ST-GES-04.4,Sub-task,Dibujar el flujo de cuadrante y publicación,Highest,2,1,HU-GES-04,ST-GES-04.4,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Representar creación del cuadrante, asignación de turnos, validación de solapamientos, ausencias y descansos, y publicación con trazabilidad.
+
+DÓNDE
+docs/flujos/
+
+RELACIONADO CON
+Se relaciona con HU-HOR-03 y HU-HOR-04.
+
+VERIFICACIÓN
+El diagrama muestra que un conflicto bloqueante impide publicar."
+ST-GES-04.5,Sub-task,Dibujar el flujo de error y transaccionalidad,Highest,1,1,HU-GES-04,ST-GES-04.5,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Representar el recorrido de una petición hasta el contrato de error único y el comportamiento ante un fallo a mitad de transacción.
+
+DÓNDE
+docs/flujos/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-01 y con la regla CAR-09.
+
+VERIFICACIÓN
+El diagrama muestra que un fallo no deja cambios parciales."
+HU-GES-05,Story,HU-GES-05 · Backlog priorizado y trazabilidad de requisitos,Highest,6,1,EP-05,HU-GES-05;flow-docs;sprint-1,"Como equipo de desarrollo, quiero mantener un backlog priorizado, estimado y trazado a los requisitos del briefing, para saber qué se construye primero y demostrar que cada requisito tiene cobertura.
+
+CONTEXTO
+El briefing define más requisitos de los que caben en dos sprints. Sin prioridad explícita y sin trazabilidad, el equipo trabaja por urgencia y no puede justificar qué quedó fuera ni por qué.
+
+ALCANCE
+- Historias con criterios de aceptación verificables.
+- Prioridad MoSCoW y estimación en Fibonacci.
+- Dependencias registradas entre historias.
+- Definición de lista y de terminada.
+- Trazabilidad requisito a historia.
+
+FUERA DE ALCANCE
+- La herramienta de gestión más allá de Jira.
+- La asignación nominal de personas a cada historia.
+
+DEPENDENCIAS
+- HU-GES-01: los requisitos se toman del briefing consolidado.
+
+RELACIONADO CON
+- Todas las historias de EP-02, EP-03, EP-04 y EP-01.
+- HU-GES-01: aporta los requisitos que se trazan.
+
+REGLAS DE NEGOCIO
+RNF-10.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: Cada requisito funcional del briefing aparece asociado al menos a una historia.
+CA2: Ninguna historia supera 34 puntos ni doce subtareas.
+CA3: Ninguna historia funcional depende de otra: solo del kernel de datos y seguridad.
+CA4: Las historias tienen criterios de aceptación verificables y escenarios de error.
+
+ESCENARIOS
+Escenario: requisito sin historia
+  Dado el listado de requisitos del briefing
+  Cuando se contrasta con el backlog
+  Entonces cada requisito tiene al menos una historia asociada
+Escenario: historia sobredimensionada
+  Dado el backlog estimado
+  Cuando una historia supera 34 puntos
+  Entonces se divide antes de entrar en el sprint"
+ST-GES-05.1,Sub-task,Priorizar historias con MoSCoW,Highest,1,1,HU-GES-05,ST-GES-05.1,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Asignar Must, Should o Could a cada historia y reflejarlo en la prioridad de Jira.
+
+DÓNDE
+Backlog del proyecto.
+
+RELACIONADO CON
+Se relaciona con ST-GES-05.2 y con el reparto por sprints.
+
+VERIFICACIÓN
+Toda historia tiene prioridad asignada y ninguna queda sin clasificar."
+ST-GES-05.2,Sub-task,Registrar dependencias entre historias,Highest,2,1,HU-GES-05,ST-GES-05.2,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Documentar para cada historia de qué otras depende y con cuáles comparte datos, en los campos de dependencias y relación del propio backlog.
+
+DÓNDE
+Backlog del proyecto.
+
+RELACIONADO CON
+Se relaciona con ST-GES-05.1 y con el orden de ejecución por sprints.
+
+VERIFICACIÓN
+El grafo de dependencias no tiene ciclos y respeta el orden de los sprints."
+ST-GES-05.3,Sub-task,Definir lista y terminada,Highest,1,1,HU-GES-05,ST-GES-05.3,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Acordar las condiciones de entrada a sprint y de cierre de una historia, incluyendo pruebas, revisión y migraciones.
+
+DÓNDE
+docs/backlog/00-convenciones.md
+
+RELACIONADO CON
+Se relaciona con ST-GES-02.5 y con la definición de hecho de cada historia.
+
+VERIFICACIÓN
+Ambas listas están escritas y el equipo las acepta."
+ST-GES-05.4,Sub-task,Verificar la cobertura de requisitos,Highest,2,1,HU-GES-05,ST-GES-05.4,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Contrastar la matriz de trazabilidad con el backlog real y corregir los huecos detectados.
+
+DÓNDE
+Backlog del proyecto.
+
+RELACIONADO CON
+Cierra HU-GES-05 y depende de ST-GES-01.2.
+
+VERIFICACIÓN
+La matriz no deja requisitos sin historia ni historias sin requisito."
+HU-GES-06,Story,"HU-GES-06 · Documentación, presentación y README",Highest,5,1,EP-05,HU-GES-06;flow-docs;sprint-1,"Como miembro del equipo, quiero disponer de documentación, presentación y README actualizados, para entregar el proyecto con evidencia y facilitar su evaluación.
+
+CONTEXTO
+La documentación estaba repartida entre el briefing, el README y los diagramas. Sin un cierre documental único, la demo y la evaluación no pueden reconstruir qué se ha implementado, qué se ha recortado y por qué.
+
+ALCANCE
+- README con arranque reproducible y variables de entorno.
+- Documentación funcional y técnica alineada con el backlog final.
+- Presentación y guion de demo con alcance implementado y pendiente.
+- Enlaces a DER, diagramas de flujo, OpenAPI y decisiones.
+
+FUERA DE ALCANCE
+- Manual de usuario extenso.
+- Documentación de funcionalidades fuera del alcance.
+
+DEPENDENCIAS
+- Ninguna. Es documentación de cierre.
+
+RELACIONADO CON
+- HU-GES-01: briefing consolidado.
+- HU-GES-03 y HU-GES-04: modelo y flujos.
+- Todas las épicas: estado final del backlog.
+
+REGLAS DE NEGOCIO
+RNF-07, RNF-10.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: El README permite levantar el proyecto en un equipo limpio.
+CA2: La presentación distingue lo implementado de lo pendiente.
+CA3: Cada documento enlaza a la fuente de verdad correspondiente.
+CA4: La documentación está versionada en el repositorio.
+
+ESCENARIOS
+Escenario: equipo limpio
+  Dado un equipo sin el proyecto instalado
+  Cuando se sigue el README
+  Entonces la API arranca y el healthcheck responde
+Escenario: demo sin sorpresas
+  Dado el guion de demo
+  Cuando se ensaya sobre el entorno de entrega
+  Entonces solo se muestran funcionalidades implementadas y verificadas"
+ST-GES-06.1,Sub-task,Consolidar documentación funcional y técnica,Highest,2,1,HU-GES-06,ST-GES-06.1,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Unificar en un documento el alcance implementado, las decisiones, los RF y los enlaces al DER, flujos y OpenAPI.
+
+DÓNDE
+docs/
+
+RELACIONADO CON
+Se nutre de HU-GES-01, HU-GES-03 y HU-GES-04.
+
+VERIFICACIÓN
+La documentación no contradice el backlog ni el código entregado."
+ST-GES-06.2,Sub-task,Preparar presentación y guion de demo,Highest,2,1,HU-GES-06,ST-GES-06.2,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Construir una presentación breve y un guion con casos felices, errores y permisos, separando lo implementado de lo pendiente.
+
+DÓNDE
+docs/presentacion/
+
+RELACIONADO CON
+Depende de ST-GES-06.1.
+
+VERIFICACIÓN
+El guion se ejecuta de principio a fin sobre el entorno de entrega."
+ST-GES-06.3,Sub-task,Actualizar README y arranque reproducible,Highest,1,1,HU-GES-06,ST-GES-06.3,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Documentar requisitos, variables de entorno, migraciones, seeders y comandos de prueba con ejemplos verificables.
+
+DÓNDE
+README.md
+
+RELACIONADO CON
+Se relaciona con HU-GES-02.
+
+VERIFICACIÓN
+Un equipo limpio clona, instala y arranca siguiendo solo el README."
+EP-02,Epic,"EP-02 · Plataforma, identidad y configuración",Highest,88,2,,EP-02;flow-c;sprint-2,"OBJETIVO
+Construir el kernel técnico y de datos sobre el que se apoyan las demás épicas: estructura modular, configuración, esquema completo, sesión, roles, permisos, usuarios, auditoría y configuración del restaurante.
+
+ALCANCE
+- Estructura de módulos, configuración y conexión a base de datos.
+- Esquema completo, modelos compartidos, migraciones y seeders idempotentes.
+- Autenticación con hash seguro, token con expiración y revocación.
+- Un rol por usuario, permisos con nombre y ámbito por restaurante.
+- Gestión de usuarios con baja lógica y auditoría.
+- Restaurante, configuración y horarios de apertura.
+
+MÓDULOS AFECTADOS
+app/core, app/database, app/models, app/modules/users, app/modules/settings.
+
+DEPENDENCIAS
+Depende de EP-05 para el modelo de datos y las decisiones técnicas.
+
+CRITERIO DE CIERRE
+El esquema completo está migrado y sembrado; un usuario inicia y cierra sesión, recibe solo los permisos de su rol, toda operación protegida responde 401/403 de forma coherente y la configuración se lee de base de datos."
+HU-AUT-01,Story,"HU-AUT-01 · Kernel del backend: estructura, errores y stubs",Highest,16,1,EP-02,HU-AUT-01;flow-c;sprint-1;enabler,"Como desarrollador, quiero disponer de un kernel modular con configuración, sesión, contrato de errores y stubs, para construir cada funcionalidad sin duplicar infraestructura ni esperar a otro módulo.
+
+CONTEXTO
+El esqueleto del proyecto mezcla capas y archivos vacíos. Sin un kernel congelado, cada módulo resuelve la configuración, la sesión, los errores y la identidad a su manera, y las historias vuelven a depender entre sí.
+
+ALCANCE
+- Estructura app/core, app/database, app/models y app/modules por dominio.
+- Configuración tipada leída de variables de entorno.
+- Sesión de SQLAlchemy con ciclo de vida por petición.
+- Healthcheck que verifica aplicación y base de datos.
+- Contrato de error único {error: {code, message}} para 400, 401, 403, 404, 409, 422 y 500.
+- Stubs de identidad y permisos para desbloquear los flujos.
+- README con los pasos de arranque.
+
+FUERA DE ALCANCE
+- Lógica de negocio de carta, reservas, horarios o configuración.
+- Esquema de datos completo y seeders, que corresponden a HU-AUT-02.
+- Autenticación real, que corresponde a HU-AUT-04.
+
+REQUISITOS
+- RNF-01, RNF-02, RNF-07, RNF-08.
+- AUT-01, AUT-02, AUT-03, AUT-04.
+
+ABSORBE
+- HU-AUT-09
+- HU-AUT-11
+
+DEPENDENCIAS
+- Ninguna. Es el primer kernel del proyecto.
+
+RELACIONADO CON
+- Todas las historias funcionales consumen este contrato.
+- HU-AUT-02 añade el esquema y los modelos compartidos.
+
+REGLAS DE NEGOCIO
+RNF-01, RNF-02, RNF-07, RNF-08; AUT-01, AUT-02, AUT-03, AUT-04.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: La estructura sigue el patrón de módulos por dominio.
+CA2: Ningún módulo importa modelos o servicios internos de otro módulo.
+CA3: La configuración no contiene valores de negocio fijos en el código.
+CA4: El healthcheck responde 200 con base disponible y 503 cuando falla.
+CA5: Todos los errores usan el sobre {error: {code, message}} y no filtran trazas ni secretos.
+CA6: Los stubs de identidad y permisos están documentados y se sustituyen sin tocar los flujos.
+CA7: El proyecto arranca en un equipo limpio siguiendo el README.
+
+ESCENARIOS
+Escenario: arranque en equipo limpio
+  Dado un equipo sin el proyecto instalado
+  Cuando se siguen los pasos del README con las variables de entorno
+  Entonces la API arranca y el healthcheck responde 200
+Escenario: configuración ausente
+  Dado un entorno sin la variable de conexión a base de datos
+  Cuando se arranca la aplicación
+  Entonces el arranque falla con un mensaje claro y no con un error interno
+Escenario: error de negocio
+  Dado un recurso inexistente
+  Cuando se consulta por su identificador
+  Entonces la respuesta usa {error: {code, message}} y no incluye la traza"
+ST-AUT-01.1,Sub-task,Reorganizar app por módulos de dominio,Highest,2,1,HU-AUT-01,ST-AUT-01.1,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Sustituir la estructura por capas por app/core, app/database, app/models y app/modules, eliminando los archivos de ejemplo vacíos.
+
+DÓNDE
+app/
+
+RELACIONADO CON
+Base de todas las historias. Se relaciona con HU-GES-03 y HU-AUT-02.
+
+VERIFICACIÓN
+El árbol de carpetas coincide con la convención y no quedan archivos de ejemplo."
+ST-AUT-01.2,Sub-task,Crear la configuración tipada,Highest,2,1,HU-AUT-01,ST-AUT-01.2,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Definir un objeto de configuración con Pydantic Settings que lea URL de base de datos, secreto JWT y entorno desde variables.
+
+DÓNDE
+app/core/config.py
+
+RELACIONADO CON
+Depende de ST-AUT-01.1. Lo consume HU-AUT-04 para el secreto JWT.
+
+VERIFICACIÓN
+Con variables presentes la configuración carga; con una obligatoria ausente falla al arrancar."
+ST-AUT-01.3,Sub-task,Configurar la conexión y la sesión de SQLAlchemy,Highest,2,1,HU-AUT-01,ST-AUT-01.3,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Crear el motor, la fábrica de sesiones y la dependencia que entrega una sesión por petición y la cierra al terminar.
+
+DÓNDE
+app/database/session.py
+
+RELACIONADO CON
+Depende de ST-AUT-01.2. Base del esquema y de todos los repositorios.
+
+VERIFICACIÓN
+Prueba de integración que abre una sesión, ejecuta SELECT 1 y la cierra."
+ST-AUT-01.4,Sub-task,Añadir el healthcheck,Highest,1,1,HU-AUT-01,ST-AUT-01.4,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Exponer GET /health que comprueba aplicación viva y base de datos accesible.
+
+DÓNDE
+app/modules/health/
+
+RELACIONADO CON
+Depende de ST-AUT-01.3. Se usa en la verificación de despliegue.
+
+VERIFICACIÓN
+Prueba de API: 200 con base disponible y 503 cuando la comprobación falla."
+ST-AUT-01.5,Sub-task,Definir el esquema de error,Highest,1,1,HU-AUT-01,ST-AUT-01.5,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Definir ErrorBody y ErrorResponse con code y message, sin datos internos.
+
+DÓNDE
+app/core/errors/schemas.py
+
+RELACIONADO CON
+Base del contrato que consumen todos los módulos.
+
+VERIFICACIÓN
+El esquema se serializa con la forma {error: {code, message}}."
+ST-AUT-01.6,Sub-task,Registrar los manejadores globales,Highest,2,1,HU-AUT-01,ST-AUT-01.6,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Registrar manejadores para 400, 401, 403, 404, 409, 422 y 500, con mensajes uniformes y sin trazas.
+
+DÓNDE
+app/core/errors/handlers.py
+
+RELACIONADO CON
+Depende de ST-AUT-01.5. Lo consume todo el kernel.
+
+VERIFICACIÓN
+Pruebas de API para cada código y para una excepción no controlada."
+ST-AUT-01.7,Sub-task,Definir el catálogo de códigos de negocio,Highest,2,1,HU-AUT-01,ST-AUT-01.7,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Centralizar los códigos del briefing (TABLE_NOT_AVAILABLE, CAPACITY_EXCEEDED, DUPLICATE_RESERVATION, INVALID_STATUS_TRANSITION, etc.).
+
+DÓNDE
+app/core/errors/codes.py
+
+RELACIONADO CON
+Depende de ST-AUT-01.5. Lo consumen todos los servicios.
+
+VERIFICACIÓN
+No hay códigos duplicados y cada error de negocio tiene su código."
+ST-AUT-01.8,Sub-task,Congelar el contrato de error,Highest,1,1,HU-AUT-01,ST-AUT-01.8,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Publicar la firma y el formato de error que los módulos pueden consumir sin conocer la implementación interna.
+
+DÓNDE
+docs/decisiones/
+
+RELACIONADO CON
+Se relaciona con ST-AUT-01.5 y ST-AUT-01.6.
+
+VERIFICACIÓN
+El contrato está documentado y una prueba verifica que no cambia sin aviso."
+ST-AUT-01.9,Sub-task,Implementar get_current_user como stub,Highest,1,1,HU-AUT-01,ST-AUT-01.9,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Devolver un usuario de desarrollo con restaurante y permisos para desbloquear los flujos mientras se implanta la autenticación real.
+
+DÓNDE
+app/core/kernel/identity.py
+
+RELACIONADO CON
+Lo sustituye HU-AUT-04. Lo consumen todas las rutas protegidas.
+
+VERIFICACIÓN
+La firma es estable y el stub se puede reemplazar sin tocar los módulos."
+ST-AUT-01.10,Sub-task,Implementar require_permission como stub,Highest,1,1,HU-AUT-01,ST-AUT-01.10,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Permitir todas las operaciones en desarrollo o comprobar una cabecera de permisos, con la misma firma que la dependencia definitiva.
+
+DÓNDE
+app/core/kernel/permissions.py
+
+RELACIONADO CON
+Lo sustituye HU-AUT-05. Lo consumen todas las rutas protegidas.
+
+VERIFICACIÓN
+La firma es estable y una prueba verifica el comportamiento del stub."
+ST-AUT-01.11,Sub-task,Sembrar datos mínimos de desarrollo,Highest,1,1,HU-AUT-01,ST-AUT-01.11,"Sprint 1 · 2026-10-29 → 2026-11-05
+
+QUÉ
+Cargar un restaurante, un usuario y los permisos mínimos para que los flujos puedan ejecutarse antes del esquema completo.
+
+DÓNDE
+app/core/kernel/seed.py
+
+RELACIONADO CON
+Se relaciona con HU-AUT-02. Se sustituye por los seeders definitivos.
+
+VERIFICACIÓN
+Dos ejecuciones no duplican datos y los flujos encuentran su restaurante."
+HU-AUT-02,Story,"HU-AUT-02 · Esquema de datos completo, modelos compartidos y seeders",Highest,21,2,EP-02,HU-AUT-02;flow-c;sprint-2;enabler,"Como desarrollador, quiero disponer de un esquema de datos completo y versionado con modelos compartidos y seeders idempotentes, para implementar cualquier historia funcional en paralelo sin esperar a que otra cree sus tablas.
+
+CONTEXTO
+El backlog anterior repartía la creación de tablas entre historias. Eso obligaba a que una persona esperara a otra para poder empezar. El esquema pasa al kernel: es el único prerrequisito compartido y ya está en curso.
+
+ALCANCE
+- Todas las tablas del DER final: seguridad, configuración, carta, mesas, reservas, horarios, auditoría e historial de precios.
+- Modelos ORM compartidos en app/models, sin dependencias circulares.
+- Migraciones Alembic con upgrade y downgrade desde una base vacía.
+- Restricciones e índices críticos: número de mesa único, capacidades, precios, email único, exclusión de reservas por mesa y de turnos por empleado.
+- Seeders idempotentes de catálogos, restaurante, roles, permisos, usuarios y datos demo.
+
+FUERA DE ALCANCE
+- Endpoints, servicios y reglas de negocio de cada módulo.
+- Datos reales de producción.
+- Cambios de esquema que dependan de una historia funcional concreta.
+
+REQUISITOS
+- RF-PLA, RF-MEN, RF-MES, RF-RES, RF-CFG, RF-USR, RF-HOR.
+- RNF-04, RNF-07.
+
+DEPENDENCIAS
+- HU-AUT-01: aporta configuración, sesión y contrato de errores.
+
+RELACIONADO CON
+- Todas las historias funcionales consumen el esquema y los modelos compartidos.
+- HU-GES-03 documenta el DER que esta historia materializa.
+
+REGLAS DE NEGOCIO
+RNF-04, RNF-07; CAR-01, CAR-08, MEN-01, MES-01, MES-02, RES-04, HOR-02, CFG-01.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: Todas las entidades del DER existen con sus columnas comunes y sus relaciones.
+CA2: Las restricciones críticas están en base de datos, no solo en el código.
+CA3: Las migraciones se aplican desde cero y se revierten sin errores.
+CA4: Ejecutar los seeders dos veces no crea duplicados.
+CA5: El seeder carga los catorce alérgenos de la Unión Europea y los permisos del briefing.
+CA6: Los modelos compartidos se importan sin ciclos y sin que un módulo importe a otro.
+CA7: Ninguna historia funcional necesita crear una tabla compartida para empezar.
+
+ESCENARIOS
+Escenario: base vacía
+  Dado un entorno sin base de datos
+  Cuando se ejecutan las migraciones y los seeders
+  Entonces el esquema y los datos mínimos existen y la API arranca
+Escenario: seeder ejecutado dos veces
+  Dada una base ya sembrada
+  Cuando se ejecutan los seeders de nuevo
+  Entonces el número de registros no cambia
+Escenario: rollback completo
+  Dada una base migrada
+  Cuando se ejecuta downgrade hasta la base vacía
+  Entonces no quedan tablas ni restricciones huérfanas"
+ST-AUT-02.1,Sub-task,Configurar Alembic y la migración inicial,Highest,2,2,HU-AUT-02,ST-AUT-02.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Inicializar Alembic, enlazarlo a la configuración y generar la migración base del proyecto.
+
+DÓNDE
+alembic/ y alembic.ini
+
+RELACIONADO CON
+Se relaciona con HU-AUT-01. Base de todas las migraciones.
+
+VERIFICACIÓN
+Upgrade desde base vacía y downgrade a base vacía sin errores."
+ST-AUT-02.2,Sub-task,Sembrar categorías y alérgenos,Highest,2,2,HU-AUT-02,ST-AUT-02.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Cargar las categorías iniciales y los catorce alérgenos con código y nombre, usando inserción condicional por clave natural.
+
+DÓNDE
+app/database/seeders/
+
+RELACIONADO CON
+Depende de ST-AUT-02.1. Alimenta HU-CAR-01.
+
+VERIFICACIÓN
+Dos ejecuciones consecutivas mantienen el mismo número de filas."
+ST-AUT-02.3,Sub-task,"Sembrar restaurante, usuarios, roles y permisos",Highest,2,2,HU-AUT-02,ST-AUT-02.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Crear el restaurante de demostración, su configuración, los cinco roles del briefing, sus permisos y un usuario por rol.
+
+DÓNDE
+app/database/seeders/
+
+RELACIONADO CON
+Depende de ST-AUT-02.1. Alimenta HU-AUT-04, HU-AUT-05 y HU-AUT-06.
+
+VERIFICACIÓN
+Cada rol del briefing tiene al menos un usuario asociado tras el seeder."
+ST-AUT-02.4,Sub-task,Verificar la idempotencia y el downgrade,Highest,1,2,HU-AUT-02,ST-AUT-02.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Automatizar la comprobación de que los seeders dejan el mismo estado y que las migraciones se revierten limpiamente.
+
+DÓNDE
+tests/database/
+
+RELACIONADO CON
+Cierra HU-AUT-02. Se relaciona con ST-AUT-02.2 y ST-AUT-02.3.
+
+VERIFICACIÓN
+Prueba que compara conteos antes y después de la segunda ejecución."
+ST-AUT-02.5,Sub-task,Crear el esquema de seguridad y configuración,Highest,2,2,HU-AUT-02,ST-AUT-02.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Modelar restaurant, restaurant_settings, opening_hours, users, roles, permissions y role_permissions; users.role_id representa un único rol.
+
+DÓNDE
+app/models/ y alembic/versions/
+
+RELACIONADO CON
+Depende de ST-AUT-02.1. Alimenta AUT-03, AUT-04, AUT-05 y AUT-06.
+
+VERIFICACIÓN
+Las tablas existen, las claves foráneas son coherentes y el DER coincide."
+ST-AUT-02.6,Sub-task,Crear el esquema de carta,Highest,3,2,HU-AUT-02,ST-AUT-02.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Modelar categories, allergens, dishes, dish_allergens, menu_collections, menus y menu_dishes con is_required, bebida incluida y vigencias.
+
+DÓNDE
+app/models/ y alembic/versions/
+
+RELACIONADO CON
+Depende de ST-AUT-02.1. Alimenta CAR-01, CAR-03, CAR-06, CAR-07 y CAR-11.
+
+VERIFICACIÓN
+Las tablas y relaciones coinciden con el DER y las pruebas de integridad pasan."
+ST-AUT-02.7,Sub-task,Crear el esquema de mesas y reservas,Highest,3,2,HU-AUT-02,ST-AUT-02.7,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Modelar tables, table_combinations, table_combination_tables, reservations, reservation_tables y reservation_status_history; sin waitlist.
+
+DÓNDE
+app/models/ y alembic/versions/
+
+RELACIONADO CON
+Depende de ST-AUT-02.1. Alimenta RES-01, RES-03, RES-04, RES-05 y RES-09.
+
+VERIFICACIÓN
+Una reserva puede ocupar una o varias mesas y cada ocupación bloquea su mesa."
+ST-AUT-02.8,Sub-task,Crear el esquema de horarios,Highest,2,2,HU-AUT-02,ST-AUT-02.8,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Modelar employees, schedules, shifts, time_off_requests y shift_swap_requests.
+
+DÓNDE
+app/models/ y alembic/versions/
+
+RELACIONADO CON
+Depende de ST-AUT-02.1. Alimenta HOR-01, HOR-02, HOR-04 y HOR-05.
+
+VERIFICACIÓN
+Las tablas existen y las relaciones con restaurant y employee son coherentes."
+ST-AUT-02.9,Sub-task,Crear el esquema de auditoría e historial de precios,Highest,2,2,HU-AUT-02,ST-AUT-02.9,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Modelar audit_logs con autor, acción, entidad, valores anterior/nuevo y resultado, y price_history para platos y menús.
+
+DÓNDE
+app/models/ y alembic/versions/
+
+RELACIONADO CON
+Depende de ST-AUT-02.1. Alimenta AUT-06 y CAR-11.
+
+VERIFICACIÓN
+Los registros permiten reconstruir un cambio sin guardar secretos."
+ST-AUT-02.10,Sub-task,Añadir restricciones e índices críticos,Highest,2,2,HU-AUT-02,ST-AUT-02.10,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Crear unicidad de número de mesa, email y conjunto de combinación; CHECK de capacidades y precios; EXCLUDE de reservas por mesa y de turnos por empleado.
+
+DÓNDE
+alembic/versions/
+
+RELACIONADO CON
+Depende de ST-AUT-02.6, ST-AUT-02.7 y ST-AUT-02.8.
+
+VERIFICACIÓN
+Pruebas de integración que intentan violar cada restricción y reciben error."
+HU-AUT-03,Story,"HU-AUT-03 · Restaurante, configuración y horarios de apertura",Highest,13,2,EP-02,HU-AUT-03;flow-c;sprint-2,"Como gerente, quiero configurar horarios, cierre de cocina, cortesía y duración de reserva de mi restaurante, para adaptar el sistema a mi forma de trabajar sin tocar el código.
+
+CONTEXTO
+Los horarios y los tiempos de cortesía son la entrada del cálculo de disponibilidad. Si viven en el código, cualquier cambio obliga a desplegar y el sistema deja de servir a más de un restaurante.
+
+ALCANCE
+- Restaurant y RestaurantSettings con una fila de configuración por restaurante.
+- OpeningHours separada, con día, periodo de mañana/tarde, apertura, cierre y cierre de cocina.
+- Endpoints GET/PATCH /settings y GET/PUT /settings/opening-hours.
+- Validaciones de coherencia entre apertura, cierre y cocina.
+- Lectura de la configuración en cada operación, sin caché estática.
+
+FUERA DE ALCANCE
+- Configuración global de la plataforma.
+- Excepciones por festivo, que quedan como Could.
+- Cambios masivos sobre reservas ya creadas.
+
+REQUISITOS
+- RF-CFG-01, RF-CFG-02, RF-CFG-03, RF-CFG-04, RF-CFG-05, RF-CFG-06, RF-CFG-07.
+- CFG-01, CFG-02, CFG-03, CFG-04; RES-02.
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-RES-02 y HU-RES-05: leen franja, cortesía y duración de la reserva.
+- HU-CAR-01: usa restaurant_id para acotar categorías.
+- HU-HOR-03: lee el descanso mínimo entre turnos.
+
+REGLAS DE NEGOCIO
+CFG-01, CFG-02, CFG-03, CFG-04, RES-02.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: La configuración se guarda por restaurante y solo existe una fila por restaurante.
+CA2: El cierre de cocina no puede ser posterior al cierre del local.
+CA3: La hora de cierre debe ser posterior a la de apertura, incluso si cruza medianoche.
+CA4: El tiempo de cortesía es un entero mayor o igual que cero.
+CA5: La duración de franja y la duración por defecto de la reserva son positivas.
+CA6: Cambiar la cortesía afecta a las reservas nuevas sin reiniciar la aplicación.
+CA7: Un horario partido de mañana y tarde se guarda y se devuelve idéntico.
+
+ESCENARIOS
+Escenario: cocina cierra después del local
+  Dado un restaurante que cierra a las 23:00
+  Cuando se configura el cierre de cocina a las 23:30
+  Entonces se rechaza con 422 y no se guarda nada
+Escenario: cambio de cortesía
+  Dado un gerente autenticado con permiso settings:update
+  Cuando cambia la cortesía a 10 minutos
+  Entonces las reservas nuevas usan 10 minutos sin cambios en el código
+Escenario: horario partido
+  Dado un restaurante con apertura de 12:00 a 16:00 y de 20:00 a 23:00
+  Cuando se consultan sus horarios
+  Entonces se devuelven los dos periodos del mismo día"
+ST-AUT-03.1,Sub-task,Crear los modelos Restaurant y RestaurantSettings,Highest,2,2,HU-AUT-03,ST-AUT-03.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir las entidades con timezone, cortesía, duración de franja, duración por defecto de la reserva y descanso mínimo entre turnos.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-02. Base de la configuración.
+
+VERIFICACIÓN
+Migración aplicada y prueba de que un restaurante admite una sola fila de configuración."
+ST-AUT-03.2,Sub-task,Crear el modelo OpeningHours separado,Highest,2,2,HU-AUT-03,ST-AUT-03.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Modelar día de la semana, periodo de mañana o tarde, apertura, cierre y cierre de cocina en una tabla propia.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Depende de ST-AUT-03.1. Lo consume HU-RES-02.
+
+VERIFICACIÓN
+Prueba de carga de un horario partido con dos periodos el mismo día."
+ST-AUT-03.3,Sub-task,Implementar el servicio de configuración,Highest,2,2,HU-AUT-03,ST-AUT-03.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Centralizar la lectura de configuración por restaurante, con error explícito si no existe.
+
+DÓNDE
+app/modules/settings/services/
+
+RELACIONADO CON
+Depende de ST-AUT-03.1. Lo consumen todos los servicios que necesitan configuración.
+
+VERIFICACIÓN
+Prueba unitaria de lectura y de restaurante sin configuración."
+ST-AUT-03.4,Sub-task,Exponer los endpoints de configuración,Highest,2,2,HU-AUT-03,ST-AUT-03.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar GET y PATCH sobre /settings con validación de esquema y permiso.
+
+DÓNDE
+app/modules/settings/routes/
+
+RELACIONADO CON
+Depende de ST-AUT-03.3 y de HU-AUT-05 para el permiso.
+
+VERIFICACIÓN
+Pruebas de API: 200 al consultar, 422 con dato inválido y 403 sin permiso."
+ST-AUT-03.5,Sub-task,Exponer los endpoints de horarios,Highest,2,2,HU-AUT-03,ST-AUT-03.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar GET y PUT sobre /settings/opening-hours para los periodos de mañana y tarde.
+
+DÓNDE
+app/modules/settings/routes/
+
+RELACIONADO CON
+Depende de ST-AUT-03.2 y ST-AUT-03.4.
+
+VERIFICACIÓN
+Prueba de API que guarda un horario partido y lo devuelve idéntico."
+ST-AUT-03.6,Sub-task,Validar la coherencia de los horarios,Highest,2,2,HU-AUT-03,ST-AUT-03.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar las reglas de cierre posterior a apertura, cocina no posterior al cierre y cortesía mayor o igual que cero.
+
+DÓNDE
+app/modules/settings/services/
+
+RELACIONADO CON
+Depende de ST-AUT-03.5. Se relaciona con HU-AUT-01 para el formato de error.
+
+VERIFICACIÓN
+Pruebas de los tres casos inválidos con su código de error de negocio."
+ST-AUT-03.7,Sub-task,Documentar OpenAPI y ejemplos de configuración,Highest,1,2,HU-AUT-03,ST-AUT-03.7,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Publicar ejemplos de configuración completa, horario partido y errores de validación en la documentación de la API.
+
+DÓNDE
+docs/ y OpenAPI
+
+RELACIONADO CON
+Cierra HU-AUT-03. Se relaciona con HU-GES-06.
+
+VERIFICACIÓN
+Los ejemplos del README se ejecutan contra la API y devuelven lo documentado."
+HU-AUT-04,Story,"HU-AUT-04 · Sesión completa: login, perfil, logout y revocación",Highest,13,2,EP-02,HU-AUT-04;flow-c;sprint-2;enabler,"Como usuario, quiero iniciar y cerrar sesión y consultar mi perfil con un token seguro, para acceder a las operaciones protegidas y revocar el acceso cuando corresponda.
+
+CONTEXTO
+Toda operación protegida depende de la identidad. El briefing exige hash seguro, token con expiración, comprobación de firma, algoritmo, datos y cuenta activa. La revocación se resuelve con una versión de token por usuario.
+
+ALCANCE
+- Hash de contraseña con argon2 o bcrypt, nunca SHA-256 directo.
+- Emisión y validación de JWT con expiración, usuario, restaurante y versión.
+- POST /auth/login, GET /auth/me y POST /auth/logout.
+- Rechazo de credenciales inválidas, usuarios inactivos y tokens revocados.
+- token_version incrementado al cerrar sesión y al desactivar la cuenta.
+- Mensajes genéricos que no revelan si la cuenta existe.
+
+FUERA DE ALCANCE
+- Recuperación y cambio de contraseña.
+- Renovación automática de tokens y sesiones por dispositivo.
+- Inicio de sesión con proveedores externos.
+
+REQUISITOS
+- RF-USR-07; AUT-01, AUT-02, AUT-03, AUT-04, AUT-05, AUT-06, AUT-07.
+
+ABSORBE
+- HU-AUT-10
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-AUT-05: el token transporta el rol y los permisos.
+- HU-AUT-06: el usuario inactivo con token vigente se rechaza.
+- HU-RES-03: el cliente solo ve sus propias reservas.
+
+REGLAS DE NEGOCIO
+USR-01, AUT-01, AUT-04, AUT-05, AUT-07.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: La contraseña se guarda con hash y nunca en texto plano.
+CA2: Un usuario inactivo no puede iniciar sesión aunque sus credenciales sean correctas.
+CA3: El token incluye identificador de usuario, restaurante, versión y expiración.
+CA4: Un token expirado, manipulado o revocado devuelve 401.
+CA5: Logout responde 204 y reutilizar el token devuelve 401.
+CA6: La respuesta no incluye hash, contraseña, token completo ni secretos.
+CA7: Desactivar una cuenta invalida sus tokens vigentes.
+
+ESCENARIOS
+Escenario: login correcto
+  Dado un usuario activo con contraseña válida
+  Cuando inicia sesión
+  Entonces recibe 200 con un token válido y sin datos sensibles
+Escenario: usuario inactivo
+  Dado un usuario inactivo con credenciales correctas
+  Cuando inicia sesión
+  Entonces recibe 401 y no se emite token
+Escenario: logout y reutilización
+  Dado un usuario con sesión iniciada
+  Cuando cierra sesión y reutiliza el token
+  Entonces el logout responde 204 y la reutilización devuelve 401"
+ST-AUT-04.1,Sub-task,Crear el modelo User con hash de contraseña,Highest,2,2,HU-AUT-04,ST-AUT-04.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir la entidad con correo único, hash, restaurante, rol único, estado y columnas de auditoría.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-02. Base de HU-AUT-05 y HU-AUT-06.
+
+VERIFICACIÓN
+Migración aplicada y prueba de unicidad de correo."
+ST-AUT-04.2,Sub-task,Implementar el servicio de hash,Highest,2,2,HU-AUT-04,ST-AUT-04.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Hashear con argon2 o bcrypt y verificar credenciales sin exponer el hash.
+
+DÓNDE
+app/core/security.py
+
+RELACIONADO CON
+Depende de ST-AUT-04.1. Lo consume el endpoint de login.
+
+VERIFICACIÓN
+Prueba unitaria de hash y verificación, incluida contraseña incorrecta."
+ST-AUT-04.3,Sub-task,Implementar emisión y validación de JWT,Highest,2,2,HU-AUT-04,ST-AUT-04.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Firmar el token con el secreto configurado, incluir expiración, usuario, restaurante y token_version, y validar firma, algoritmo y datos al decodificar.
+
+DÓNDE
+app/core/security.py
+
+RELACIONADO CON
+Depende de ST-AUT-04.1 y ST-AUT-04.2. Lo consumen todas las rutas protegidas.
+
+VERIFICACIÓN
+Pruebas de token válido, expirado, manipulado y con versión obsoleta."
+ST-AUT-04.4,Sub-task,Exponer POST /auth/login,Highest,2,2,HU-AUT-04,ST-AUT-04.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Validar credenciales, rechazar usuarios inactivos y devolver el token con su tiempo de expiración.
+
+DÓNDE
+app/modules/users/routes/
+
+RELACIONADO CON
+Depende de ST-AUT-04.2 y ST-AUT-04.3.
+
+VERIFICACIÓN
+Pruebas de API: 200 correcto, 401 con contraseña incorrecta y 401 con usuario inactivo."
+ST-AUT-04.5,Sub-task,Exponer GET /auth/me,Highest,1,2,HU-AUT-04,ST-AUT-04.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Devolver la identidad del token actual sin datos sensibles.
+
+DÓNDE
+app/modules/users/routes/
+
+RELACIONADO CON
+Depende de ST-AUT-04.4 y de la dependencia de autenticación.
+
+VERIFICACIÓN
+Prueba de API: 200 con token válido y 401 sin token."
+ST-AUT-04.6,Sub-task,Exponer POST /auth/logout,Highest,1,2,HU-AUT-04,ST-AUT-04.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Cerrar la sesión, incrementar token_version y responder 204 sin contenido.
+
+DÓNDE
+app/modules/users/routes/
+
+RELACIONADO CON
+Depende de ST-AUT-04.4 y ST-AUT-04.3.
+
+VERIFICACIÓN
+Prueba de API: 204 con token válido y 401 sin token."
+ST-AUT-04.7,Sub-task,Implementar la revocación con token_version,Highest,3,2,HU-AUT-04,ST-AUT-04.7,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Comprobar token_version en cada petición, incrementarlo al cerrar sesión y al desactivar una cuenta, y rechazar tokens con versión anterior.
+
+DÓNDE
+app/core/security.py y app/modules/users/services/
+
+RELACIONADO CON
+Depende de ST-AUT-04.6 y HU-AUT-06. Cierra la revocación.
+
+VERIFICACIÓN
+Pruebas de logout, reutilización, desactivación e inactividad con token vigente."
+HU-AUT-05,Story,"HU-AUT-05 · Roles, permisos y ámbito multi-restaurante",Highest,11,2,EP-02,HU-AUT-05;flow-c;sprint-2;enabler,"Como administrador, quiero asignar un rol con permisos con nombre a cada usuario y limitar los datos a su restaurante, para que cada persona haga solo lo que le corresponde y no vea datos de otro establecimiento.
+
+CONTEXTO
+El briefing prohíbe programar decisiones con comparaciones de rol. Cada rol es un conjunto de permisos con nombre y el backend comprueba el permiso, no el rol. Cada usuario tiene un único rol y el ámbito se resuelve desde su identidad.
+
+ALCANCE
+- Role, Permission y RolePermission con permisos con nombre.
+- users.role_id: un rol por usuario.
+- Catálogo único de permisos reutilizado por rutas y servicios.
+- Dependencia require_permission que exige un permiso concreto.
+- Filtro por restaurante y verificación de propiedad del recurso.
+- Rechazo con 404 cuando el recurso no es accesible.
+- Pruebas cruzadas entre restaurantes y entre clientes.
+
+FUERA DE ALCANCE
+- Múltiples roles por usuario.
+- Permisos por campo o por registro.
+- Editor visual de roles.
+- Aislamiento con Row Level Security.
+
+REQUISITOS
+- RF-USR-03, RF-USR-04, RF-USR-05; AUT-02, AUT-03, AUT-08.
+
+ABSORBE
+- HU-AUT-07
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-AUT-04: aporta la identidad y el token.
+- HU-AUT-06: cambia el rol único del usuario.
+- Todas las historias funcionales declaran su permiso y su ámbito.
+
+REGLAS DE NEGOCIO
+AUT-02, AUT-03, USR-03, USR-04, USR-05, AUT-08.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: El backend comprueba permisos con nombre y no el nombre del rol.
+CA2: Un usuario autenticado sin el permiso recibe 403, no 401.
+CA3: Un usuario tiene exactamente un rol y solo puede recibir roles de su restaurante.
+CA4: El jefe de cocina puede modificar precios y no puede gestionar usuarios.
+CA5: Toda consulta de negocio filtra por el restaurante de la identidad.
+CA6: Un recurso de otro restaurante responde 404 para no revelar su existencia.
+CA7: Un cliente solo accede a sus propias reservas.
+
+ESCENARIOS
+Escenario: jefe de cocina cambia un precio
+  Dado un usuario con el permiso menu:updatePrice
+  Cuando modifica el precio de un menú
+  Entonces la operación se completa y se audita
+Escenario: jefe de cocina crea un usuario
+  Dado un usuario sin el permiso user:manage
+  Cuando intenta crear un usuario
+  Entonces recibe 403 y no se crea nada
+Escenario: acceso entre restaurantes
+  Dado un gerente del restaurante A
+  Cuando solicita una mesa del restaurante B por su identificador
+  Entonces recibe 404 y no se devuelve ningún dato
+Escenario: cliente consulta reserva ajena
+  Dado un cliente autenticado
+  Cuando solicita una reserva de otro cliente
+  Entonces recibe 404"
+ST-AUT-05.1,Sub-task,Crear los modelos de roles y permisos,Highest,2,2,HU-AUT-05,ST-AUT-05.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir Role, Permission y RolePermission con sus claves compuestas y la relación users.role_id.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Depende de ST-AUT-04.1. Base del catálogo y de la asignación.
+
+VERIFICACIÓN
+Migración aplicada y prueba de que un rol no repite permiso."
+ST-AUT-05.2,Sub-task,Definir el catálogo de permisos,Highest,1,2,HU-AUT-05,ST-AUT-05.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Declarar en un único lugar los permisos del briefing: dish:create, menu:updatePrice, reservation:assign, settings:update, user:manage, etc.
+
+DÓNDE
+app/core/permissions.py
+
+RELACIONADO CON
+Depende de ST-AUT-05.1. Lo consumen todas las rutas protegidas.
+
+VERIFICACIÓN
+Prueba que verifica que el catálogo no tiene duplicados y que cada rol usa permisos existentes."
+ST-AUT-05.3,Sub-task,Implementar la dependencia de autorización,Highest,2,2,HU-AUT-05,ST-AUT-05.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Crear una dependencia que recibe el permiso requerido, lo comprueba sobre la identidad y devuelve 403 cuando falta.
+
+DÓNDE
+app/core/security.py
+
+RELACIONADO CON
+Depende de ST-AUT-05.2 y HU-AUT-04. La usan todos los módulos.
+
+VERIFICACIÓN
+Prueba de API: 200 con permiso, 403 sin permiso y 401 sin token."
+ST-AUT-05.4,Sub-task,Asignar un rol único a cada usuario,Highest,2,2,HU-AUT-05,ST-AUT-05.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar la asignación y el cambio de rol con validación de que el rol pertenece al restaurante y que nadie se asigna un rol superior.
+
+DÓNDE
+app/modules/users/services/
+
+RELACIONADO CON
+Depende de ST-AUT-05.3. Se relaciona con HU-AUT-06.
+
+VERIFICACIÓN
+Prueba de asignación, cambio y rechazo de rol de otro restaurante."
+ST-AUT-05.5,Sub-task,Aplicar el filtro por restaurante y ámbito,Highest,3,2,HU-AUT-05,ST-AUT-05.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Centralizar la obtención del restaurante desde la identidad y aplicarlo en cada consulta de negocio, incluyendo listados y modificaciones.
+
+DÓNDE
+app/core/scope.py
+
+RELACIONADO CON
+Depende de ST-AUT-05.2. Lo consumen todos los módulos.
+
+VERIFICACIÓN
+Prueba de que una consulta sin filtro explícito no devuelve datos de otro restaurante."
+ST-AUT-05.6,Sub-task,Verificar la propiedad del recurso del cliente,Highest,1,2,HU-AUT-05,ST-AUT-05.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Comprobar que la reserva o el recurso solicitado pertenece al usuario cuando su rol es cliente.
+
+DÓNDE
+app/core/scope.py
+
+RELACIONADO CON
+Depende de ST-AUT-05.5. Se relaciona con HU-RES-03.
+
+VERIFICACIÓN
+Prueba de reserva propia accesible y reserva ajena con 404."
+HU-AUT-06,Story,HU-AUT-06 · Usuarios y auditoría administrativa,Highest,14,2,EP-02,HU-AUT-06;flow-c;sprint-2,"Como administrador, quiero crear, modificar, inactivar y auditar usuarios sin perder su historial, para conservar la trazabilidad y evitar escaladas de privilegios.
+
+CONTEXTO
+El personal cambia con frecuencia. Borrar un usuario rompe la trazabilidad de las reservas que registró. El briefing exige baja lógica y reserva el borrado físico al superadministrador y solo sin historial asociado. La auditoría existe, pero es recortable si el tiempo aprieta.
+
+ALCANCE
+- GET y POST /users con paginación, validación y permiso user:manage.
+- PATCH /users/{id}, /users/{id}/role y /users/{id}/status.
+- Inactivación sin borrado y bloqueo de inicio de sesión.
+- Rechazo de autoelevación de rol y de creación de superadministradores por un administrador.
+- Borrado físico restringido y condicionado.
+- AuditLog con autor, acción, entidad, valores anterior/nuevo y resultado.
+- GET /audit-logs con permiso audit:view.
+
+FUERA DE ALCANCE
+- Recuperación de contraseña y registro público de clientes.
+- Auditoría de lecturas y firma criptográfica de registros.
+- Analítica avanzada de auditoría.
+
+REQUISITOS
+- RF-USR-01, RF-USR-02, RF-USR-03, RF-USR-06, RF-USR-08, RF-USR-09.
+
+ABSORBE
+- HU-AUT-08
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-AUT-04: el usuario inactivo con token vigente se rechaza.
+- HU-AUT-05: el rol único se asigna desde la gestión de usuarios.
+- HU-CAR-04, HU-HOR-03 y HU-RES-03: consumen el servicio de auditoría.
+
+REGLAS DE NEGOCIO
+USR-01, USR-02, USR-03, AUT-06, AUT-09.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: Un administrador solo gestiona usuarios de su restaurante.
+CA2: Un usuario no puede elevar su propio rol ni asignar superadministradores.
+CA3: Un usuario inactivo no puede iniciar sesión y sus registros históricos se conservan.
+CA4: El borrado físico exige rol de superadministrador y ausencia de historial.
+CA5: Todas las respuestas excluyen hash y datos sensibles.
+CA6: Cada acción administrativa relevante deja un registro con autor, fecha, acción y resultado.
+CA7: El registro guarda valor anterior y nuevo cuando aplica.
+CA8: La consulta de auditoría exige audit:view y filtra por restaurante.
+
+ESCENARIOS
+Escenario: inactivar un trabajador
+  Dado un trabajador que registró treinta reservas
+  Cuando el administrador lo inactiva
+  Entonces no puede iniciar sesión y sus reservas siguen mostrando quién las registró
+Escenario: autoelevación de rol
+  Dado un administrador autenticado
+  Cuando intenta asignarse el rol de superadministrador
+  Entonces recibe 403 y su rol no cambia
+Escenario: correo duplicado
+  Dado un usuario con un correo registrado
+  Cuando se crea otro usuario con el mismo correo
+  Entonces recibe 409 y no se guarda nada
+Escenario: auditoría sin secretos
+  Dado un cambio de rol
+  Cuando se consulta la auditoría
+  Entonces el registro muestra autor, acción y valores, pero no contraseñas ni tokens"
+ST-AUT-06.1,Sub-task,Exponer listado y creación de usuarios,Highest,2,2,HU-AUT-06,ST-AUT-06.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar GET y POST sobre /users con paginación, validación de esquema y permiso user:manage.
+
+DÓNDE
+app/modules/users/routes/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-05. Se relaciona con ST-AUT-06.2.
+
+VERIFICACIÓN
+Pruebas de API: 201 al crear, 409 con correo duplicado y 403 sin permiso."
+ST-AUT-06.2,Sub-task,Exponer modificación de datos y rol,Highest,2,2,HU-AUT-06,ST-AUT-06.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar PATCH sobre /users y /users/{id}/role con validación de pertenencia al restaurante y rol único.
+
+DÓNDE
+app/modules/users/routes/
+
+RELACIONADO CON
+Depende de ST-AUT-06.1 y ST-AUT-05.4.
+
+VERIFICACIÓN
+Prueba de cambio de rol y de rechazo de rol ajeno al restaurante."
+ST-AUT-06.3,Sub-task,Implementar la baja lógica,Highest,1,2,HU-AUT-06,ST-AUT-06.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar PATCH /users/{id}/status que inactiva sin borrar, incrementa token_version y bloquea el acceso.
+
+DÓNDE
+app/modules/users/services/
+
+RELACIONADO CON
+Depende de ST-AUT-06.2. Se relaciona con HU-AUT-04.
+
+VERIFICACIÓN
+Prueba: el usuario inactivo recibe 401 al iniciar sesión y su fila sigue existiendo."
+ST-AUT-06.4,Sub-task,Bloquear la autoelevación de rol,Highest,1,2,HU-AUT-06,ST-AUT-06.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Impedir que un usuario modifique su propio rol y que un administrador cree o asigne superadministradores.
+
+DÓNDE
+app/modules/users/services/
+
+RELACIONADO CON
+Depende de ST-AUT-06.2. Se relaciona con AUT-06.
+
+VERIFICACIÓN
+Pruebas de los dos intentos con respuesta 403 y sin cambios persistidos."
+ST-AUT-06.5,Sub-task,Verificar la conservación del historial,Highest,2,2,HU-AUT-06,ST-AUT-06.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Comprobar que las reservas y registros creados por un usuario inactivo siguen siendo consultables con su autor.
+
+DÓNDE
+tests/modules/users/
+
+RELACIONADO CON
+Cierra la parte de usuarios. Depende de que exista el esquema de reservas.
+
+VERIFICACIÓN
+Prueba de integración que inactiva un usuario con reservas y consulta el historial."
+ST-AUT-06.6,Sub-task,Implementar el modelo y el contrato de auditoría,Highest,1,2,HU-AUT-06,ST-AUT-06.6;recortable,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Usar el modelo compartido AuditLog y definir el contrato del servicio de registro con autor, acción, entidad, valores y resultado.
+
+DÓNDE
+app/core/audit.py
+
+RELACIONADO CON
+Depende de ST-AUT-02.9. Lo consumen todos los módulos.
+
+VERIFICACIÓN
+El contrato está documentado y una prueba verifica que no guarda secretos.
+
+RECORTABLE
+Sí. Se puede posponer sin romper el resto de la historia."
+ST-AUT-06.7,Sub-task,Implementar el servicio de registro,Highest,2,2,HU-AUT-06,ST-AUT-06.7;recortable,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Registrar los cambios de usuario, rol, estado, precio, menú, reserva y cuadrante dentro de la misma transacción.
+
+DÓNDE
+app/core/audit.py
+
+RELACIONADO CON
+Depende de ST-AUT-06.6. Se relaciona con CAR-07, HOR-04 y RES-04.
+
+VERIFICACIÓN
+Prueba de que un cambio y su auditoría se confirman o se revierten juntos.
+
+RECORTABLE
+Sí. Se puede posponer sin romper el resto de la historia."
+ST-AUT-06.8,Sub-task,Exponer la consulta de auditoría,Highest,2,2,HU-AUT-06,ST-AUT-06.8;recortable,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar GET /audit-logs con permiso audit:view, filtros por entidad, autor y fecha, y ámbito por restaurante.
+
+DÓNDE
+app/modules/audit/routes/
+
+RELACIONADO CON
+Depende de ST-AUT-06.7 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de API: 200 con permiso, 403 sin permiso y 404 para otro restaurante.
+
+RECORTABLE
+Sí. Se puede posponer sin romper el resto de la historia."
+ST-AUT-06.9,Sub-task,Verificar que no se filtran secretos,Highest,1,2,HU-AUT-06,ST-AUT-06.9;recortable,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Comprobar que la auditoría no guarda contraseñas, hashes, tokens completos ni datos internos.
+
+DÓNDE
+tests/core/
+
+RELACIONADO CON
+Cierra la parte de auditoría. Se relaciona con AUT-07.
+
+VERIFICACIÓN
+Prueba que inspecciona los registros y no encuentra secretos.
+
+RECORTABLE
+Sí. Se puede posponer sin romper el resto de la historia."
+EP-04,Epic,"EP-04 · Carta: platos, categorías, alérgenos y menús",Highest,59,2,,EP-04;flow-a;sprint-2,"OBJETIVO
+Gestionar la carta del restaurante como agregados completos: categorías y alérgenos, platos con sus estados y consulta pública, colecciones de menú, menús con precio propio, composición y ciclo de vida, y el historial de precios.
+
+ALCANCE
+- Categorías por restaurante y catálogo común de los catorce alérgenos.
+- CRUD de platos, alérgenos, estados, baja lógica y carta pública.
+- Colecciones de menú con vigencia y borrado condicionado.
+- Menús con precio propio, composición, bebida incluida, alérgenos agregados, inactivación, reactivación y cascada desde platos.
+- Historial de cambios de precio de platos y menús.
+
+MÓDULOS AFECTADOS
+app/modules/dishes, app/modules/menus, app/models.
+
+DEPENDENCIAS
+Solo el kernel de datos y seguridad (HU-AUT-01 y HU-AUT-02).
+
+CRITERIO DE CIERRE
+La carta pública muestra solo platos y menús publicados, activos y disponibles; el precio del menú es independiente de sus platos; la cascada y la reactivación son atómicas y quedan auditadas."
+HU-CAR-01,Story,HU-CAR-01 · Categorías y catálogo de alérgenos,Highest,8,2,EP-04,HU-CAR-01;flow-a;sprint-2,"Como jefe de cocina, quiero gestionar las categorías de mi restaurante y consultar el catálogo común de alérgenos, para organizar la carta y declarar de forma estructurada lo que contiene cada plato.
+
+CONTEXTO
+Las categorías deben ser una tabla por restaurante, extensible y ordenable, no un enum escrito en el código. Los alérgenos son un catálogo común de exactamente catorce elementos de la Unión Europea, nunca un texto largo.
+
+ALCANCE
+- Category por restaurante con nombre, orden y estado.
+- CRUD de categorías con permiso de gestión de carta.
+- Política explícita al intentar borrar una categoría con platos asociados.
+- Allergen con código y nombre, catálogo común no por restaurante.
+- GET /allergens público y verificación de la semilla de los catorce alérgenos.
+
+FUERA DE ALCANCE
+- Categorías como enum.
+- Imágenes o información nutricional de platos.
+- Catálogo de alérgenos editable por cada restaurante.
+
+REQUISITOS
+- RF-PLA-03, RF-PLA-04; CAR-01, CAR-03, CAR-07, CAR-08.
+
+ABSORBE
+- HU-CAR-02
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-CAR-02: usa categorías y alérgenos en el CRUD de platos.
+- HU-CAR-04: usa el catálogo para agregar alérgenos de menús.
+
+REGLAS DE NEGOCIO
+CAR-01, CAR-03, CAR-07, CAR-08.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: El nombre de categoría es único dentro del restaurante.
+CA2: El CRUD de categorías exige permiso y respeta el ámbito del restaurante.
+CA3: Borrar una categoría con platos asociados devuelve 409 y no deja cambios parciales.
+CA4: El catálogo de alérgenos es público y devuelve exactamente catorce elementos con código único.
+CA5: Un plato solo puede referenciar alérgenos del catálogo.
+
+ESCENARIOS
+Escenario: categoría duplicada
+  Dado un restaurante con la categoría Entrantes
+  Cuando se crea otra categoría con el mismo nombre
+  Entonces recibe 409 y no se guarda nada
+Escenario: borrar categoría con platos
+  Dada una categoría con platos asociados
+  Cuando se intenta borrar
+  Entonces recibe 409 y los platos siguen asociados
+Escenario: catálogo público
+  Dado un visitante sin sesión
+  Cuando consulta /allergens
+  Entonces recibe los catorce alérgenos con código y nombre"
+ST-CAR-01.1,Sub-task,Crear el modelo Category,Highest,1,2,HU-CAR-01,ST-CAR-01.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir la entidad por restaurante con nombre, orden, estado y columnas de auditoría, y su restricción de unicidad.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-02. Base de HU-CAR-02.
+
+VERIFICACIÓN
+Migración aplicada y prueba de unicidad por restaurante."
+ST-CAR-01.2,Sub-task,Exponer el CRUD de categorías,Highest,2,2,HU-CAR-01,ST-CAR-01.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar listado, consulta, creación, edición e inactivación con permiso de gestión de carta.
+
+DÓNDE
+app/modules/dishes/routes/
+
+RELACIONADO CON
+Depende de ST-CAR-01.1 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de API: 201, 200, 403, 404 y 409 con nombre duplicado."
+ST-CAR-01.3,Sub-task,Implementar la política de categoría con platos,Highest,2,2,HU-CAR-01,ST-CAR-01.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Bloquear el borrado físico de una categoría con platos y ofrecer la baja lógica como alternativa.
+
+DÓNDE
+app/modules/dishes/services/
+
+RELACIONADO CON
+Depende de ST-CAR-01.2 y de HU-CAR-02.
+
+VERIFICACIÓN
+Prueba de categoría con platos: 409; categoría vacía: borrado correcto."
+ST-CAR-01.4,Sub-task,Crear el modelo Allergen,Highest,1,2,HU-CAR-01,ST-CAR-01.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir el catálogo común con código único y nombre, sin restaurant_id.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-02. Base de HU-CAR-02.
+
+VERIFICACIÓN
+Migración aplicada y prueba de código único."
+ST-CAR-01.5,Sub-task,Exponer GET /allergens,Highest,1,2,HU-CAR-01,ST-CAR-01.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Publicar el catálogo de alérgenos sin autenticación y con orden estable.
+
+DÓNDE
+app/modules/dishes/routes/
+
+RELACIONADO CON
+Depende de ST-CAR-01.4.
+
+VERIFICACIÓN
+Prueba de API: 200 público con catorce elementos."
+ST-CAR-01.6,Sub-task,Verificar la semilla de los catorce alérgenos,Highest,1,2,HU-CAR-01,ST-CAR-01.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Comprobar que el seeder del kernel carga exactamente los catorce alérgenos de la Unión Europea y que es idempotente.
+
+DÓNDE
+tests/database/
+
+RELACIONADO CON
+Depende de ST-CAR-01.4 y ST-AUT-02.2.
+
+VERIFICACIÓN
+Dos ejecuciones mantienen catorce filas y los códigos esperados."
+HU-CAR-02,Story,"HU-CAR-02 · Platos: CRUD, alérgenos, estados y carta pública",Highest,17,2,EP-04,HU-CAR-02;flow-a;sprint-2,"Como jefe de cocina, quiero gestionar los platos con sus alérgenos, precios y estados y consultarlos en la carta pública, para mantener la carta actualizada y no vender lo que no está disponible.
+
+CONTEXTO
+El plato es el elemento básico de la carta. Debe existir de forma independiente de los menús, con tres estados separados (activo, publicado y disponible), alérgenos estructurados y filtros públicos por categoría, disponibilidad y alérgeno.
+
+ALCANCE
+- Dish y DishAllergen con nombre, descripción, precio, categoría y alérgenos.
+- CRUD completo de platos con validación de precio, categoría y alérgenos.
+- Tres estados: is_active, is_published e is_available.
+- Baja lógica sin borrado y cambio de estado con permiso dish:deactivate.
+- Carta pública con listado, detalle, filtros y paginación.
+- Ocultación de platos no publicados y presentación de no disponibles como tales.
+
+FUERA DE ALCANCE
+- Imágenes e información nutricional.
+- Varias categorías por plato.
+- Precio histórico, que corresponde a HU-CAR-05.
+
+REQUISITOS
+- RF-PLA-01, RF-PLA-02, RF-PLA-03, RF-PLA-04, RF-PLA-05, RF-PLA-06, RF-PLA-07, RF-PLA-08.
+
+ABSORBE
+- HU-CAR-03
+- HU-CAR-04
+- HU-CAR-05
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-CAR-01: aporta categorías y alérgenos.
+- HU-CAR-04: consume los platos en la composición de menús.
+- HU-CAR-05: registra los cambios de precio.
+
+REGLAS DE NEGOCIO
+CAR-01, CAR-02, CAR-03, CAR-04, CAR-05, CAR-06, CAR-07, CAR-08, CAR-09.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: El plato guarda nombre, descripción, precio no negativo, categoría y alérgenos del catálogo.
+CA2: La categoría debe existir y pertenecer al restaurante.
+CA3: Un alérgeno inexistente se rechaza y no se guarda nada.
+CA4: Un plato no publicado no aparece en la carta pública.
+CA5: Un plato no disponible se muestra como no disponible.
+CA6: La carta pública filtra por categoría, disponibilidad y alérgeno, y pagina los resultados.
+CA7: El cambio de estado y la baja lógica exigen permiso y conservan el histórico.
+
+ESCENARIOS
+Escenario: crear plato válido con alérgenos
+  Dado un jefe de cocina autenticado y una categoría existente
+  Cuando crea un plato con precio 9.50 y los alérgenos gluten y huevo
+  Entonces la API responde 201 y el plato queda con dos relaciones de alérgeno
+Escenario: precio negativo
+  Dado un jefe de cocina autenticado
+  Cuando intenta crear un plato con precio -1
+  Entonces la API responde 422 y no se guarda nada
+Escenario: plato no publicado
+  Dado un plato activo pero no publicado
+  Cuando se consulta la carta pública
+  Entonces el plato no aparece
+Escenario: filtro por alérgeno
+  Dado un catálogo con platos con y sin gluten
+  Cuando se filtra por alérgeno gluten
+  Entonces solo aparecen los platos que lo contienen"
+ST-CAR-02.1,Sub-task,Crear los modelos Dish y DishAllergen,Highest,2,2,HU-CAR-02,ST-CAR-02.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir el plato con sus tres estados y la tabla intermedia de alérgenos con clave compuesta y columnas de auditoría.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Depende de ST-AUT-02.6. Base de la carta.
+
+VERIFICACIÓN
+Migración aplicada y prueba de que un alérgeno no se repite en un plato."
+ST-CAR-02.2,Sub-task,Definir los esquemas de plato,Highest,2,2,HU-CAR-02,ST-CAR-02.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Crear esquemas de entrada y salida con validación de precio, categoría y lista de alérgenos, sin exponer datos internos.
+
+DÓNDE
+app/modules/dishes/schemas/
+
+RELACIONADO CON
+Depende de ST-CAR-02.1.
+
+VERIFICACIÓN
+Pruebas de validación para precio negativo, categoría ausente y alérgeno inexistente."
+ST-CAR-02.3,Sub-task,Implementar el servicio de platos,Highest,2,2,HU-CAR-02,ST-CAR-02.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Centralizar creación, edición, consulta, baja lógica y validación de pertenencia al restaurante en una transacción.
+
+DÓNDE
+app/modules/dishes/services/
+
+RELACIONADO CON
+Depende de ST-CAR-02.2. Lo consumen las rutas.
+
+VERIFICACIÓN
+Prueba de creación con alérgenos y de rollback si un alérgeno falla."
+ST-CAR-02.4,Sub-task,Exponer los endpoints de platos,Highest,2,2,HU-CAR-02,ST-CAR-02.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar GET/POST/PATCH y el cambio de estado con permisos dish:create, dish:update y dish:deactivate.
+
+DÓNDE
+app/modules/dishes/routes/
+
+RELACIONADO CON
+Depende de ST-CAR-02.3 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de API: 201, 200, 403, 404, 409 y 422."
+ST-CAR-02.5,Sub-task,Añadir los tres estados al plato,Highest,1,2,HU-CAR-02,ST-CAR-02.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Separar is_active, is_published e is_available y documentar su significado.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Depende de ST-CAR-02.1.
+
+VERIFICACIÓN
+Prueba de que los tres estados se guardan y se devuelven de forma independiente."
+ST-CAR-02.6,Sub-task,Implementar el cambio de estado,Highest,2,2,HU-CAR-02,ST-CAR-02.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Exponer PATCH /dishes/{id}/status con permiso dish:deactivate y auditoría del cambio.
+
+DÓNDE
+app/modules/dishes/routes/
+
+RELACIONADO CON
+Depende de ST-CAR-02.5 y HU-AUT-06.
+
+VERIFICACIÓN
+Pruebas de activación, desactivación y 403 sin permiso."
+ST-CAR-02.7,Sub-task,Aplicar los estados en la carta pública,Highest,2,2,HU-CAR-02,ST-CAR-02.7,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Filtrar platos no publicados y presentar los no disponibles como no disponibles.
+
+DÓNDE
+app/modules/dishes/services/
+
+RELACIONADO CON
+Depende de ST-CAR-02.6.
+
+VERIFICACIÓN
+Prueba de carta pública con platos en los tres estados."
+ST-CAR-02.8,Sub-task,Verificar la baja lógica,Highest,1,2,HU-CAR-02,ST-CAR-02.8,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Comprobar que un plato inactivo no se borra, no aparece en la carta y conserva su histórico.
+
+DÓNDE
+tests/modules/dishes/
+
+RELACIONADO CON
+Depende de ST-CAR-02.6.
+
+VERIFICACIÓN
+Prueba de inactivación y consulta posterior del histórico."
+ST-CAR-02.9,Sub-task,Implementar los filtros de carta,Highest,2,2,HU-CAR-02,ST-CAR-02.9,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Filtrar por categoría, disponibilidad y alérgeno, combinando los filtros y respetando el restaurante.
+
+DÓNDE
+app/modules/dishes/services/
+
+RELACIONADO CON
+Depende de ST-CAR-02.7.
+
+VERIFICACIÓN
+Pruebas de cada filtro y de la combinación de dos filtros."
+ST-CAR-02.10,Sub-task,Añadir paginación a los listados,Highest,1,2,HU-CAR-02,ST-CAR-02.10,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Paginar el listado público con límites y metadatos de página.
+
+DÓNDE
+app/modules/dishes/routes/
+
+RELACIONADO CON
+Depende de ST-CAR-02.9.
+
+VERIFICACIÓN
+Prueba de página límite y de página fuera de rango."
+HU-CAR-03,Story,HU-CAR-03 · Colecciones de menú: CRUD y borrado condicionado,Highest,6,2,EP-04,HU-CAR-03;flow-a;sprint-2,"Como jefe de cocina, quiero gestionar colecciones de menús con su tipo y vigencia y borrarlas solo cuando estén vacías, para agrupar los menús diarios, de temporada o festivos sin romper el histórico.
+
+CONTEXTO
+Las colecciones agrupan menús con un criterio común. Necesitan nombre, tipo y fechas de vigencia; un menú pertenece como máximo a una colección. Una colección con menús no se borra: se inactiva.
+
+ALCANCE
+- MenuCollection con nombre, tipo, vigencia y estado.
+- CRUD completo de colecciones con permiso menu:create/menu:update.
+- Validación de que valid_from no es posterior a valid_to.
+- Visibilidad pública: una colección inactiva o vencida no muestra sus menús.
+- Borrado físico solo si la colección no tiene menús.
+
+FUERA DE ALCANCE
+- Activación automática por calendario.
+- Colecciones por día de la semana como entidades separadas.
+- Borrado de colecciones con menús.
+
+REQUISITOS
+- RF-MEN-06; MEN-06, MEN-08.
+
+ABSORBE
+- HU-CAR-06
+- HU-CAR-13
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-CAR-04: cada menú referencia una colección.
+- HU-CAR-05: no depende de colecciones.
+
+REGLAS DE NEGOCIO
+MEN-06, MEN-08.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: El nombre de la colección es único dentro del restaurante.
+CA2: La vigencia es coherente: valid_from <= valid_to cuando ambas existen.
+CA3: Una colección inactiva o vencida no expone sus menús en la consulta pública.
+CA4: Borrar una colección con menús devuelve 409 y conserva la colección.
+CA5: El borrado de una colección vacía exige permiso y respeta el restaurante.
+
+ESCENARIOS
+Escenario: colección con menús
+  Dada una colección con al menos un menú
+  Cuando se intenta borrar
+  Entonces recibe 409 y la colección sigue existiendo
+Escenario: colección vencida
+  Dada una colección con valid_to en el pasado
+  Cuando se consulta la carta pública
+  Entonces sus menús no aparecen
+Escenario: vigencia inválida
+  Dada una colección con valid_from posterior a valid_to
+  Cuando se crea o edita
+  Entonces recibe 422 y no se guarda"
+ST-CAR-03.1,Sub-task,Crear el modelo MenuCollection,Highest,1,2,HU-CAR-03,ST-CAR-03.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir nombre, tipo, valid_from, valid_to, estado y restaurant_id.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-02.6. Base de HU-CAR-04.
+
+VERIFICACIÓN
+Migración aplicada y prueba de unicidad por restaurante."
+ST-CAR-03.2,Sub-task,Exponer el CRUD de colecciones,Highest,2,2,HU-CAR-03,ST-CAR-03.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar listado, consulta, creación, edición e inactivación con permisos.
+
+DÓNDE
+app/modules/menus/routes/
+
+RELACIONADO CON
+Depende de ST-CAR-03.1 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de API: 201, 200, 403, 404 y 409."
+ST-CAR-03.3,Sub-task,Validar la vigencia de las colecciones,Highest,1,2,HU-CAR-03,ST-CAR-03.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Rechazar vigencias incoherentes y aplicar la visibilidad pública de colecciones inactivas o vencidas.
+
+DÓNDE
+app/modules/menus/services/
+
+RELACIONADO CON
+Depende de ST-CAR-03.2.
+
+VERIFICACIÓN
+Pruebas de vigencia inválida y de colección vencida."
+ST-CAR-03.4,Sub-task,Validar que la colección no tiene menús,Highest,1,2,HU-CAR-03,ST-CAR-03.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Comprobar la ausencia de menús antes de permitir el borrado físico.
+
+DÓNDE
+app/modules/menus/services/
+
+RELACIONADO CON
+Depende de ST-CAR-03.2 y ST-CAR-04.1.
+
+VERIFICACIÓN
+Prueba de colección vacía y de colección con menús."
+ST-CAR-03.5,Sub-task,Exponer DELETE /menu-collections/{id},Highest,1,2,HU-CAR-03,ST-CAR-03.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar el borrado físico condicionado con permiso menu:update.
+
+DÓNDE
+app/modules/menus/routes/
+
+RELACIONADO CON
+Depende de ST-CAR-03.4.
+
+VERIFICACIÓN
+Pruebas de API: 204 vacía, 409 con menús y 403 sin permiso."
+HU-CAR-04,Story,"HU-CAR-04 · Menús: CRUD, precio, composición, alérgenos, ciclo de vida y cascada",Highest,25,2,EP-04,HU-CAR-04;flow-a;sprint-2,"Como jefe de cocina, quiero gestionar menús completos con precio propio, composición, bebida incluida, alérgenos y ciclo de vida, para ofrecer un precio cerrado y no vender menús que no se pueden servir.
+
+CONTEXTO
+El menú es un agregado completo: precio propio independiente de la suma de platos, composición con platos obligatorios y opcionales, bebida incluida, alérgenos agregados, inactivación con motivo, reactivación validada y cascada cuando se desactiva un plato obligatorio.
+
+ALCANCE
+- Menu y MenuDish con precio propio, rol, obligatoriedad y marca de bebida incluida.
+- CRUD de menús y consulta pública con filtros por colección y disponibilidad.
+- Cambio de precio con permiso menu:updatePrice y validación de precio no negativo.
+- Varios menús activos simultáneos con precios distintos.
+- Composición completa: sin platos duplicados ni ajenos al restaurante.
+- Bebida incluida como plato de la categoría bebidas.
+- Alérgenos agregados de todos los platos, sin duplicados.
+- Inactivación manual con motivo obligatorio e historial.
+- Reactivación manual bloqueada si falta un plato obligatorio.
+- Cascada atómica al desactivar un plato obligatorio: menús afectados, motivo y auditoría.
+
+FUERA DE ALCANCE
+- Calcular el precio del menú como suma de platos.
+- Reactivación automática al volver el plato.
+- Borrado de menús con histórico.
+- Menús con varias colecciones.
+
+REQUISITOS
+- RF-MEN-01, RF-MEN-02, RF-MEN-03, RF-MEN-04, RF-MEN-05, RF-MEN-06, RF-MEN-07, RF-MEN-08, RF-MEN-09, RF-MEN-10, RF-MEN-11, RF-MEN-12.
+- MEN-01 a MEN-08; CAR-09.
+
+ABSORBE
+- HU-CAR-07
+- HU-CAR-08
+- HU-CAR-09
+- HU-CAR-10
+- HU-CAR-12
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-CAR-02: aporta los platos y sus estados.
+- HU-CAR-03: aporta la colección.
+- HU-CAR-05: registra los cambios de precio.
+- HU-AUT-06: registra la auditoría de cascada e inactivación.
+
+REGLAS DE NEGOCIO
+MEN-01, MEN-02, MEN-03, MEN-04, MEN-05, MEN-06, MEN-07, MEN-08; CAR-09.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: El precio del menú es propio y no se recalcula al cambiar sus platos.
+CA2: Pueden coexistir varios menús activos con precios distintos.
+CA3: Un menú no puede referenciar platos inexistentes ni de otro restaurante.
+CA4: La composición no repite platos y marca cuáles son obligatorios.
+CA5: La bebida incluida es un plato de la categoría bebidas.
+CA6: Un menú disponible exige que todos sus platos obligatorios estén activos y disponibles.
+CA7: Inactivar un menú manualmente exige un motivo no vacío.
+CA8: Reactivar un menú exige que todos los platos obligatorios estén disponibles; si no, 409 con detalle.
+CA9: Desactivar un plato obligatorio deja el menú no disponible, registra el motivo y audita cada menú afectado en una sola transacción.
+CA10: La consulta pública muestra los alérgenos agregados sin duplicados y un menú vacío devuelve [].
+
+ESCENARIOS
+Escenario: precio independiente
+  Dado un menú con precio 15.00 cuyos platos suman 21.00
+  Cuando se consulta el menú
+  Entonces el precio mostrado es 15.00
+Escenario: plato obligatorio desactivado
+  Dado un menú activo que contiene la merluza como plato obligatorio
+  Cuando se desactiva la merluza
+  Entonces el menú pasa a no disponible con el motivo «Plato Merluza inactivo» y queda auditado
+Escenario: inactivar sin motivo
+  Dado un menú activo
+  Cuando se intenta inactivar sin indicar motivo
+  Entonces se rechaza con 422 y el menú sigue activo
+Escenario: reactivación bloqueada
+  Dado un menú inactivo con un plato obligatorio no disponible
+  Cuando se intenta reactivar
+  Entonces recibe 409 con la lista de platos que lo impiden"
+ST-CAR-04.1,Sub-task,Crear los modelos Menu y MenuDish,Highest,3,2,HU-CAR-04,ST-CAR-04.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir el menú con precio propio, estado, motivo de inactividad y colección; la composición con rol, obligatoriedad y bebida incluida.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Depende de ST-AUT-02.6 y ST-CAR-03.1. Base del agregado.
+
+VERIFICACIÓN
+Migración aplicada y prueba de que un plato no se repite en un menú."
+ST-CAR-04.2,Sub-task,Exponer el CRUD de menús y la consulta pública,Highest,3,2,HU-CAR-04,ST-CAR-04.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar listado, detalle, creación, edición y filtros públicos por colección y disponibilidad.
+
+DÓNDE
+app/modules/menus/routes/
+
+RELACIONADO CON
+Depende de ST-CAR-04.1 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de API: 201, 200, 403, 404 y filtros públicos."
+ST-CAR-04.3,Sub-task,Implementar el cambio de precio propio,Highest,2,2,HU-CAR-04,ST-CAR-04.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Exponer PATCH /menus/{id}/price con permiso menu:updatePrice y validación de precio no negativo.
+
+DÓNDE
+app/modules/menus/routes/
+
+RELACIONADO CON
+Depende de ST-CAR-04.2 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de cambio válido, precio negativo y 403 sin permiso."
+ST-CAR-04.4,Sub-task,Implementar la composición y la bebida incluida,Highest,3,2,HU-CAR-04,ST-CAR-04.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Permitir definir la composición completa con rol, obligatoriedad y marca de bebida, validando platos existentes y del restaurante.
+
+DÓNDE
+app/modules/menus/services/
+
+RELACIONADO CON
+Depende de ST-CAR-04.1 y HU-CAR-02.
+
+VERIFICACIÓN
+Pruebas de composición válida, plato ajeno, plato duplicado y bebida incluida."
+ST-CAR-04.5,Sub-task,Validar platos obligatorios y disponibilidad,Highest,2,2,HU-CAR-04,ST-CAR-04.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Calcular la disponibilidad del menú a partir de sus platos obligatorios activos y disponibles.
+
+DÓNDE
+app/modules/menus/services/
+
+RELACIONADO CON
+Depende de ST-CAR-04.4 y HU-CAR-02.
+
+VERIFICACIÓN
+Pruebas de menú disponible, no disponible y plato opcional inactivo."
+ST-CAR-04.6,Sub-task,Calcular la unión de alérgenos del menú,Highest,1,2,HU-CAR-04,ST-CAR-04.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Unir los alérgenos de todos los platos, sin duplicados y sin escribir en base de datos.
+
+DÓNDE
+app/modules/menus/services/
+
+RELACIONADO CON
+Depende de ST-CAR-04.4 y ST-CAR-01.4.
+
+VERIFICACIÓN
+Prueba de menú con alérgenos repetidos y de menú vacío."
+ST-CAR-04.7,Sub-task,Exponer los alérgenos en la consulta del menú,Highest,1,2,HU-CAR-04,ST-CAR-04.7,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Incluir la lista agregada en el detalle público y en el listado cuando se solicite.
+
+DÓNDE
+app/modules/menus/routes/
+
+RELACIONADO CON
+Depende de ST-CAR-04.6.
+
+VERIFICACIÓN
+Prueba de contrato de respuesta con y sin alérgenos."
+ST-CAR-04.8,Sub-task,Exigir motivo en la inactivación manual,Highest,2,2,HU-CAR-04,ST-CAR-04.8,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar el cambio de estado a inactivo con motivo no vacío y registro de autor, fecha e historial.
+
+DÓNDE
+app/modules/menus/services/
+
+RELACIONADO CON
+Depende de ST-CAR-04.2.
+
+VERIFICACIÓN
+Pruebas de inactivación con motivo, sin motivo y sin permiso."
+ST-CAR-04.9,Sub-task,Implementar la reactivación con validación,Highest,2,2,HU-CAR-04,ST-CAR-04.9,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Reactivar solo si todos los platos obligatorios están disponibles, devolviendo 409 con los platos que lo impiden.
+
+DÓNDE
+app/modules/menus/services/
+
+RELACIONADO CON
+Depende de ST-CAR-04.8 y ST-CAR-04.5.
+
+VERIFICACIÓN
+Pruebas de reactivación correcta y bloqueada."
+ST-CAR-04.10,Sub-task,Implementar la cascada plato-menú,Highest,3,2,HU-CAR-04,ST-CAR-04.10,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Localizar los menús activos afectados por la desactivación de un plato obligatorio y cambiar su disponibilidad con motivo automático.
+
+DÓNDE
+app/modules/menus/services/
+
+RELACIONADO CON
+Se relaciona con HU-CAR-02 y ST-CAR-04.5. Es una sola transacción.
+
+VERIFICACIÓN
+Prueba de cascada sobre uno y varios menús, y de plato opcional sin efecto."
+ST-CAR-04.11,Sub-task,"Registrar motivo, auditoría y atomicidad",Highest,3,2,HU-CAR-04,ST-CAR-04.11,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Registrar el motivo por cada menú afectado, auditar el cambio e informar del número de menús afectados; un fallo revierte todo.
+
+DÓNDE
+app/modules/menus/services/
+
+RELACIONADO CON
+Depende de ST-CAR-04.10 y HU-AUT-06.
+
+VERIFICACIÓN
+Pruebas de rollback completo y de conteo de menús afectados."
+HU-CAR-05,Story,HU-CAR-05 · Historial de precios de platos y menús,Medium,3,2,EP-04,HU-CAR-05;flow-a;sprint-2,"Como gerente, quiero consultar el histórico de precios de platos y menús, para saber cuándo cambió un precio, quién lo cambió y cuál era el valor anterior.
+
+CONTEXTO
+El precio actual no debe borrar la historia. Cada cambio de precio de un plato o de un menú registra el valor anterior, el nuevo, el autor y la fecha, sin modificar los registros anteriores.
+
+ALCANCE
+- PriceHistory con entity_type dish/menu, entity_id, old_price, new_price, changed_by y changed_at.
+- Registro automático en cada cambio de precio de plato o menú.
+- Consulta del histórico por entidad con permiso administrativo.
+
+FUERA DE ALCANCE
+- Aprobación de precios o flujo de descuentos.
+- Penalizaciones por cancelación.
+
+REQUISITOS
+- RF-PLA-09; MEN-07, RNF-06.
+
+ABSORBE
+- HU-CAR-11
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-CAR-02: registra los cambios de precio de platos.
+- HU-CAR-04: registra los cambios de precio de menús.
+- HU-AUT-06: comparte el patrón de auditoría.
+
+REGLAS DE NEGOCIO
+MEN-07, RNF-06.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: Cada cambio de precio genera un registro con valor anterior, nuevo, autor y fecha.
+CA2: El registro anterior es inmutable y no depende del precio actual.
+CA3: La consulta del histórico exige permiso y respeta el restaurante.
+CA4: Un fallo al registrar el histórico revierte el cambio de precio.
+
+ESCENARIOS
+Escenario: cambio de precio de un plato
+  Dado un plato con precio 9.50
+  Cuando un usuario autorizado lo cambia a 10.50
+  Entonces se añade un registro con 9.50, 10.50 y el autor
+Escenario: histórico inmutable
+  Dado un histórico con dos cambios
+  Cuando se consulta después de un tercer cambio
+  Entonces los dos registros anteriores siguen iguales"
+ST-CAR-05.1,Sub-task,Crear el modelo PriceHistory y registrar los cambios,Medium,2,2,HU-CAR-05,ST-CAR-05.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir el histórico para platos y menús y registrar cada cambio dentro de la misma transacción que actualiza el precio.
+
+DÓNDE
+app/models/ y app/core/
+
+RELACIONADO CON
+Depende de ST-AUT-02.9, HU-CAR-02 y HU-CAR-04.
+
+VERIFICACIÓN
+Prueba de cambio de plato y de menú con su registro correspondiente."
+ST-CAR-05.2,Sub-task,Exponer la consulta del histórico,Medium,1,2,HU-CAR-05,ST-CAR-05.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar la consulta por entidad con permiso administrativo y ámbito por restaurante.
+
+DÓNDE
+app/modules/menus/routes/
+
+RELACIONADO CON
+Depende de ST-CAR-05.1 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de consulta permitida, 403 sin permiso y 404 para otro restaurante."
+EP-01,Epic,"EP-01 · Horarios: empleados, turnos y cuadrantes",Highest,51,2,,EP-01;flow-c;sprint-2,"OBJETIVO
+Gestionar el personal y sus horarios como un flujo completo: empleados, cuadrantes, turnos, validación de solapamientos y descansos, publicación, ausencias y cambios de turno.
+
+ALCANCE
+- Empleados con vínculo opcional a una cuenta de usuario y baja lógica.
+- Cuadrantes por periodo y turnos con soporte nocturno y jornada partida.
+- Validación de solapamientos, ausencias aprobadas y descansos configurables.
+- Publicación del cuadrante y consulta del horario propio.
+- Solicitud, aprobación y rechazo de ausencias y cambios de turno.
+
+MÓDULOS AFECTADOS
+app/modules/schedules, app/models.
+
+DEPENDENCIAS
+Solo el kernel de datos y seguridad (HU-AUT-01 y HU-AUT-02).
+
+CRITERIO DE CIERRE
+Un gerente planifica turnos sin conflictos, los publica y cada empleado consulta su horario; una ausencia aprobada o un cambio de turno se aplica de forma atómica y deja trazabilidad."
+HU-HOR-01,Story,HU-HOR-01 · Empleados: CRUD y estado laboral,Highest,5,2,EP-01,HU-HOR-01;flow-c;sprint-2,"Como gerente, quiero gestionar los empleados de mi restaurante con su puesto, vínculo opcional a una cuenta y estado laboral, para asignar turnos solo a personas activas y conservar el histórico de quien dejó de trabajar.
+
+CONTEXTO
+El empleado es la identidad laboral, distinta de la cuenta de usuario. Puede tener un usuario vinculado o no. La baja es lógica: un empleado inactivo no recibe turnos nuevos, pero sus turnos históricos se conservan.
+
+ALCANCE
+- Employee con restaurant_id, user_id opcional, nombre, puesto y estado.
+- CRUD completo con permiso employee:manage.
+- Inactivación sin borrado y filtro por estado.
+- Listado por restaurante con paginación y búsqueda por nombre.
+
+FUERA DE ALCANCE
+- Nóminas, fichajes y control de presencia.
+- Registro público de empleados.
+- Borrado físico con turnos asociados.
+
+REQUISITOS
+- RF-HOR-01, RF-HOR-05; HOR-01, HOR-03, HOR-12.
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-AUT-06: aporta el usuario que puede vincularse.
+- HU-HOR-02: asigna turnos solo a empleados activos.
+- HU-HOR-04: solicita ausencias y cambios de turno.
+
+REGLAS DE NEGOCIO
+HOR-01, HOR-03, HOR-12; USR-01, USR-02.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: El empleado pertenece a un restaurante y no puede vincularse a un usuario de otro.
+CA2: El CRUD exige permiso employee:manage y respeta el ámbito.
+CA3: La inactivación es lógica, bloquea nuevos turnos y conserva los históricos.
+CA4: Un empleado inactivo no puede recibir turnos nuevos.
+CA5: El listado filtra por restaurante y estado.
+
+ESCENARIOS
+Escenario: crear empleado
+  Dado un gerente autenticado
+  Cuando crea un empleado con nombre y puesto
+  Entonces recibe 201 y el empleado aparece en el listado de su restaurante
+Escenario: inactivar con turnos
+  Dado un empleado con turnos históricos
+  Cuando se inactiva
+  Entonces no recibe turnos nuevos y sus turnos anteriores siguen consultables
+Escenario: usuario de otro restaurante
+  Dado un usuario de otro restaurante
+  Cuando se intenta vincular al empleado
+  Entonces recibe 404 y no se guarda nada"
+ST-HOR-01.1,Sub-task,Crear el modelo Employee,Highest,1,2,HU-HOR-01,ST-HOR-01.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir restaurant_id, user_id opcional, nombre, puesto, estado y columnas de auditoría.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-02.8. Base de turnos y ausencias.
+
+VERIFICACIÓN
+Migración aplicada y prueba de vínculo opcional con usuario."
+ST-HOR-01.2,Sub-task,Exponer el CRUD de empleados,Highest,3,2,HU-HOR-01,ST-HOR-01.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar listado, consulta, creación, edición e inactivación con permiso employee:manage y filtros por estado.
+
+DÓNDE
+app/modules/schedules/routes/
+
+RELACIONADO CON
+Depende de ST-HOR-01.1 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de API: 201, 200, 403, 404 y listado filtrado."
+ST-HOR-01.3,Sub-task,Implementar la inactivación de empleados,Highest,1,2,HU-HOR-01,ST-HOR-01.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Inactivar sin borrar, bloquear la asignación de turnos nuevos y conservar los turnos históricos.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-HOR-01.2 y HU-HOR-02.
+
+VERIFICACIÓN
+Prueba de empleado inactivo con turnos históricos."
+HU-HOR-02,Story,"HU-HOR-02 · Cuadrantes y turnos: CRUD, nocturnos, jornada partida y borrado",Highest,16,2,EP-01,HU-HOR-02;flow-c;sprint-2,"Como gerente, quiero crear cuadrantes por periodo y asignar turnos, incluidos los nocturnos y la jornada partida, para planificar el trabajo del restaurante y corregir el borrador antes de publicarlo.
+
+CONTEXTO
+El cuadrante es el contenedor de los turnos. Solo se edita en borrador; un cuadrante publicado se consulta y se cambia mediante el flujo de revalidación. Los turnos usan fechas absolutas y pueden cruzar medianoche o dividirse en dos intervalos el mismo día.
+
+ALCANCE
+- Schedule con periodo, estado, responsable y fecha de publicación.
+- CRUD de cuadrantes y transición controlada de borrador a publicado.
+- Shift con inicio y fin absolutos, tipo y estado.
+- Creación, modificación y borrado de turnos solo en cuadrantes en borrador.
+- Soporte de turnos que cruzan medianoche y de jornada partida con dos intervalos.
+- Asignación solo a empleados activos.
+
+FUERA DE ALCANCE
+- Validación de ausencias y descansos, que corresponde a HU-HOR-03.
+- Solicitudes de ausencia y cambios de turno, que corresponden a HU-HOR-04.
+- Nóminas y fichajes.
+
+REQUISITOS
+- RF-HOR-02, RF-HOR-03, RF-HOR-05, RF-HOR-11, RF-HOR-12.
+- HOR-01, HOR-02, HOR-03, HOR-08, HOR-11.
+
+ABSORBE
+- HU-HOR-03
+- HU-HOR-08
+- HU-HOR-11
+- HU-HOR-12
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-HOR-01: aporta empleados activos.
+- HU-HOR-03: valida y publica el cuadrante.
+- HU-HOR-04: aplica ausencias y cambios sobre los turnos.
+
+REGLAS DE NEGOCIO
+HOR-01, HOR-02, HOR-03, HOR-08, HOR-11.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: El cuadrante tiene un periodo coherente y un estado draft o published.
+CA2: Solo se crean, modifican o borran turnos en un cuadrante en borrador.
+CA3: El fin del turno debe ser posterior al inicio, incluso si cruza medianoche.
+CA4: Un empleado inactivo no puede recibir turnos.
+CA5: La jornada partida se representa con dos intervalos separados y su duración total es la suma.
+CA6: Borrar un cuadrante publicado devuelve 409; borrar uno en borrador responde 204.
+
+ESCENARIOS
+Escenario: turno nocturno
+  Dado un empleado activo sin turnos esa noche
+  Cuando se asigna un turno de 22:00 a 02:00 del día siguiente
+  Entonces se guarda con fin al día siguiente
+Escenario: jornada partida
+  Dado un empleado activo
+  Cuando se le asignan 12:00–16:00 y 20:00–23:00 el mismo día
+  Entonces se guardan dos intervalos y la duración total es 7 horas
+Escenario: borrar turno publicado
+  Dado un cuadrante publicado con un turno
+  Cuando se intenta borrar el turno
+  Entonces recibe 409 y el turno sigue existiendo
+Escenario: empleado inactivo
+  Dado un empleado inactivo
+  Cuando se intenta asignarle un turno
+  Entonces recibe 422 y no se guarda"
+ST-HOR-02.1,Sub-task,Crear el modelo Schedule,Highest,2,2,HU-HOR-02,ST-HOR-02.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir periodo, estado draft/published, responsable y fecha de publicación.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-02.8. Base del cuadrante.
+
+VERIFICACIÓN
+Migración aplicada y prueba de periodo coherente."
+ST-HOR-02.2,Sub-task,Exponer el CRUD de cuadrantes,Highest,2,2,HU-HOR-02,ST-HOR-02.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar listado, consulta, creación, edición y borrado en borrador con permiso schedule:manage.
+
+DÓNDE
+app/modules/schedules/routes/
+
+RELACIONADO CON
+Depende de ST-HOR-02.1 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de API: 201, 200, 204, 403, 404 y 409."
+ST-HOR-02.3,Sub-task,Validar la transición de estado,Highest,1,2,HU-HOR-02,ST-HOR-02.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Impedir cambios directos de borrador a publicado sin pasar por el flujo de validación y publicación.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-HOR-02.2 y HU-HOR-03.
+
+VERIFICACIÓN
+Prueba de transición inválida con 409."
+ST-HOR-02.4,Sub-task,Crear el modelo Shift,Highest,2,2,HU-HOR-02,ST-HOR-02.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir schedule_id, employee_id, start_at, end_at, tipo y estado.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Depende de ST-HOR-02.1 y ST-HOR-01.1.
+
+VERIFICACIÓN
+Migración aplicada y prueba de fin posterior al inicio."
+ST-HOR-02.5,Sub-task,Validar turnos que cruzan medianoche,Highest,2,2,HU-HOR-02,ST-HOR-02.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Aceptar turnos con fin al día siguiente y rechazar duraciones nulas o negativas.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-HOR-02.4.
+
+VERIFICACIÓN
+Pruebas de turno nocturno válido y de fin anterior al inicio."
+ST-HOR-02.6,Sub-task,Exponer la creación y modificación de turnos,Highest,2,2,HU-HOR-02,ST-HOR-02.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar POST y PATCH de turnos solo en cuadrantes en borrador y solo para empleados activos.
+
+DÓNDE
+app/modules/schedules/routes/
+
+RELACIONADO CON
+Depende de ST-HOR-02.5 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de creación, edición, empleado inactivo y cuadrante publicado."
+ST-HOR-02.7,Sub-task,Permitir dos intervalos el mismo día,Highest,1,2,HU-HOR-02,ST-HOR-02.7,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Aceptar dos turnos separados del mismo empleado y día como jornada partida, sin tratarlos como solapamiento.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-HOR-02.6.
+
+VERIFICACIÓN
+Prueba de dos intervalos contiguos y de duración total."
+ST-HOR-02.8,Sub-task,Exponer DELETE /shifts/{id} solo en borrador,Highest,2,2,HU-HOR-02,ST-HOR-02.8,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Borrar físicamente un turno de un cuadrante en borrador y rechazar el borrado en uno publicado.
+
+DÓNDE
+app/modules/schedules/routes/
+
+RELACIONADO CON
+Depende de ST-HOR-02.6 y ST-HOR-02.3.
+
+VERIFICACIÓN
+Pruebas de 204 en borrador y 409 en publicado."
+ST-HOR-02.9,Sub-task,Validar que el cuadrante está en borrador,Highest,1,2,HU-HOR-02,ST-HOR-02.9,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Comprobar el estado antes de permitir el borrado del cuadrante.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-HOR-02.3.
+
+VERIFICACIÓN
+Prueba de cuadrante publicado no borrable."
+ST-HOR-02.10,Sub-task,Exponer DELETE /schedules/{id},Highest,1,2,HU-HOR-02,ST-HOR-02.10,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Borrar físicamente un cuadrante en borrador con permiso schedule:manage.
+
+DÓNDE
+app/modules/schedules/routes/
+
+RELACIONADO CON
+Depende de ST-HOR-02.9.
+
+VERIFICACIÓN
+Pruebas de 204 en borrador, 409 en publicado y 403 sin permiso."
+HU-HOR-03,Story,"HU-HOR-03 · Validación, descansos y publicación de cuadrantes",Highest,16,2,EP-01,HU-HOR-03;flow-c;sprint-2,"Como gerente, quiero validar el cuadrante, configurar descansos y publicarlo sin conflictos, para que el personal reciba un horario fiable y que los cambios posteriores se revaliden.
+
+CONTEXTO
+Publicar un cuadrante con solapamientos, ausencias aprobadas o descansos incumplidos genera un horario imposible. La validación es una sola pieza: detecta conflictos bloqueantes, los explica y solo permite publicar cuando desaparecen.
+
+ALCANCE
+- Validación de solapamientos por empleado con intervalo semiabierto.
+- Validación de ausencias aprobadas y descansos mínimos configurables.
+- Clasificación de conflictos bloqueantes y no bloqueantes.
+- Publicación con permiso schedule:publish y revalidación previa.
+- Consulta del horario propio publicado por el empleado.
+- Revalidación y auditoría de cambios posteriores a la publicación.
+
+FUERA DE ALCANCE
+- Asignación automática de turnos.
+- Nóminas y fichajes.
+- Cambios de turno entre empleados, que corresponden a HU-HOR-04.
+
+REQUISITOS
+- RF-HOR-04, RF-HOR-08, RF-HOR-09, RF-HOR-10, RF-HOR-13, RF-HOR-14.
+- HOR-04, HOR-06, HOR-07, HOR-09, HOR-11, HOR-12.
+
+ABSORBE
+- HU-HOR-04
+- HU-HOR-06
+- HU-HOR-07
+- HU-HOR-10
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-HOR-02: aporta cuadrantes y turnos.
+- HU-HOR-04: aporta ausencias aprobadas.
+- HU-AUT-06: registra la auditoría de publicación y cambios.
+
+REGLAS DE NEGOCIO
+HOR-04, HOR-06, HOR-07, HOR-09, HOR-11, HOR-12.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: La validación detecta turnos solapados del mismo empleado con intervalo [inicio, fin).
+CA2: Una solicitud de ausencia pendiente no cuenta como aprobada.
+CA3: Una ausencia aprobada bloquea los turnos incompatibles.
+CA4: Los descansos mínimos entre jornadas y semanales se leen de la configuración.
+CA5: No se publica un cuadrante con conflictos bloqueantes.
+CA6: La publicación exige schedule:publish y deja responsable, fecha y auditoría.
+CA7: Un cambio posterior a la publicación se revalida y deja trazabilidad.
+CA8: Cada empleado solo consulta su propio horario publicado.
+
+ESCENARIOS
+Escenario: cuadrante válido
+  Dado un cuadrante sin conflictos
+  Cuando un gerente autorizado lo publica
+  Entonces queda publicado y los empleados consultan sus turnos
+Escenario: turnos solapados
+  Dado un turno de 09:00 a 15:00 de un empleado
+  Cuando se añade otro de 14:00 a 18:00 al mismo empleado
+  Entonces se detecta el conflicto y no se puede publicar
+Escenario: ausencia pendiente
+  Dada una solicitud de ausencia pendiente
+  Cuando se valida un cuadrante
+  Entonces la solicitud no se considera aprobada
+Escenario: sin permisos
+  Dado un empleado sin permisos de gestión
+  Cuando intenta modificar un cuadrante publicado
+  Entonces recibe 403 y no hay cambios"
+ST-HOR-03.1,Sub-task,Añadir la restricción de exclusión de turnos,Highest,2,2,HU-HOR-03,ST-HOR-03.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Verificar la restricción de exclusión del kernel sobre employee_id y el rango de tiempo y traducir su violación a 409.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-AUT-02.10 y ST-HOR-02.4.
+
+VERIFICACIÓN
+Prueba de integración que intenta solapar dos turnos y recibe conflicto."
+ST-HOR-03.2,Sub-task,Validar el solapamiento en el servicio,Highest,2,2,HU-HOR-03,ST-HOR-03.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Comprobar el solapamiento antes de guardar y devolver los turnos implicados.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-HOR-03.1.
+
+VERIFICACIÓN
+Pruebas de solapamiento total, parcial y contiguo sin conflicto."
+ST-HOR-03.3,Sub-task,Implementar el servicio de validación,Highest,2,2,HU-HOR-03,ST-HOR-03.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Validar turnos, ausencias aprobadas y descansos, devolviendo conflictos bloqueantes y no bloqueantes.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-HOR-03.2 y HU-HOR-04.
+
+VERIFICACIÓN
+Pruebas de cuadrante válido, solapado y con ausencia aprobada."
+ST-HOR-03.4,Sub-task,Aplicar los descansos configurables,Highest,2,2,HU-HOR-03,ST-HOR-03.4;recortable,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Leer los descansos de la configuración y bloquear turnos que no los respetan.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-HOR-03.3 y ST-HOR-03.10.
+
+VERIFICACIÓN
+Pruebas de descanso entre jornadas y semanal incumplidos.
+
+RECORTABLE
+Sí. Se puede posponer sin romper el resto de la historia."
+ST-HOR-03.5,Sub-task,Clasificar los conflictos bloqueantes,Highest,1,2,HU-HOR-03,ST-HOR-03.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Separar los conflictos que impiden publicar de los avisos informativos.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-HOR-03.3.
+
+VERIFICACIÓN
+Prueba de un cuadrante con un aviso no bloqueante."
+ST-HOR-03.6,Sub-task,Exponer la revalidación,Highest,1,2,HU-HOR-03,ST-HOR-03.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Permitir validar un cuadrante sin publicarlo y devolver el resultado.
+
+DÓNDE
+app/modules/schedules/routes/
+
+RELACIONADO CON
+Depende de ST-HOR-03.5.
+
+VERIFICACIÓN
+Prueba de validación sin cambio de estado."
+ST-HOR-03.7,Sub-task,Exponer la publicación del cuadrante,Highest,2,2,HU-HOR-03,ST-HOR-03.7,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar POST /schedules/{id}/publish con schedule:publish, revalidación y registro de responsable y fecha.
+
+DÓNDE
+app/modules/schedules/routes/
+
+RELACIONADO CON
+Depende de ST-HOR-03.6 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de 200 publicado, 409 con conflicto y 403 sin permiso."
+ST-HOR-03.8,Sub-task,Exponer la consulta del horario propio,Highest,1,2,HU-HOR-03,ST-HOR-03.8,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar GET /me/shifts para que cada empleado consulte solo sus turnos publicados.
+
+DÓNDE
+app/modules/schedules/routes/
+
+RELACIONADO CON
+Depende de ST-HOR-03.7.
+
+VERIFICACIÓN
+Prueba de horario propio y de imposibilidad de ver el de otro empleado."
+ST-HOR-03.9,Sub-task,Revalidar los cambios posteriores a la publicación,Highest,2,2,HU-HOR-03,ST-HOR-03.9,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Revalidar cualquier cambio sobre un cuadrante publicado y registrar la trazabilidad del cambio.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-HOR-03.7 y HU-AUT-06.
+
+VERIFICACIÓN
+Pruebas de cambio válido, conflicto bloqueante y auditoría."
+ST-HOR-03.10,Sub-task,Añadir los descansos a la configuración,Highest,1,2,HU-HOR-03,ST-HOR-03.10;recortable,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Añadir el descanso mínimo entre jornadas y el semanal a la configuración del restaurante, con valores por defecto documentados.
+
+DÓNDE
+app/modules/settings/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-03 y ST-HOR-03.4.
+
+VERIFICACIÓN
+Migración y prueba de lectura de ambos valores.
+
+RECORTABLE
+Sí. Se puede posponer sin romper el resto de la historia."
+HU-HOR-04,Story,HU-HOR-04 · Ausencias y cambios de turno,Highest,14,2,EP-01,HU-HOR-04;flow-c;sprint-2,"Como empleado, quiero solicitar ausencias y cambios de turno y que el gerente los apruebe o rechace, para resolver los cambios de planificación sin dejar turnos incompatibles.
+
+CONTEXTO
+Una solicitud pendiente no es una ausencia aprobada. La aprobación debe comprobar el impacto sobre los turnos y aplicarse en una sola transacción. El cambio de turno se valida para los dos empleados implicados.
+
+ALCANCE
+- TimeOffRequest con intervalo, tipo, estado, responsable y resolución.
+- Solicitud de ausencia por el empleado.
+- Aprobación y rechazo con impacto sobre los turnos planificados.
+- ShiftSwapRequest con turnos origen y destino.
+- Validación de ambos empleados: activos, sin solapamiento, sin ausencia y con descansos.
+- Aplicación atómica del cambio y trazabilidad.
+
+FUERA DE ALCANCE
+- Nóminas, vacaciones y saldos.
+- Sincronización con calendarios externos.
+- Aprobación automática de ausencias.
+
+REQUISITOS
+- RF-HOR-06, RF-HOR-07, RF-HOR-12; HOR-04, HOR-05, HOR-09, HOR-10.
+
+ABSORBE
+- HU-HOR-05
+- HU-HOR-09
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-HOR-01: aporta empleados.
+- HU-HOR-02: aporta turnos y cuadrantes.
+- HU-HOR-03: aporta la validación de conflictos.
+- HU-AUT-06: registra la auditoría de la resolución.
+
+REGLAS DE NEGOCIO
+HOR-04, HOR-05, HOR-09, HOR-10.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: Una solicitud pendiente no cuenta como ausencia aprobada.
+CA2: Una ausencia aprobada bloquea los turnos incompatibles.
+CA3: Una solicitud ya resuelta no se aprueba ni se rechaza otra vez: 409.
+CA4: Un cambio de turno valida a los dos empleados y sus descansos.
+CA5: La aprobación de ausencia o cambio actualiza la planificación en una sola transacción.
+CA6: Si el cambio no es válido, se conservan los turnos anteriores y se informa del conflicto.
+
+ESCENARIOS
+Escenario: ausencia pendiente
+  Dada una solicitud de ausencia pendiente
+  Cuando se valida un cuadrante
+  Entonces la solicitud no se considera aprobada
+Escenario: ausencia aprobada
+  Dada una ausencia aprobada del 10 al 12
+  Cuando se intenta asignar un turno el día 11 a ese empleado
+  Entonces se rechaza por ausencia aprobada
+Escenario: cambio de turno válido
+  Dados dos empleados activos y sin conflictos
+  Cuando el gerente aprueba el cambio
+  Entonces los dos turnos se actualizan en una sola transacción
+Escenario: solicitud ya resuelta
+  Dada una solicitud aprobada
+  Cuando se intenta resolver de nuevo
+  Entonces recibe 409 y no cambia nada"
+ST-HOR-04.1,Sub-task,Crear el modelo TimeOffRequest,Highest,1,2,HU-HOR-04,ST-HOR-04.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir empleado, tipo, intervalo, estado, responsable, fecha de resolución y motivo.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-02.8. Base de las ausencias.
+
+VERIFICACIÓN
+Migración aplicada y prueba de estados pending/approved/rejected."
+ST-HOR-04.2,Sub-task,Permitir solicitar ausencias,Highest,2,2,HU-HOR-04,ST-HOR-04.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Exponer POST /time-off-requests para el empleado autenticado, con validación de intervalo y estado pending.
+
+DÓNDE
+app/modules/schedules/routes/
+
+RELACIONADO CON
+Depende de ST-HOR-04.1 y HU-HOR-01.
+
+VERIFICACIÓN
+Pruebas de solicitud válida, intervalo inválido y empleado ajeno."
+ST-HOR-04.3,Sub-task,Implementar la aprobación y el rechazo,Highest,2,2,HU-HOR-04,ST-HOR-04.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Exponer approve/reject con permiso timeoff:approve, comprobar que sigue pendiente y registrar responsable y fecha.
+
+DÓNDE
+app/modules/schedules/routes/
+
+RELACIONADO CON
+Depende de ST-HOR-04.2 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de aprobación, rechazo, doble resolución 409 y 403 sin permiso."
+ST-HOR-04.4,Sub-task,Calcular el impacto sobre turnos,Highest,2,2,HU-HOR-04,ST-HOR-04.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Detectar los turnos incompatibles con la ausencia aprobada y aplicar la resolución en una sola transacción.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-HOR-04.3 y HU-HOR-02.
+
+VERIFICACIÓN
+Pruebas de ausencia sin impacto, con conflicto y rollback."
+ST-HOR-04.5,Sub-task,Crear el modelo ShiftSwapRequest,Highest,1,2,HU-HOR-04,ST-HOR-04.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir turno origen, turno destino, estado, responsable, fecha de resolución y motivo.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-02.8. Base de los cambios de turno.
+
+VERIFICACIÓN
+Migración aplicada y prueba de estados."
+ST-HOR-04.6,Sub-task,Permitir solicitar el cambio de turno,Highest,2,2,HU-HOR-04,ST-HOR-04.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Exponer POST /shift-swap-requests con validación de que los turnos pertenecen a empleados activos del restaurante.
+
+DÓNDE
+app/modules/schedules/routes/
+
+RELACIONADO CON
+Depende de ST-HOR-04.5 y HU-HOR-01.
+
+VERIFICACIÓN
+Pruebas de solicitud válida, turno ajeno y empleado inactivo."
+ST-HOR-04.7,Sub-task,Validar a los dos empleados,Highest,2,2,HU-HOR-04,ST-HOR-04.7,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Comprobar solapamientos, ausencias aprobadas y descansos para ambos empleados antes de aprobar.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-HOR-04.6 y HU-HOR-03.
+
+VERIFICACIÓN
+Pruebas de cambio válido y de conflicto para uno de los dos empleados."
+ST-HOR-04.8,Sub-task,Aplicar el cambio con revalidación,Highest,2,2,HU-HOR-04,ST-HOR-04.8,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Aprobar el cambio en una sola transacción, actualizar los turnos y registrar la trazabilidad; un fallo conserva los turnos anteriores.
+
+DÓNDE
+app/modules/schedules/services/
+
+RELACIONADO CON
+Depende de ST-HOR-04.7 y HU-AUT-06.
+
+VERIFICACIÓN
+Prueba de aplicación atómica y de rollback completo."
+EP-03,Epic,"EP-03 · Reservas: mesas, disponibilidad, concurrencia e informes",Highest,82,2,,EP-03;flow-b;sprint-2,"OBJETIVO
+Gestionar mesas y reservas como un flujo completo: mesas y combinaciones, disponibilidad, creación con una o varias mesas, concurrencia, estados, historial, cortesía, no-show e informes de ocupación.
+
+ALCANCE
+- Mesas con número único, capacidades, ubicación y habilitación.
+- Combinaciones de mesas con capacidad real explícita.
+- Disponibilidad por franja, asignación automática e informes.
+- Reservas con una o varias mesas, estados, historial y edición revalidada.
+- Anti-solapamiento, concurrencia y prevención de duplicados.
+- Cortesía y no-show; sin lista de espera.
+
+MÓDULOS AFECTADOS
+app/modules/tables, app/modules/reservations, app/models.
+
+DEPENDENCIAS
+Solo el kernel de datos y seguridad (HU-AUT-01 y HU-AUT-02).
+
+CRITERIO DE CIERRE
+Dos peticiones simultáneas no asignan la misma mesa; una reserva puede ocupar una o varias mesas; el no-show libera todas sus mesas; la ocupación nominal no se confunde con la disponibilidad real."
+HU-RES-01,Story,"HU-RES-01 · Mesas y combinaciones: CRUD, capacidades y habilitación",Highest,15,2,EP-03,HU-RES-01;flow-b;sprint-2,"Como gerente, quiero gestionar las mesas y sus combinaciones con capacidades, ubicación y estado, para que las reservas respeten la sala y no se asignen mesas inhabilitadas.
+
+CONTEXTO
+La mesa es la unidad física de la sala. Además de las mesas individuales, el restaurante puede configurar combinaciones de mesas completas con una capacidad real explícita; la capacidad de una combinación no se calcula sumando mesas.
+
+ALCANCE
+- DiningTable con número único por restaurante, capacidad mínima y máxima, ubicación interior/exterior/bar, estado habilitado y capacidad ajustable.
+- CRUD de mesas con permiso table:manage.
+- Habilitación e inhabilitación con aviso de reservas futuras afectadas.
+- TableCombination con al menos dos mesas del mismo restaurante, capacidad real explícita y rango de uso.
+- CRUD de combinaciones y validación de composición única.
+- Bloqueo de cambios incompatibles con reservas futuras.
+
+FUERA DE ALCANCE
+- Plano visual y coordenadas de las mesas.
+- Unión ad hoc de mesas no configurada, que se valida en RES-04.
+- Reasignación automática al inhabilitar una mesa.
+
+REQUISITOS
+- RF-MES-01, RF-MES-02, RF-MES-03, RF-MES-04, RF-MES-05, RF-MES-06, RF-MES-07, RF-CFG-05.
+- MES-01, MES-02, MES-03; COM-01 a COM-07.
+
+ABSORBE
+- HU-RES-02
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-RES-02: calcula disponibilidad con mesas y combinaciones.
+- HU-RES-03: asigna una o varias mesas a una reserva.
+- HU-RES-04: bloquea todas las mesas de una ocupación.
+
+REGLAS DE NEGOCIO
+MES-01, MES-02, MES-03, MES-04, MES-05, MES-06, MES-07; COM-01 a COM-07.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: El número de mesa es único dentro del restaurante.
+CA2: La capacidad mínima es al menos 1 y la máxima no es menor que la mínima.
+CA3: La ubicación es interior, exterior o bar.
+CA4: Una mesa inhabilitada no recibe reservas nuevas; las futuras se avisan y se conservan.
+CA5: Una combinación contiene al menos dos mesas distintas del mismo restaurante.
+CA6: La capacidad real de la combinación es explícita y no se obtiene sumando capacidades.
+CA7: El conjunto de mesas de una combinación es único por restaurante.
+CA8: Cambiar una combinación con reservas futuras incompatibles devuelve 409 y conserva la anterior.
+
+ESCENARIOS
+Escenario: capacidades incoherentes
+  Dado un gerente autenticado
+  Cuando crea una mesa con capacidad mínima 4 y máxima 2
+  Entonces se rechaza con 422 y no se guarda
+Escenario: número repetido
+  Dada la mesa número 5 en el restaurante
+  Cuando se crea otra mesa con número 5
+  Entonces se rechaza con 409
+Escenario: inhabilitar con reservas futuras
+  Dada una mesa con una reserva futura
+  Cuando se inhabilita
+  Entonces se conserva la reserva, se avisa del impacto y no se reasigna sola
+Escenario: combinación A+B
+  Dadas las mesas A=4 y B=4
+  Cuando se configura la combinación con capacidad real 6 y rango 5–6
+  Entonces un grupo de 5 o 6 puede usarla y un grupo de 7 se rechaza"
+ST-RES-01.1,Sub-task,Crear el modelo DiningTable,Highest,2,2,HU-RES-01,ST-RES-01.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir número, capacidades, ubicación interior/exterior/bar, estado habilitado y capacidad ajustable.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-02.7. Base de la sala.
+
+VERIFICACIÓN
+Migración aplicada y restricciones de capacidad y unicidad en base de datos."
+ST-RES-01.2,Sub-task,Exponer el CRUD de mesas,Highest,3,2,HU-RES-01,ST-RES-01.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar listado, consulta, creación, edición y habilitación con permiso table:manage.
+
+DÓNDE
+app/modules/tables/routes/
+
+RELACIONADO CON
+Depende de ST-RES-01.1 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de API: 201, 200, 403, 404, 409 y 422."
+ST-RES-01.3,Sub-task,Garantizar la unicidad del número,Highest,1,2,HU-RES-01,ST-RES-01.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Validar el número único por restaurante en servicio y base de datos, con 409 para el duplicado.
+
+DÓNDE
+app/modules/tables/services/
+
+RELACIONADO CON
+Depende de ST-RES-01.2.
+
+VERIFICACIÓN
+Prueba de número repetido en el mismo restaurante y permitido en otro."
+ST-RES-01.4,Sub-task,Implementar el cambio de estado de la mesa,Highest,1,2,HU-RES-01,ST-RES-01.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Permitir habilitar e inhabilitar mesas con permiso table:manage.
+
+DÓNDE
+app/modules/tables/services/
+
+RELACIONADO CON
+Depende de ST-RES-01.2.
+
+VERIFICACIÓN
+Pruebas de habilitación e inhabilitación."
+ST-RES-01.5,Sub-task,Detectar las reservas futuras afectadas,Highest,1,2,HU-RES-01,ST-RES-01.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Listar las reservas futuras, incluidas las de combinaciones, antes de inhabilitar una mesa y conservarlas sin reasignación automática.
+
+DÓNDE
+app/modules/tables/services/
+
+RELACIONADO CON
+Depende de ST-RES-01.4 y HU-RES-03.
+
+VERIFICACIÓN
+Prueba de mesa con reserva futura y aviso de impacto."
+ST-RES-01.6,Sub-task,Crear los modelos TableCombination y TableCombinationTable,Highest,2,2,HU-RES-01,ST-RES-01.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir la combinación con capacidad real, rango de uso, estado y relación con sus mesas integrantes.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Depende de ST-RES-01.1. Base de la disponibilidad combinada.
+
+VERIFICACIÓN
+Migración aplicada y prueba de al menos dos mesas por combinación."
+ST-RES-01.7,Sub-task,Exponer el CRUD de combinaciones,Highest,2,2,HU-RES-01,ST-RES-01.7,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar listado, consulta, creación, edición e inactivación de combinaciones con permiso table:manage.
+
+DÓNDE
+app/modules/tables/routes/
+
+RELACIONADO CON
+Depende de ST-RES-01.6 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de API: 201, 200, 403, 404 y 409."
+ST-RES-01.8,Sub-task,Validar composición y capacidad real,Highest,2,2,HU-RES-01,ST-RES-01.8,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Rechazar mesas repetidas, de otro restaurante o combinaciones con menos de dos mesas; validar capacidad y rango de uso.
+
+DÓNDE
+app/modules/tables/services/
+
+RELACIONADO CON
+Depende de ST-RES-01.7.
+
+VERIFICACIÓN
+Pruebas de combinación inválida, capacidad incoherente y conjunto duplicado."
+ST-RES-01.9,Sub-task,Bloquear cambios incompatibles con reservas futuras,Highest,1,2,HU-RES-01,ST-RES-01.9,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Comprobar el impacto de cambiar o borrar una combinación y devolver 409 si hay reservas futuras incompatibles.
+
+DÓNDE
+app/modules/tables/services/
+
+RELACIONADO CON
+Depende de ST-RES-01.8 y HU-RES-03.
+
+VERIFICACIÓN
+Prueba de cambio compatible y de cambio bloqueado."
+HU-RES-02,Story,"HU-RES-02 · Disponibilidad, asignación automática e informes",Highest,15,2,EP-03,HU-RES-02;flow-b;sprint-2,"Como personal de sala, quiero consultar la disponibilidad, obtener una propuesta automática de mesas y ver informes de ocupación, para acomodar a cada grupo sin dobles asignaciones y entender la ocupación real.
+
+CONTEXTO
+La disponibilidad se calcula desde la configuración del restaurante, las mesas habilitadas y las reservas activas. Se prefieren mesas individuales; después, combinaciones configuradas; por último, varias mesas independientes. La ocupación nominal no es lo mismo que la disponibilidad real.
+
+ALCANCE
+- Generación de franjas entre apertura y cierre con la duración configurada.
+- Cálculo de mesas individuales libres, combinaciones y opciones de varias mesas.
+- Exclusión de mesas ocupadas por reservas pending, confirmed o seated.
+- Asignación automática determinista: individual > combinación > varias mesas; menos mesas y menor capacidad suficiente; desempate estable por número.
+- Informe de personas por franja, ocupación nominal y plazas nominales restantes.
+- Informe de no-show y cancelaciones por periodo.
+- Confirmación de que la consulta de un día responde en menos de un segundo con datos demo.
+
+FUERA DE ALCANCE
+- Lista de espera.
+- Pagos y depósitos.
+- Plano visual.
+- Reservas públicas sin autenticación.
+
+REQUISITOS
+- RF-RES-08, RF-RES-09, RF-INF-01, RF-INF-02, RF-INF-03, RF-INF-04, RF-RES-19.
+- RES-02, RES-03, RES-05, RES-06, RES-12; COM-02, COM-03, COM-04, COM-07.
+
+ABSORBE
+- HU-RES-03
+- HU-RES-11
+- HU-RES-12
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-RES-01: aporta mesas y combinaciones.
+- HU-RES-03: aporta reservas y ocupaciones.
+- HU-RES-05: aporta no-show y cancelaciones.
+
+REGLAS DE NEGOCIO
+RES-02, RES-03, RES-05, RES-06, RES-12; COM-02, COM-03, COM-04, COM-07.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: Las franjas se generan dentro del horario de apertura y con la duración configurada.
+CA2: Solo se ofrecen mesas habilitadas y con capacidad suficiente.
+CA3: Se excluyen las mesas ocupadas por reservas pending, confirmed o seated.
+CA4: Se prefieren mesas individuales; las combinaciones y las mesas independientes son alternativas.
+CA5: La asignación automática es determinista y devuelve 409 si no hay opción.
+CA6: La ocupación nominal cuenta los comensales una vez por reserva, no por mesa.
+CA7: La capacidad nominal usa las mesas habilitadas y no suma combinaciones solapadas.
+CA8: El informe de no-show y cancelaciones no cuenta esas reservas como ocupación.
+CA9: La consulta de disponibilidad de un día responde en menos de un segundo con datos demo.
+
+ESCENARIOS
+Escenario: franja con mesa libre
+  Dada una mesa habilitada de capacidad 4 libre de 20:00 a 21:00
+  Cuando se consulta disponibilidad para 4 personas a las 20:00
+  Entonces la mesa aparece como opción
+Escenario: combinación A+B
+  Dadas las mesas A=4 y B=4 y una combinación con capacidad real 6
+  Cuando se consulta para 5 personas
+  Entonces la combinación aparece como alternativa y no se suman sillas sobrantes
+Escenario: sin opción
+  Dado un grupo que no cabe en ninguna mesa ni combinación
+  Cuando se consulta disponibilidad
+  Entonces recibe 409 y no se crea ninguna reserva
+Escenario: ocupación nominal
+  Dadas mesas habilitadas con capacidad total 40 y reservas activas por 30 comensales
+  Cuando se consulta el informe de las 21:00
+  Entonces se muestran 30 personas, 75 % de ocupación y 10 plazas nominales"
+ST-RES-02.1,Sub-task,Generar las franjas del día,Highest,2,2,HU-RES-02,ST-RES-02.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Leer la configuración y generar las franjas entre apertura y cierre con la duración de reserva configurada.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-03 y HU-RES-01.
+
+VERIFICACIÓN
+Pruebas de franjas completas, último inicio posible y cierre de cocina."
+ST-RES-02.2,Sub-task,"Calcular mesas libres, combinaciones y opciones múltiples",Highest,3,2,HU-RES-02,ST-RES-02.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Excluir mesas ocupadas y devolver primero mesas individuales, después combinaciones y por último varias mesas independientes.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Depende de ST-RES-02.1 y HU-RES-03.
+
+VERIFICACIÓN
+Pruebas de mesa libre, combinación válida, mesas compartidas y solapamiento."
+ST-RES-02.3,Sub-task,Exponer GET /availability,Highest,2,2,HU-RES-02,ST-RES-02.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Publicar la consulta de disponibilidad con fecha, intervalo y comensales, devolviendo franjas y opciones.
+
+DÓNDE
+app/modules/reservations/routes/
+
+RELACIONADO CON
+Depende de ST-RES-02.2.
+
+VERIFICACIÓN
+Pruebas de contrato, filtros y respuesta menor de un segundo con datos demo."
+ST-RES-02.4,Sub-task,Calcular la ocupación nominal,Highest,2,2,HU-RES-02,ST-RES-02.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Contar comensales una vez por reserva, usar la capacidad nominal de mesas habilitadas y no sumar combinaciones solapadas.
+
+DÓNDE
+app/modules/reports/services/
+
+RELACIONADO CON
+Depende de ST-RES-02.2.
+
+VERIFICACIÓN
+Pruebas con reservas de varias mesas y combinaciones solapadas."
+ST-RES-02.5,Sub-task,Exponer el informe de ocupación,Highest,1,2,HU-RES-02,ST-RES-02.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar GET /reports/occupancy con permiso report:view y ámbito por restaurante.
+
+DÓNDE
+app/modules/reports/routes/
+
+RELACIONADO CON
+Depende de ST-RES-02.4 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de 200, 403 y 404 entre restaurantes."
+ST-RES-02.6,Sub-task,Exponer el informe de disponibilidad,Highest,1,2,HU-RES-02,ST-RES-02.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar GET /reports/availability con personas, mesas libres y opciones reservables para el grupo.
+
+DÓNDE
+app/modules/reports/routes/
+
+RELACIONADO CON
+Depende de ST-RES-02.4 y ST-RES-02.2.
+
+VERIFICACIÓN
+Pruebas de contrato y de grupo sin opciones."
+ST-RES-02.7,Sub-task,Implementar la selección determinista,Highest,3,2,HU-RES-02,ST-RES-02.7,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Ordenar las opciones con individual > combinación > varias mesas, menos mesas, menor capacidad suficiente y desempate estable por número.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Depende de ST-RES-02.2.
+
+VERIFICACIÓN
+Pruebas de orden, empate y ausencia de opción."
+ST-RES-02.8,Sub-task,Exponer la asignación automática,Highest,1,2,HU-RES-02,ST-RES-02.8,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar POST /reservations/{id}/auto-assign con permiso reservation:assign y revalidación bajo bloqueo.
+
+DÓNDE
+app/modules/reservations/routes/
+
+RELACIONADO CON
+Depende de ST-RES-02.7 y HU-RES-04.
+
+VERIFICACIÓN
+Pruebas de asignación correcta, 409 por conflicto y 403 sin permiso."
+HU-RES-03,Story,"HU-RES-03 · Reservas: CRUD completo, estados, historial, edición y multi-mesa",Highest,26,2,EP-03,HU-RES-03;flow-b;sprint-2,"Como personal de sala, quiero crear, consultar, editar y cambiar de estado reservas con una o varias mesas, para gestionar el servicio sin perder el historial ni asignar mesas incompatibles.
+
+CONTEXTO
+La reserva es un agregado completo. Puede ocupar una mesa, una combinación configurada o varias mesas independientes. Cada ocupación bloquea su mesa. Los estados y su historial son parte del mismo agregado, no una historia aparte.
+
+ALCANCE
+- Reservation con datos del cliente, comensales, inicio, fin, estado, autor y fecha.
+- ReservationTable con una o varias mesas y su intervalo de ocupación.
+- Creación transaccional con validación de horario, capacidad, combinación y duplicados.
+- Estado inicial confirmed para reservas registradas por personal.
+- Listado con filtros por fecha, estado, mesa y cliente; detalle con historial.
+- Edición de fecha, hora, mesas y comensales con revalidación atómica.
+- Máquina de estados pending, confirmed, seated, completed, cancelled y noShow.
+- Confirmar, sentar, completar y cancelar; liberar todas las mesas en estados finales.
+- Historial de cada transición con autor, fecha y motivo.
+- Una reserva pending bloquea sus mesas hasta start_at + cortesía.
+
+FUERA DE ALCANCE
+- Lista de espera.
+- Pagos, depósitos y penalizaciones.
+- Reserva pública sin autenticación.
+- Autoasignación, que corresponde a HU-RES-02.
+
+REQUISITOS
+- RF-RES-01, RF-RES-02, RF-RES-03, RF-RES-04, RF-RES-05, RF-RES-06, RF-RES-07, RF-RES-13, RF-RES-14, RF-RES-15, RF-RES-18.
+- RES-01 a RES-14; COM-03, COM-05, COM-06.
+
+ABSORBE
+- HU-RES-04
+- HU-RES-07
+- HU-RES-08
+- HU-RES-13
+- HU-RES-14
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-RES-01: aporta mesas y combinaciones.
+- HU-RES-02: aporta disponibilidad y asignación automática.
+- HU-RES-04: aporta concurrencia y anti-solapamiento.
+- HU-RES-05: aporta cortesía y no-show.
+- HU-AUT-05: aporta ámbito y propiedad del cliente.
+
+REGLAS DE NEGOCIO
+RES-01, RES-02, RES-03, RES-04, RES-05, RES-06, RES-07, RES-08, RES-09, RES-11, RES-12, RES-13, RES-14; COM-03, COM-05, COM-06.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: La fecha y hora están dentro del horario de apertura y los comensales son un entero positivo.
+CA2: La capacidad se valida contra la mesa, la combinación o la suma de mesas independientes.
+CA3: No puede haber dos reservas activas solapadas en la misma mesa.
+CA4: No puede haber reservas duplicadas por teléfono o email, fecha y franja con estado activo.
+CA5: La hora de fin se calcula desde la configuración y el autor y la fecha de creación son inmutables.
+CA6: Crear o editar una reserva guarda reserva y ocupaciones en la misma transacción.
+CA7: Una reserva pending bloquea sus mesas hasta start_at + cortesía.
+CA8: Las transiciones inválidas devuelven 409 y los estados finales no se modifican.
+CA9: Cancelar, completar o marcar no-show libera todas las mesas de la reserva.
+CA10: El historial conserva cada transición con autor, fecha y motivo.
+CA11: Un cliente solo accede a sus propias reservas; una reserva ajena devuelve 404.
+
+ESCENARIOS
+Escenario: reserva con una mesa
+  Dada una mesa habilitada con capacidad para 4 y libre de 20:00 a 21:00
+  Cuando se registra una reserva de 4 personas a las 20:00
+  Entonces se crea con estado confirmed y la mesa asignada
+Escenario: reserva con combinación
+  Dada una combinación A+B con capacidad real 6
+  Cuando se registra una reserva de 5 personas
+  Entonces se ocupan todas las mesas de la combinación en una sola transacción
+Escenario: capacidad insuficiente
+  Dada una mesa con capacidad máxima 2
+  Cuando se asigna una reserva de 4 personas
+  Entonces se rechaza con CAPACITY_EXCEEDED
+Escenario: solapamiento
+  Dada una reserva en la mesa 3 de 20:00 a 21:00
+  Cuando se intenta crear otra de 20:30 a 21:30
+  Entonces se rechaza con TABLE_NOT_AVAILABLE
+Escenario: cancelar y liberar
+  Dada una reserva confirmada con dos mesas
+  Cuando se cancela
+  Entonces se liberan las dos mesas y se conserva el historial"
+ST-RES-03.1,Sub-task,"Definir esquemas, repositorio y ocupaciones multi-mesa",Highest,3,2,HU-RES-03,ST-RES-03.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Crear los esquemas de reserva y ocupación, el repositorio y la relación con una o varias mesas y con una combinación opcional.
+
+DÓNDE
+app/modules/reservations/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-02.7 y HU-RES-01. Base del agregado.
+
+VERIFICACIÓN
+Pruebas de reserva con una mesa, combinación y varias mesas independientes."
+ST-RES-03.2,Sub-task,"Validar horario, capacidad, combinación y duplicados",Highest,3,2,HU-RES-03,ST-RES-03.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Validar apertura, comensales, capacidad real, mesas habilitadas, combinación autorizada y duplicados antes de escribir.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Depende de ST-RES-03.1 y HU-RES-04.
+
+VERIFICACIÓN
+Pruebas de capacidad, fuera de horario, mesa inhabilitada y duplicado."
+ST-RES-03.3,Sub-task,Implementar la creación transaccional,Highest,3,2,HU-RES-03,ST-RES-03.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Crear reserva y todas sus ocupaciones en una sola transacción, con bloqueo de mesas y rollback completo si falla una.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Depende de ST-RES-03.2.
+
+VERIFICACIÓN
+Prueba de creación correcta y de rollback al fallar una mesa."
+ST-RES-03.4,Sub-task,Calcular la hora de fin y fijar la autoría,Highest,2,2,HU-RES-03,ST-RES-03.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Calcular end_at desde la configuración y guardar created_by y created_at sin permitir su modificación posterior.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Depende de ST-RES-03.3 y HU-AUT-03.
+
+VERIFICACIÓN
+Pruebas de duración configurada y de autoría inmutable."
+ST-RES-03.5,Sub-task,Crear el modelo ReservationStatusHistory,Highest,1,2,HU-RES-03,ST-RES-03.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Definir el historial con estado anterior, estado nuevo, autor, fecha y motivo.
+
+DÓNDE
+app/models/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-02.7. Base de la máquina de estados.
+
+VERIFICACIÓN
+Migración aplicada y prueba de historial sin huérfanos."
+ST-RES-03.6,Sub-task,Implementar la máquina de estados,Highest,3,2,HU-RES-03,ST-RES-03.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Permitir pending→confirmed/cancelled, confirmed→seated/cancelled/noShow, seated→completed y rechazar el resto con 409.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Depende de ST-RES-03.5.
+
+VERIFICACIÓN
+Pruebas de cada transición válida e inválida y de estados finales inmutables."
+ST-RES-03.7,Sub-task,Registrar cada transición y su auditoría,Highest,2,2,HU-RES-03,ST-RES-03.7,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Guardar el historial y el registro de auditoría en la misma transacción que el cambio de estado.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Depende de ST-RES-03.6 y HU-AUT-06.
+
+VERIFICACIÓN
+Prueba de transición con historial y auditoría, y de rollback conjunto."
+ST-RES-03.8,Sub-task,Exponer las acciones del ciclo de vida,Highest,3,2,HU-RES-03,ST-RES-03.8,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar confirmar, sentar, completar y cancelar, liberando todas las mesas en estados finales.
+
+DÓNDE
+app/modules/reservations/routes/
+
+RELACIONADO CON
+Depende de ST-RES-03.7 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de cada acción, liberación de todas las mesas y 403."
+ST-RES-03.9,Sub-task,Implementar la edición con revalidación,Highest,3,2,HU-RES-03,ST-RES-03.9,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Permitir PATCH de fecha, hora, mesas y comensales, revalidando capacidad y solapamiento y actualizando todas las ocupaciones de forma atómica.
+
+DÓNDE
+app/modules/reservations/routes/
+
+RELACIONADO CON
+Depende de ST-RES-03.3 y ST-RES-03.6.
+
+VERIFICACIÓN
+Prueba de edición correcta, conflicto y conservación de las mesas anteriores."
+ST-RES-03.10,Sub-task,"Exponer listado, filtros y detalle con historial",Highest,3,2,HU-RES-03,ST-RES-03.10,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar GET /reservations con filtros y paginación y GET /reservations/{id} con historial, aplicando ámbito y propiedad del cliente.
+
+DÓNDE
+app/modules/reservations/routes/
+
+RELACIONADO CON
+Depende de ST-RES-03.7 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de filtros, detalle, 404 entre restaurantes y cliente con reserva ajena."
+HU-RES-04,Story,"HU-RES-04 · Concurrencia, anti-solapamiento y duplicados multi-mesa",Highest,18,2,EP-03,HU-RES-04;flow-b;sprint-2,"Como sistema, quiero garantizar que dos peticiones simultáneas no asignen la misma mesa ni creen reservas duplicadas, para mantener la integridad de la sala incluso con peticiones concurrentes.
+
+CONTEXTO
+La validación en servicio no basta: dos peticiones pueden leer la misma mesa libre a la vez. La base de datos es la última defensa. Con varias mesas por reserva, la exclusión se aplica a cada ocupación y todas las mesas se bloquean en orden estable.
+
+ALCANCE
+- Restricción EXCLUDE por table_id y rango temporal sobre las ocupaciones activas.
+- Bloqueo de todas las mesas seleccionadas en orden estable con SELECT FOR UPDATE.
+- Revalidación de disponibilidad y duplicados dentro de la transacción.
+- Traducción de conflictos a 409 con código de negocio.
+- Regla de duplicado por teléfono o email, fecha y franja con estado activo.
+- Índice único parcial coherente con la regla de duplicado.
+- Pruebas de concurrencia real, combinaciones que comparten mesas y rollback completo.
+
+FUERA DE ALCANCE
+- Lista de espera.
+- Bloqueos distribuidos o colas externas.
+- Reservas públicas concurrentes sin autenticación.
+
+REQUISITOS
+- RF-RES-15; RES-04, RES-05, RES-09, RES-12, RES-13; COM-06.
+
+ABSORBE
+- HU-RES-05
+- HU-RES-06
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-RES-03: aporta la creación, edición y estados de la reserva.
+- HU-RES-01: aporta mesas y combinaciones.
+
+REGLAS DE NEGOCIO
+RES-04, RES-05, RES-09, RES-12, RES-13; COM-06.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: Dos peticiones simultáneas por la misma mesa: exactamente una se crea.
+CA2: Todas las mesas de una reserva se bloquean en orden estable antes de revalidar.
+CA3: Si falla una mesa de la combinación, se revierte la reserva completa.
+CA4: Un conflicto de ocupación o duplicado devuelve 409 con código de negocio.
+CA5: El índice de duplicados cubre teléfono y email normalizados, fecha y estado activo.
+CA6: Una combinación A+B y otra B+C no pueden obtener B a la vez.
+
+ESCENARIOS
+Escenario: dos peticiones a la vez
+  Dada una mesa libre en la franja de las 21:00
+  Cuando llegan dos reservas simultáneas para esa mesa y franja
+  Entonces exactamente una se crea y la otra recibe 409
+Escenario: combinaciones que comparten mesa
+  Dadas las combinaciones A+B y B+C
+  Cuando se intentan reservar a la vez en la misma franja
+  Entonces como máximo una obtiene la mesa B
+Escenario: fallo de una mesa
+  Dada una reserva de tres mesas
+  Cuando falla la ocupación de una de ellas
+  Entonces no se guarda ninguna y las otras dos quedan libres
+Escenario: reserva duplicada
+  Dada una reserva activa de Ana López a las 21:00
+  Cuando se intenta registrar otra igual para la misma persona y franja
+  Entonces se rechaza con DUPLICATE_RESERVATION"
+ST-RES-04.1,Sub-task,Crear la restricción de exclusión por ocupación,Highest,2,2,HU-RES-04,ST-RES-04.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Añadir EXCLUDE USING gist sobre table_id y el rango de la ocupación para las reservas activas.
+
+DÓNDE
+alembic/versions/
+
+RELACIONADO CON
+Depende de ST-AUT-02.10 y ST-RES-03.1.
+
+VERIFICACIÓN
+Prueba de integración que intenta solapar dos ocupaciones y recibe error."
+ST-RES-04.2,Sub-task,Bloquear todas las mesas en orden estable,Highest,2,2,HU-RES-04,ST-RES-04.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Seleccionar y bloquear todas las mesas de la reserva con SELECT FOR UPDATE en el mismo orden para evitar interbloqueos.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Depende de ST-RES-04.1.
+
+VERIFICACIÓN
+Prueba de dos transacciones con mesas en distinto orden sin interbloqueo."
+ST-RES-04.3,Sub-task,Traducir el conflicto a 409,Highest,2,2,HU-RES-04,ST-RES-04.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Convertir la violación de exclusión y la revalidación fallida en 409 con código TABLE_NOT_AVAILABLE o DUPLICATE_RESERVATION.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Depende de ST-RES-04.2.
+
+VERIFICACIÓN
+Pruebas de conflicto de mesa y de duplicado con su código."
+ST-RES-04.4,Sub-task,Probar la concurrencia real,Highest,3,2,HU-RES-04,ST-RES-04.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Lanzar peticiones simultáneas contra la misma mesa y comprobar que solo una reserva se crea.
+
+DÓNDE
+tests/modules/reservations/
+
+RELACIONADO CON
+Depende de ST-RES-04.3.
+
+VERIFICACIÓN
+Prueba con hilos o procesos concurrentes y conteo final de reservas."
+ST-RES-04.5,Sub-task,Probar el solapamiento por estados,Highest,2,2,HU-RES-04,ST-RES-04.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Comprobar que pending, confirmed y seated bloquean; completed, cancelled y noShow liberan.
+
+DÓNDE
+tests/modules/reservations/
+
+RELACIONADO CON
+Depende de ST-RES-04.4.
+
+VERIFICACIÓN
+Pruebas parametrizadas por estado."
+ST-RES-04.6,Sub-task,Crear el índice de duplicados,Highest,2,2,HU-RES-04,ST-RES-04.6,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Añadir el índice único parcial por teléfono o email normalizado, fecha y estado activo.
+
+DÓNDE
+alembic/versions/
+
+RELACIONADO CON
+Depende de ST-RES-03.1.
+
+VERIFICACIÓN
+Prueba de duplicado bloqueado por base de datos y de reserva cancelada permitida."
+ST-RES-04.7,Sub-task,Implementar la regla de duplicado,Highest,2,2,HU-RES-04,ST-RES-04.7,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Validar duplicados por teléfono o email, restaurante, fecha y franja con estado activo, devolviendo 409.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Depende de ST-RES-04.6.
+
+VERIFICACIÓN
+Pruebas de duplicado por teléfono, por email y de reserva cancelada."
+ST-RES-04.8,Sub-task,Probar combinaciones compartidas y rollback,Highest,3,2,HU-RES-04,ST-RES-04.8,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Verificar que dos combinaciones que comparten una mesa no pueden reservarse a la vez y que un fallo revierte todas las ocupaciones.
+
+DÓNDE
+tests/modules/reservations/
+
+RELACIONADO CON
+Depende de ST-RES-04.4.
+
+VERIFICACIÓN
+Pruebas de A+B contra B+C y de rollback de tres mesas."
+HU-RES-05,Story,HU-RES-05 · Cortesía y no-show,Highest,8,2,EP-03,HU-RES-05;flow-b;sprint-2,"Como gerente, quiero marcar como no-show las reservas que no llegan dentro del tiempo de cortesía y liberar sus mesas, para no dejar mesas bloqueadas por clientes que no se presentan.
+
+CONTEXTO
+La cortesía se lee de la configuración. Una reserva pending caduca si no se confirma a tiempo y una confirmada pasa a no-show si el cliente no llega. En ambos casos se liberan todas sus mesas y se conserva el historial.
+
+ALCANCE
+- Cálculo del vencimiento por start_at + courtesy_minutes.
+- Detección de pending expirada y de confirmed sin llegada.
+- Liberación de todas las mesas de la reserva.
+- Registro en historial y auditoría, sin promoción de lista de espera.
+- Disparo manual autorizado que devuelve el número de reservas procesadas.
+- Idempotencia y revalidación ante llegada simultánea.
+
+FUERA DE ALCANCE
+- Lista de espera.
+- Penalizaciones por cancelación tardía.
+- Pagos y depósitos.
+
+REQUISITOS
+- RF-RES-10, RF-RES-11; RES-10, CFG-04.
+
+ABSORBE
+- HU-RES-09
+
+DEPENDENCIAS
+- HU-AUT-01 y HU-AUT-02: kernel y esquema compartido.
+- Kernel: se consume el contrato congelado de HU-AUT-01 y el esquema compartido de HU-AUT-02.
+
+RELACIONADO CON
+- HU-AUT-03: aporta courtesy_minutes.
+- HU-RES-03: aporta reservas y estados.
+- HU-RES-04: aporta la liberación atómica de ocupaciones.
+
+REGLAS DE NEGOCIO
+RES-10, CFG-04.
+
+CRITERIOS DE ACEPTACIÓN
+CA1: Una reserva confirmed pasa a noShow después de start_at + cortesía sin llegada.
+CA2: Antes del vencimiento la reserva sigue confirmada.
+CA3: Una reserva pending caduca en start_at + cortesía y se cancela.
+CA4: El cambio libera todas las mesas de la reserva y registra historial y auditoría.
+CA5: Repetir el proceso no duplica historial ni auditoría.
+CA6: Si el cliente llega a la vez, se revalida bajo bloqueo antes de cambiar el estado.
+CA7: El disparo manual exige permiso y devuelve el número de reservas procesadas.
+
+ESCENARIOS
+Escenario: cliente no llega
+  Dada una reserva confirmada a las 20:00 y cortesía de 5 minutos
+  Cuando son las 20:06 y el cliente no ha llegado
+  Entonces la reserva pasa a noShow y la mesa queda libre
+Escenario: cortesía configurable
+  Dado un restaurante con cortesía de 10 minutos
+  Cuando son las 20:07 sin llegada del cliente
+  Entonces la reserva sigue confirmada
+Escenario: proceso repetido
+  Dada una reserva ya marcada como noShow
+  Cuando se ejecuta el proceso de nuevo
+  Entonces no se añade otro registro de historial ni de auditoría
+Escenario: llegada simultánea
+  Dada una reserva a punto de vencer
+  Cuando el cliente pasa a seated antes de que el proceso la lea
+  Entonces el proceso la conserva y no la marca como noShow"
+ST-RES-05.1,Sub-task,Calcular el vencimiento por cortesía,Highest,2,2,HU-RES-05,ST-RES-05.1,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Leer courtesy_minutes del restaurante y calcular start_at + cortesía para pending y confirmed.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Se relaciona con HU-AUT-03 y ST-RES-03.4.
+
+VERIFICACIÓN
+Pruebas con cortesía 0, 5 y 10 minutos."
+ST-RES-05.2,Sub-task,Detectar pending expirada y no-show,Highest,2,2,HU-RES-05,ST-RES-05.2,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Seleccionar pending expiradas y confirmed sin llegada, revalidando estado y hora bajo bloqueo.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Depende de ST-RES-05.1.
+
+VERIFICACIÓN
+Pruebas de pending expirada, confirmed no-show y llegada simultánea."
+ST-RES-05.3,Sub-task,Liberar todas las mesas y registrar el cambio,Highest,1,2,HU-RES-05,ST-RES-05.3,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Marcar la reserva, liberar todas sus ocupaciones y guardar historial y auditoría en una sola transacción.
+
+DÓNDE
+app/modules/reservations/services/
+
+RELACIONADO CON
+Depende de ST-RES-05.2 y HU-RES-04.
+
+VERIFICACIÓN
+Prueba de liberación de una y de varias mesas."
+ST-RES-05.4,Sub-task,Exponer el disparo manual,Highest,1,2,HU-RES-05,ST-RES-05.4,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Implementar el endpoint manual con permiso reservation:assign que devuelve el número de reservas procesadas.
+
+DÓNDE
+app/modules/reservations/routes/
+
+RELACIONADO CON
+Depende de ST-RES-05.3 y HU-AUT-05.
+
+VERIFICACIÓN
+Pruebas de 200, 403 y conteo correcto."
+ST-RES-05.5,Sub-task,Verificar idempotencia y llegada simultánea,Highest,2,2,HU-RES-05,ST-RES-05.5,"Sprint 2 · 2026-11-06 → 2026-11-12
+
+QUÉ
+Comprobar que repetir el proceso no duplica registros y que una llegada concurrente conserva la reserva.
+
+DÓNDE
+tests/modules/reservations/
+
+RELACIONADO CON
+Depende de ST-RES-05.3.
+
+VERIFICACIÓN
+Pruebas de doble ejecución y de carrera seated/no-show."

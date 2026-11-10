@@ -6,8 +6,8 @@
 |---|---|
 | Fecha | 2026-11-10 |
 | Estado | Implementado y verificado. |
-| Commits | `e2bcca7`, `6b025f5`, `52acb9a`, `a1016d2`, `627b9fb`, `76d7118`, `5d431e9`, `b13fb10` |
-| Migración final | `7c2bd8d3cf3e` (single head) |
+| Commits | `e2bcca7`, `6b025f5`, `52acb9a`, `a1016d2`, `627b9fb`, `76d7118`, `5d431e9`, `b13fb10`, `60223d1` |
+| Migración final | `314792047285` (single head) |
 | Pruebas | `100 passed` |
 | Historia | HU-AUT-02 — OICO-35 |
 | Alcance | 25 tablas, modelos compartidos, migraciones Alembic, seeders idempotentes y pruebas |
@@ -108,6 +108,7 @@ Todas cuelgan de `0e939a1815c3` (cabeza actual de `dev`). Se escriben a mano: au
 | M3 `tables_reservations` | Crea `tables` (hoy no tiene migración), `table_combinations`, `table_combination_tables`, `reservations`, `reservation_tables`, `reservation_status_history`. | M1, M2 |
 | M4 `schedules_audit_price` | Crea `employees`, `schedules`, `work_shifts`, `time_off_requests`, `shift_swap_requests`, `audit_logs`, `price_history`. | M1, M2 |
 | M5 `critical_constraints` | `btree_gist`, `EXCLUDE` de reservas por mesa, `EXCLUDE` de turnos por empleado, índice único parcial de reservas duplicadas y checks/indexes restantes. | M3, M4 |
+| M6 `default_work_shift_type` | Añade `server_default = 'morning'` a `work_shifts.type`. | M5 |
 
 Cada migración debe tener `downgrade` completo y probado.
 
@@ -494,10 +495,11 @@ Las historias sin asignar deben quedar explícitas en la planificación: alguien
 4. **M3** — Mesas y reservas.
 5. **M4** — Horarios, auditoría y `price_history`.
 6. **M5** — Restricciones e índices críticos.
-7. **ST-AUT-02.2** — Seeders de categorías y alérgenos.
-8. **ST-AUT-02.3** — Seeders de restaurante, usuarios, roles y permisos.
-9. **ST-AUT-02.4** — Pruebas de idempotencia y downgrade.
-10. Actualizar este informe con las líneas finales y el resultado de las pruebas.
+7. **M6** — Default de `work_shifts.type`.
+8. **ST-AUT-02.2** — Seeders de categorías y alérgenos.
+9. **ST-AUT-02.3** — Seeders de restaurante, usuarios, roles y permisos.
+10. **ST-AUT-02.4** — Pruebas de idempotencia y downgrade.
+11. Actualizar este informe con las líneas finales y el resultado de las pruebas.
 
 ---
 
@@ -505,7 +507,7 @@ Las historias sin asignar deben quedar explícitas en la planificación: alguien
 
 ### `feature/HU-AUT-02-data-schema-shared-models-seeders` (Jesús)
 
-- [x] Implementar M1–M5.
+- [x] Implementar M1–M6.
 - [x] Mover modelos a `app/models`.
 - [x] Adoptar el controlador ORM de dev en la carta.
 - [x] Implementar seeders.
@@ -637,7 +639,7 @@ Resultado al cerrar la implementación:
 - `alembic downgrade base`: correcto; solo queda `alembic_version`.
 - Seeders ejecutados dos veces: conteos estables.
 - `pytest`: 100 pruebas superadas.
-- Base de desarrollo recreada, migrada a `7c2bd8d3cf3e` y sembrada.
+- Base de desarrollo recreada, migrada a `314792047285` y sembrada.
 - Esquema final: 25 tablas; `opening_hours` no existe.
 - Permisos finales: 17; roles finales: 5; alérgenos: 14.
 - HU-CAR-02 (PR #18) integrada en `dev`; su controlador ORM y sus tests se conservan.

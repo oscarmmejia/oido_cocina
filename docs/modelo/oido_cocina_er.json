@@ -1,0 +1,1657 @@
+{
+  "version": "32.6.9",
+  "pages": [
+    {
+      "id": "oS63oSGljVicVW1HzOJZ",
+      "name": "Relational Model - Oido Cocina Complete",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-75",
+          "target": "rNcER4tNY0pvfe6rtmYh-21"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-94",
+          "target": "rNcER4tNY0pvfe6rtmYh-21"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-97",
+          "target": "rNcER4tNY0pvfe6rtmYh-65"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-116",
+          "target": "rNcER4tNY0pvfe6rtmYh-21"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-126",
+          "target": "rNcER4tNY0pvfe6rtmYh-113"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-148",
+          "target": "rNcER4tNY0pvfe6rtmYh-177"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-167",
+          "target": "rNcER4tNY0pvfe6rtmYh-91"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-180",
+          "target": "rNcER4tNY0pvfe6rtmYh-21"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-9",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-193",
+          "target": "rNcER4tNY0pvfe6rtmYh-21"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-10",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-196",
+          "target": "rNcER4tNY0pvfe6rtmYh-91"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-11",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-199",
+          "target": "rNcER4tNY0pvfe6rtmYh-72"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-12",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-230",
+          "target": "rNcER4tNY0pvfe6rtmYh-21"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-13",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-243",
+          "target": "rNcER4tNY0pvfe6rtmYh-145"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-14",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-246",
+          "target": "rNcER4tNY0pvfe6rtmYh-123"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-15",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-253",
+          "target": "rNcER4tNY0pvfe6rtmYh-123"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-16",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-256",
+          "target": "rNcER4tNY0pvfe6rtmYh-58"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-17",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-263",
+          "target": "rNcER4tNY0pvfe6rtmYh-227"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-18",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-266",
+          "target": "rNcER4tNY0pvfe6rtmYh-164"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-19",
+          "type": "edge",
+          "parent": "1",
+          "source": "rNcER4tNY0pvfe6rtmYh-282",
+          "target": "rNcER4tNY0pvfe6rtmYh-91"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-20",
+          "type": "node",
+          "parent": "1",
+          "label": "restaurant"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-21",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-20"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-22",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-21",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-23",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-21",
+          "label": "ID"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-24",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-20"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-25",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-24"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-26",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-24",
+          "label": "name"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-27",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-20"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-28",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-27"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-29",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-27",
+          "label": "time_zone"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-30",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-20"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-31",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-30"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-32",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-30",
+          "label": "is_active"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-33",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-20"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-34",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-33"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-35",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-33",
+          "label": "curtesy_minutes (def 5)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-36",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-20"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-37",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-36"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-38",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-36",
+          "label": "slot_minutes (def 60)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-39",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-20"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-40",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-39"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-41",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-39",
+          "label": "min_break_between_shifts"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-42",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-20"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-43",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-42"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-44",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-42",
+          "label": "day_of_week (1..7), period"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-45",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-20"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-46",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-45"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-47",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-45",
+          "label": "open_time"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-48",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-20"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-49",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-48"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-50",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-48",
+          "label": "close_time"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-51",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-20"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-52",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-51"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-53",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-51",
+          "label": "kitchen_close_time"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-54",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-20"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-55",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-54"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-56",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-54",
+          "label": "direction"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-57",
+          "type": "node",
+          "parent": "1",
+          "label": "allergens"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-58",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-57"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-59",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-58",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-60",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-58",
+          "label": "ID"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-61",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-57"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-62",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-61"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-63",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-61",
+          "label": "name (gluten, eggs, etc)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-64",
+          "type": "node",
+          "parent": "1",
+          "label": "roles"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-65",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-64"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-66",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-65",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-67",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-65",
+          "label": "ID"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-68",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-64"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-69",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-68"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-70",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-68",
+          "label": "name (admin, chee, etc)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-71",
+          "type": "node",
+          "parent": "1",
+          "label": "tables"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-72",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-71"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-73",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-72",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-74",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-72",
+          "label": "ID"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-75",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-71"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-76",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-75",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-77",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-75",
+          "label": "restaurant_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-78",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-71"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-79",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-78"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-80",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-78",
+          "label": "min_capacity"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-81",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-71"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-82",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-81"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-83",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-81",
+          "label": "max_capacity"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-84",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-71"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-85",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-84"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-86",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-84",
+          "label": "is_enabled"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-87",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-71"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-88",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-87"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-89",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-87",
+          "label": "location (interior, exterior, bar)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-90",
+          "type": "node",
+          "parent": "1",
+          "label": "users"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-91",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-90"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-92",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-91",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-93",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-91",
+          "label": "ID"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-94",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-90"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-95",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-94",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-96",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-94",
+          "label": "restaurant_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-97",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-90"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-98",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-97",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-99",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-97",
+          "label": "role_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-100",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-90"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-101",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-100"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-102",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-100",
+          "label": "name"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-103",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-90"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-104",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-103"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-105",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-103",
+          "label": "password_hash"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-106",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-90"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-107",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-106"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-108",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-106",
+          "label": "phone_number"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-109",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-90"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-110",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-109"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-111",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-109",
+          "label": "email"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-112",
+          "type": "node",
+          "parent": "1",
+          "label": "categories"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-113",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-112"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-114",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-113",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-115",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-113",
+          "label": "ID"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-116",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-112"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-117",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-116",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-118",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-116",
+          "label": "restaurant_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-119",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-112"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-120",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-119"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-121",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-119",
+          "label": "name (starters, desserts)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-122",
+          "type": "node",
+          "parent": "1",
+          "label": "dishes"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-123",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-122"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-124",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-123",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-125",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-123",
+          "label": "ID"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-126",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-122"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-127",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-126",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-128",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-126",
+          "label": "category_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-129",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-122"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-130",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-129"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-131",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-129",
+          "label": "name"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-132",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-122"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-133",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-132"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-134",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-132",
+          "label": "price"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-135",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-122"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-136",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-135"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-137",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-135",
+          "label": "is_available"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-138",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-122"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-139",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-138"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-140",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-138",
+          "label": "is_published"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-141",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-122"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-142",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-141"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-143",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-141",
+          "label": "is_active"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-144",
+          "type": "node",
+          "parent": "1",
+          "label": "menus"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-145",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-144"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-146",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-145",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-147",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-145",
+          "label": "ID"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-148",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-144"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-149",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-148",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-150",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-148",
+          "label": "collection_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-151",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-144"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-152",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-151"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-153",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-151",
+          "label": "name (daily menu, etc)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-154",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-144"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-155",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-154"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-156",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-154",
+          "label": "own_price"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-157",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-144"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-158",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-157"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-159",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-157",
+          "label": "is_available"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-160",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-144"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-161",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-160"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-162",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-160",
+          "label": "inactive_reason"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-163",
+          "type": "node",
+          "parent": "1",
+          "label": "employees"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-164",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-163"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-165",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-164",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-166",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-164",
+          "label": "ID"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-167",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-163"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-168",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-167",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-169",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-167",
+          "label": "user_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-170",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-163"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-171",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-170"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-172",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-170",
+          "label": "full name"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-173",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-163"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-174",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-173"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-175",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-173",
+          "label": "job_position (cook, waiter, etc)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-176",
+          "type": "node",
+          "parent": "1",
+          "label": "menu_collections"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-177",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-176"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-178",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-177",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-179",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-177",
+          "label": "ID"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-180",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-176"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-181",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-180",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-182",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-180",
+          "label": "restaurant_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-183",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-176"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-184",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-183"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-185",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-183",
+          "label": "name (starters, desserts)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-186",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-176"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-187",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-186"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-188",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-186",
+          "label": "type (daily, seasonal)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-189",
+          "type": "node",
+          "parent": "1",
+          "label": "reservations"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-190",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-189"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-191",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-190",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-192",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-190",
+          "label": "ID"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-193",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-189"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-194",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-193",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-195",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-193",
+          "label": "restaurant_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-196",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-189"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-197",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-196",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-198",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-196",
+          "label": "created_by_user_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-199",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-189"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-200",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-199",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-201",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-199",
+          "label": "table_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-202",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-189"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-203",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-202"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-204",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-202",
+          "label": "customer_name"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-205",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-189"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-206",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-205"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-207",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-205",
+          "label": "phone"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-208",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-189"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-209",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-208"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-210",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-208",
+          "label": "party_size"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-211",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-189"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-212",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-211"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-213",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-211",
+          "label": "start_at"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-214",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-189"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-215",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-214"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-216",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-214",
+          "label": "end_at"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-217",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-189"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-218",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-217"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-219",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-217",
+          "label": "status (confirmed, seated, etc)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-220",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-189"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-221",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-220"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-222",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-220",
+          "label": "changed_at (def NULL)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-223",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-189"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-224",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-223"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-225",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-223",
+          "label": "reason def (def NULL)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-226",
+          "type": "node",
+          "parent": "1",
+          "label": "schedules"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-227",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-226"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-228",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-227",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-229",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-227",
+          "label": "ID"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-230",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-226"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-231",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-230",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-232",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-230",
+          "label": "restaurant_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-233",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-226"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-234",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-233"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-235",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-233",
+          "label": "period_start"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-236",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-226"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-237",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-236"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-238",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-236",
+          "label": "period_end"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-239",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-226"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-240",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-239"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-241",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-239",
+          "label": "status (draft, published)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-242",
+          "type": "node",
+          "parent": "1",
+          "label": "menu_dishes"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-243",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-242"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-244",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-243",
+          "label": "PK\nFK",
+          "html": "PK<br>FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-245",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-243",
+          "label": "menu_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-246",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-242"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-247",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-246",
+          "label": "PK\nFK",
+          "html": "PK<br>FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-248",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-246",
+          "label": "dish_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-249",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-242"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-250",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-249"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-251",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-249",
+          "label": "role (starter, main, drink, etc)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-252",
+          "type": "node",
+          "parent": "1",
+          "label": "dish_allergens"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-253",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-252"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-254",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-253",
+          "label": "PK\nFK",
+          "html": "PK<br>FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-255",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-253",
+          "label": "dish_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-256",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-252"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-257",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-256",
+          "label": "PK\nFK",
+          "html": "PK<br>FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-258",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-256",
+          "label": "allergens_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-259",
+          "type": "node",
+          "parent": "1",
+          "label": "work_shifts"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-260",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-259"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-261",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-260",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-262",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-260",
+          "label": "id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-263",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-259"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-264",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-263",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-265",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-263",
+          "label": "schedule_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-266",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-259"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-267",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-266",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-268",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-266",
+          "label": "employee_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-269",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-259"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-270",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-269"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-271",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-269",
+          "label": "start_at"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-272",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-259"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-273",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-272"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-274",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-272",
+          "label": "end_at"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-275",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-259"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-276",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-275"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-277",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-275",
+          "label": "type (morning, night, split)"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-278",
+          "type": "node",
+          "parent": "1",
+          "label": "audit_logs"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-279",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-278"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-280",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-279",
+          "label": "PK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-281",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-279",
+          "label": "id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-282",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-278"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-283",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-282",
+          "label": "FK"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-284",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-282",
+          "label": "user_id"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-285",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-278"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-286",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-285"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-287",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-285",
+          "label": "action"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-288",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-278"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-289",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-288"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-290",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-288",
+          "label": "entity_name"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-291",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-278"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-292",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-291"
+        },
+        {
+          "id": "rNcER4tNY0pvfe6rtmYh-293",
+          "type": "node",
+          "parent": "rNcER4tNY0pvfe6rtmYh-291",
+          "label": "created_at"
+        }
+      ]
+    }
+  ]
+}
