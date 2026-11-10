@@ -54,7 +54,9 @@ def test_update_changes_only_supplied_configuration(restaurant):
     assert result.name == "Nombre original"
     assert result.direction == "Dirección original"
     assert result.is_active is False
-    db.get.assert_called_once_with(Restaurant, 7)
+    db.get.assert_called_once_with(
+        Restaurant, 7, with_for_update=True, populate_existing=True
+    )
     db.commit.assert_called_once_with()
     db.refresh.assert_called_once_with(restaurant)
     db.rollback.assert_not_called()

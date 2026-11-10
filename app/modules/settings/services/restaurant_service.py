@@ -8,13 +8,20 @@ from sqlalchemy.orm import Session
 
 from app.core.errors.codes import ErrorCode
 from app.core.kernel.errors import AppError
-from app.modules.settings.models.restaurant import Restaurant
+from app.models import Restaurant
 from app.modules.settings.schemas import RestaurantSettingsUpdate
 
 
-def get_restaurant_settings(db: Session, restaurant_id: int) -> Restaurant:
-    """Devuelve el restaurante con su configuración o indica que no existe."""
-    restaurant = db.get(Restaurant, restaurant_id)
+def get_restaurant_settings(
+    db: Session, restaurant_id: int, *, for_update: bool = False
+) -> Restaurant:
+    """Obtiene la configuración, con bloqueo y recarga opcionales para actualizar."""
+    if for_update:
+        restaurant = db.get(
+            Restaurant, restaurant_id, with_for_update=True, populate_existing=True
+        )
+    else:
+        restaurant = db.get(Restaurant, restaurant_id)
     if restaurant is None:
         raise AppError(
             code=ErrorCode.NOT_FOUND.value,
@@ -79,7 +86,7 @@ def update_restaurant_settings(
     El llamante debe obtener restaurant_id de la identidad autenticada.
     Este servicio no sustituye la comprobación de permisos de la futura ruta.
     """
-    restaurant = get_restaurant_settings(db, restaurant_id)
+    restaurant = get_restaurant_settings(db, restaurant_id, for_update=True)
     changes = settings.model_dump(exclude_unset=True)
 
     # Validar una copia completa antes de tocar atributos del objeto ORM.
