@@ -11,7 +11,7 @@ ocupaciones y el historial se consultan de forma explícita.
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.orm import Session
 
 from app.models import (
@@ -213,6 +213,52 @@ def release_occupations(db: Session, reservation_id: int) -> int:
         .values(status=ReservationTableStatus.CANCELLED.value)
     )
     return result.rowcount or 0
+
+
+def list_active_occupation_table_ids(
+    db: Session, reservation_id: int
+) -> list[int]:
+    """Devuelve los IDs de las mesas con ocupación activa."""
+
+    return list(
+        db.scalars(
+            select(ReservationTable.table_id)
+            .where(
+                ReservationTable.reservation_id == reservation_id,
+                ReservationTable.status == ReservationTableStatus.ACTIVE.value,
+            )
+            .order_by(ReservationTable.table_id)
+        )
+    )
+
+
+def replace_occupations(
+    db: Session,
+    reservation_id: int,
+    table_ids: list[int],
+    start_at: datetime,
+    end_at: datetime,
+) -> list[ReservationTable]:
+    """Sustituye todas las ocupaciones de una reserva."""
+
+    db.execute(
+        delete(ReservationTable).where(
+            ReservationTable.reservation_id == reservation_id
+        )
+    )
+    occupations = [
+        ReservationTable(
+            reservation_id=reservation_id,
+            table_id=table_id,
+            start_at=start_at,
+            end_at=end_at,
+            status=ReservationTableStatus.ACTIVE.value,
+        )
+        for table_id in table_ids
+    ]
+    db.add_all(occupations)
+    db.flush()
+    return occupations
 
 
 def list_occupations(db: Session, reservation_id: int) -> list[ReservationTable]:

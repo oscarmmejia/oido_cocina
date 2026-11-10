@@ -11,7 +11,9 @@ from app.modules.reservations.repositories.reservation import ReservationDetail
 from app.modules.reservations.schemas.reservation import (
     ReservationDetailRead,
     ReservationTransition,
+    ReservationUpdate,
 )
+from app.modules.reservations.services import editing as editing_service
 from app.modules.reservations.services import transitions as transition_service
 
 router = APIRouter(prefix="/reservations", tags=["reservations"])
@@ -22,6 +24,22 @@ _TRANSITION_RESPONSES = {
     403: {"description": "No tienes permisos para gestionar reservas."},
     404: {"description": "No existe la reserva o pertenece a otro restaurante."},
     409: {"description": "La transición de estado no está permitida."},
+}
+
+_EDIT_RESPONSES = {
+    403: {"description": "No tienes permisos para gestionar reservas."},
+    404: {"description": "No existe la reserva o pertenece a otro restaurante."},
+    409: {
+        "description": (
+            "La reserva no es editable, hay solapamiento o duplicado."
+        )
+    },
+    422: {
+        "description": (
+            "Los datos no son válidos, la capacidad se excede o la reserva "
+            "queda fuera de horario."
+        )
+    },
 }
 
 
@@ -142,5 +160,32 @@ def cancel_reservation(
         user,
         reservation_id,
         ReservationStatus.CANCELLED,
+        payload,
+    )
+
+
+@router.patch(
+    "/{reservation_id}",
+    response_model=ReservationDetailRead,
+    status_code=status.HTTP_200_OK,
+    summary="Editar una reserva",
+    description=(
+        "Edita fecha, hora, mesas, combinación, comensales o datos de cliente. "
+        "La capacidad, el horario, los duplicados y el solapamiento se "
+        "revalidan en una sola transacción."
+    ),
+    responses=_EDIT_RESPONSES,
+)
+def edit_reservation(
+    reservation_id: int,
+    payload: ReservationUpdate,
+    user: CurrentUser = Depends(require_permission(RESERVATION_PERMISSION)),
+    db: Session = Depends(get_db),
+) -> ReservationDetailRead:
+    restaurant = _get_restaurant(db, user)
+    return editing_service.update_reservation(
+        db,
+        restaurant,
+        reservation_id,
         payload,
     )

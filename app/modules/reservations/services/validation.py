@@ -15,7 +15,10 @@ from app.core.kernel.errors import AppError
 from app.models import DiningTable, Reservation, Restaurant, TableCombination
 from app.models.enums import ReservationStatus
 from app.modules.reservations.repositories import reservation as reservation_repo
-from app.modules.reservations.schemas.reservation import ReservationCreate
+from app.modules.reservations.schemas.reservation import (
+    ReservationCreate,
+    ReservationUpdate,
+)
 from app.modules.reservations.services.opening_hours import (
     calculate_end_at,
     is_within_opening_hours,
@@ -277,6 +280,96 @@ def validate_reservation(
         start_utc,
         end_utc,
         exclude_reservation_id,
+    )
+    if duplicate is not None:
+        raise AppError(
+            "DUPLICATE_RESERVATION",
+            "Ya existe una reserva activa para ese contacto y franja",
+            409,
+        )
+
+    return ValidatedReservation(
+        start_at=start_utc,
+        end_at=end_utc,
+        tables=tables,
+        combination=combination,
+    )
+
+
+def validate_reservation_update(
+    db: Session,
+    restaurant: Restaurant,
+    reservation: Reservation,
+    payload: ReservationUpdate,
+) -> ValidatedReservation:
+    """Valida el estado efectivo de una reserva antes de editarla.
+
+    Los campos no enviados se toman de la reserva actual. Si cambia
+    ``start_at`` se recalcula ``end_at``; si no cambia, se conserva el
+    intervalo existente.
+    """
+
+    fields_set = payload.model_fields_set
+    time_zone = restaurant_timezone(restaurant)
+
+    if "start_at" in fields_set:
+        local_start = to_restaurant_timezone(payload.start_at, time_zone)
+        local_end = calculate_end_at(local_start, restaurant.slot_minutes)
+    else:
+        local_start = to_restaurant_timezone(reservation.start_at, time_zone)
+        local_end = to_restaurant_timezone(reservation.end_at, time_zone)
+
+    current_table_ids = reservation_repo.list_active_occupation_table_ids(
+        db,
+        reservation.id,
+    )
+    if "table_ids" in fields_set:
+        table_ids = list(payload.table_ids or [])
+    elif "combination_id" in fields_set and payload.combination_id is not None:
+        table_ids = []
+    else:
+        table_ids = current_table_ids
+
+    combination_id = (
+        payload.combination_id
+        if "combination_id" in fields_set
+        else reservation.combination_id
+    )
+    combination, tables = _resolve_selection(
+        db,
+        restaurant,
+        table_ids,
+        combination_id,
+        local_start.date(),
+    )
+
+    party_size = (
+        payload.party_size
+        if "party_size" in fields_set
+        else reservation.party_size
+    )
+    _validate_capacity(party_size, tables, combination)
+
+    if not is_within_opening_hours(db, restaurant, local_start, local_end):
+        raise AppError(
+            "OUTSIDE_OPENING_HOURS",
+            "La reserva está fuera del horario de apertura",
+            422,
+        )
+
+    start_utc = local_start.astimezone(timezone.utc)
+    end_utc = local_end.astimezone(timezone.utc)
+
+    phone = payload.phone if "phone" in fields_set else reservation.phone
+    email = payload.email if "email" in fields_set else reservation.email
+    duplicate = _find_duplicate(
+        db,
+        restaurant,
+        phone or "",
+        email,
+        start_utc,
+        end_utc,
+        reservation.id,
     )
     if duplicate is not None:
         raise AppError(
