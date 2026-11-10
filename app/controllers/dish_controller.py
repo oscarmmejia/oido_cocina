@@ -1,13 +1,15 @@
+import math
+
 from fastapi import HTTPException
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from app.models.dish_model import Dish
-from app.models.dish_allergen_model import DishAllergen
-from app.models.category_model import Category
 from app.models.allergen_model import Allergen
-from app.schemas.dish_schema import DishCreate, DishUpdate
-
+from app.models.category_model import Category
+from app.models.dish_allergen_model import DishAllergen
+from app.models.dish_model import Dish
+from app.schemas.dish_schema import DishCreate, DishStatusUpdate, DishUpdate
 
 def create_dish(
     db: Session,
@@ -267,3 +269,178 @@ def update_dish(
             status_code=500,
             detail="No se pudo actualizar el plato"
         )
+
+
+def deactivate_dish(
+    db: Session,
+    dish_id: int,
+    restaurant_id: int
+):
+    try:
+        dish = db.query(Dish).filter(
+            Dish.id == dish_id,
+            Dish.restaurant_id == restaurant_id
+        ).first()
+
+        if dish is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Plato no encontrado"
+            )
+
+        if not dish.is_active:
+            raise HTTPException(
+                status_code=409,
+                detail="El plato ya está desactivado"
+            )
+
+        dish.is_active = False
+        db.commit()
+
+        return {"message": "Plato desactivado correctamente", "id": dish.id}
+
+    except HTTPException:
+        db.rollback()
+        raise
+
+    except SQLAlchemyError:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail="No se pudo desactivar el plato"
+        )
+        
+def update_dish_status(
+    db: Session,
+    dish_id: int,
+    status_data: DishStatusUpdate,
+    restaurant_id: int
+):
+    try:
+        dish = db.query(Dish).filter(
+            Dish.id == dish_id,
+            Dish.restaurant_id == restaurant_id
+        ).first()
+
+        if dish is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Plato no encontrado"
+            )
+
+        changes = status_data.model_dump(exclude_unset=True)
+
+        if not changes:
+            raise HTTPException(
+                status_code=422,
+                detail="Debe indicar al menos un estado"
+            )
+
+        for field, value in changes.items():
+            setattr(dish, field, value)
+
+        db.commit()
+
+        return get_dish(db, dish.id, restaurant_id)
+
+    except HTTPException:
+        db.rollback()
+        raise
+
+    except SQLAlchemyError:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail="No se pudo actualizar el estado del plato"
+        )       
+
+
+def get_public_dishes(
+    db: Session,
+    restaurant_id: int,
+    category_id: int | None = None,
+    is_available: bool | None = None,
+    allergen_id: int | None = None,
+    page: int = 1,
+    page_size: int = 20
+):
+    query = db.query(Dish).filter(
+        Dish.restaurant_id == restaurant_id,
+        Dish.is_active.is_(True),
+        Dish.is_published.is_(True)
+    )
+
+    if category_id is not None:
+        query = query.filter(Dish.category_id == category_id)
+
+    if is_available is not None:
+        query = query.filter(Dish.is_available == is_available)
+
+    if allergen_id is not None:
+        dishIdsWithAllergen = select(DishAllergen.dish_id).where(
+            DishAllergen.allergen_id == allergen_id
+        )
+        
+        query = query.filter(Dish.id.in_(dishIdsWithAllergen))
+    total = query.count()
+    dishes = query.order_by(Dish.id).offset((page - 1) * page_size).limit(page_size).all()
+
+    items = []
+    for dish in dishes:
+        allergen_ids = [
+            row[0] for row in db.query(DishAllergen.allergen_id).filter(
+                DishAllergen.dish_id == dish.id
+            ).all()
+        ]
+        items.append({
+            "id": dish.id,
+            "name": dish.name,
+            "description": dish.description,
+            "price": dish.price,
+            "category_id": dish.category_id,
+            "is_available": dish.is_available,
+            "allergen_ids": allergen_ids
+        })
+
+    return {
+        "items": items,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": math.ceil(total / page_size) if total > 0 else 0
+    }
+
+
+def get_public_dish(
+    db: Session,
+    dish_id: int,
+    restaurant_id: int
+):
+    dish = db.query(Dish).filter(
+        Dish.id == dish_id,
+        Dish.restaurant_id == restaurant_id,
+        Dish.is_active.is_(True),
+        Dish.is_published.is_(True)
+    ).first()
+
+    if dish is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Plato no encontrado"
+        )
+
+    allergen_ids = [
+        row[0] for row in db.query(DishAllergen.allergen_id).filter(
+            DishAllergen.dish_id == dish.id
+        ).all()
+    ]
+
+    return {
+        "id": dish.id,
+        "name": dish.name,
+        "description": dish.description,
+        "price": dish.price,
+        "category_id": dish.category_id,
+        "is_available": dish.is_available,
+        "allergen_ids": allergen_ids
+    }
