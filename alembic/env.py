@@ -14,6 +14,8 @@ from alembic import context
 from app.core.database_connection import Base
 from app.models.user import User
 
+from app.models.authorization import Role, Permission, RolePermission
+
 config = context.config
 
 load_dotenv()
