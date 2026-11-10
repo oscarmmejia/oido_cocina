@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.kernel.errors import AppError
-from app.modules.tables.models.table import DiningTable
+from app.models import DiningTable
 from app.modules.tables.schemas.table import TableCreate, TableUpdate
 
 UNIQUE_NUMBER_CONSTRAINT = "uq_table_restaurant_number"
