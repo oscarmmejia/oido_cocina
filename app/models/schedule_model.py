@@ -154,7 +154,12 @@ class WorkShift(TimestampMixin, Base):
         DateTime(timezone=True),
         nullable=False,
     )
-    type: Mapped[str] = mapped_column(String(20), nullable=False)
+    type: Mapped[str] = mapped_column(
+        String(20),
+        nullable=False,
+        default=ShiftType.MORNING.value,
+        server_default=text("'morning'"),
+    )
     status: Mapped[str] = mapped_column(
         String(20),
         nullable=False,

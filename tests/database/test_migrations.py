@@ -88,6 +88,18 @@ def test_migrations_upgrade_from_empty_and_downgrade_to_empty() -> None:
         }
         assert indexes == {"uq_reservations_active_contact_date"}
 
+        with engine.connect() as connection:
+            shift_type_default = connection.execute(
+                text(
+                    "SELECT column_default "
+                    "FROM information_schema.columns "
+                    "WHERE table_name = 'work_shifts' "
+                    "AND column_name = 'type'"
+                )
+            ).scalar()
+        assert shift_type_default is not None
+        assert "morning" in shift_type_default
+
         command.downgrade(config, "base")
         remaining = set(inspect(engine).get_table_names())
         assert remaining <= {"alembic_version"}
