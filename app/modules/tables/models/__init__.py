@@ -1,4 +1,4 @@
-from app.modules.settings.models.restaurant import Restaurant  # noqa: F401  (destino de la FK)
-from app.modules.tables.models.table import DiningTable
+from app.models.restaurant_model import Restaurant
+from app.models.table_model import DiningTable
 
 __all__ = ["DiningTable", "Restaurant"]
