@@ -18,7 +18,7 @@ def upgrade() -> None:
     op.alter_column('users', 'hashed_password', new_column_name='password_hash')
     op.add_column('users', sa.Column('name', sa.String(), nullable=False, server_default='Usuario Existente'))
     op.add_column('users', sa.Column('phone_number', sa.String(), nullable=True))
-    op.add_column('users', sa.Column('role_id', sa.Integer(), nullable=False, server_default='1'))
+    op.add_column('users', sa.Column('role_id', sa.Integer(), nullable=True))
     op.create_foreign_key(None, 'users', 'restaurant', ['restaurant_id'], ['id'])
 
 def downgrade() -> None:
