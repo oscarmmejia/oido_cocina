@@ -2,12 +2,14 @@
 
 Se ejecuta contra PostgreSQL LOCAL; transacción revertida al finalizar.
 """
+from datetime import time
+
 import pytest
 from sqlalchemy import insert, select, update
 from sqlalchemy.exc import IntegrityError
 
 from app.core.database_connection import engine
-from app.modules.settings.models.restaurant import Restaurant
+from app.models import Restaurant
 
 
 def test_restaurant_stores_settings_and_validates_slot():
@@ -47,6 +49,54 @@ def test_restaurant_stores_settings_and_validates_slot():
                         update(Restaurant)
                         .where(Restaurant.id == restaurant_id)
                         .values(slot_minutes=0)
+                    )
+            assert error.value.orig.sqlstate == "23514"
+        finally:
+            transaction.rollback()
+
+
+def test_restaurant_stores_opening_schedule():
+    with engine.connect() as connection:
+        transaction = connection.begin()
+        try:
+            restaurant_id = connection.execute(
+                insert(Restaurant)
+                .values(
+                    name="Horario DER",
+                    time_zone="Europe/Madrid",
+                    day_of_week=1,
+                    period="morning",
+                    open_time=time(13, 0),
+                    close_time=time(16, 0),
+                    kitchen_close_time=time(15, 30),
+                )
+                .returning(Restaurant.id)
+            ).scalar_one()
+
+            row = connection.execute(
+                select(
+                    Restaurant.day_of_week,
+                    Restaurant.period,
+                    Restaurant.open_time,
+                    Restaurant.close_time,
+                    Restaurant.kitchen_close_time,
+                ).where(Restaurant.id == restaurant_id)
+            ).one()
+
+            assert tuple(row) == (
+                1,
+                "morning",
+                time(13, 0),
+                time(16, 0),
+                time(15, 30),
+            )
+
+            with pytest.raises(IntegrityError) as error:
+                with connection.begin_nested():
+                    connection.execute(
+                        update(Restaurant)
+                        .where(Restaurant.id == restaurant_id)
+                        .values(day_of_week=8)
                     )
             assert error.value.orig.sqlstate == "23514"
         finally:

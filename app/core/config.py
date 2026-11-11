@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     api_prefix: str = "/api/v1"
     database_url: str  # TODO: obligatoria: sin valor por defecto
     auth_stubs_enabled: bool = True  # TODO: TEMPORAL: se elimina con HU-AUT-04
+    seed_on_startup: bool = False
 
 
 @lru_cache
