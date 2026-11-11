@@ -1,9 +1,13 @@
 from fastapi import Depends
+<<<<<<< HEAD
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
+=======
+>>>>>>> 12b3098e8eea525fb0e048e0bdba66becdc963d3
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
+<<<<<<< HEAD
 from app.core.config import get_settings
 from app.core.database_connection import get_db
 from app.core.kernel.errors import AppError
@@ -13,17 +17,23 @@ security_scheme = HTTPBearer(auto_error=False)
 
 DEV_RESTAURANT_ID = 1
 DEV_USER_ID = 1
+=======
+from app.api.auth import get_current_user as get_authenticated_user
+from app.core.kernel.errors import AppError
+from app.models import User
+>>>>>>> 12b3098e8eea525fb0e048e0bdba66becdc963d3
 
 
 class CurrentUser(BaseModel):
     id: int
-    restaurant_id: int
+    restaurant_id: int | None = None
     email: str
     role: str
     permissions: frozenset[str]
     token_version: int
 
 
+<<<<<<< HEAD
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(security_scheme),
     db: Session = Depends(get_db)
@@ -45,6 +55,16 @@ async def get_current_user(
 
     if not credentials:
         raise AppError("UNAUTHORIZED", "Autenticación requerida.", 401)
+=======
+async def get_current_user(user: User = Depends(get_authenticated_user)) -> CurrentUser:
+    role = user.role
+    if (
+        user.restaurant_id is None
+        or role is None
+        or role.restaurant_id != user.restaurant_id
+    ):
+        raise AppError("FORBIDDEN", "The user has no valid restaurant role.", 403)
+>>>>>>> 12b3098e8eea525fb0e048e0bdba66becdc963d3
 
     token = credentials.credentials
     try:
@@ -71,7 +91,13 @@ async def get_current_user(
         id=user.id,
         restaurant_id=user.restaurant_id,
         email=user.email,
+<<<<<<< HEAD
         role=role_name,
         permissions=permissions,
         token_version=user.token_version,
     )
+=======
+        role=role.name,
+        permissions={permission.name for permission in role.permissions},
+    )
+>>>>>>> 12b3098e8eea525fb0e048e0bdba66becdc963d3

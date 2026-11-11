@@ -1,6 +1,7 @@
 import pytest
 
-from app.core.kernel.identity import DEV_RESTAURANT_ID, CurrentUser, get_current_user
+from app.core.kernel.identity import CurrentUser, get_current_user
+from app.database.seeders.catalog import DEMO_RESTAURANT_ID
 from app.main import app
 from app.models import DiningTable, Restaurant
 
@@ -26,7 +27,7 @@ def user_without_permissions():
     def override() -> CurrentUser:
         return CurrentUser(
             id=2,
-            restaurant_id=DEV_RESTAURANT_ID,
+            restaurant_id=DEMO_RESTAURANT_ID,
             email="sin-permisos@example.com",
             role="viewer",
             permissions=set(),
@@ -42,7 +43,7 @@ def user_with_table_manage():
     def override() -> CurrentUser:
         return CurrentUser(
             id=3,
-            restaurant_id=DEV_RESTAURANT_ID,
+            restaurant_id=DEMO_RESTAURANT_ID,
             email="mesas@example.com",
             role="gerente",
             permissions={"table:manage"},
@@ -56,7 +57,7 @@ def user_with_table_manage():
 @pytest.fixture
 def other_restaurant_table(db):
     other = Restaurant(
-        id=DEV_RESTAURANT_ID + 1,
+        id=DEMO_RESTAURANT_ID + 1,
         name="Otra sucursal",
         time_zone="Europe/Madrid",
     )
