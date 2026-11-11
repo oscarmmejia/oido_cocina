@@ -1,10 +1,10 @@
-"""Contrato único de errores: {"error": {"code", "message"}} vía el kernel."""
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pydantic import BaseModel
 
-from app.core.kernel.errors import AppError, register_error_handlers
+from app.core.errors.exceptions import TableNotAvailableError
+from app.core.errors.handlers import register_exception_handlers
 
 
 class Body(BaseModel):
@@ -14,11 +14,11 @@ class Body(BaseModel):
 @pytest.fixture
 def client():
     app = FastAPI()
-    register_error_handlers(app)
+    register_exception_handlers(app)
 
     @app.get("/conflicto")
     def conflicto():
-        raise AppError("TABLE_NOT_AVAILABLE", "La mesa no está disponible", 409)
+        raise TableNotAvailableError()
 
     @app.get("/boom")
     def boom():
@@ -31,13 +31,13 @@ def client():
     return TestClient(app, raise_server_exceptions=False)
 
 
-def test_error_de_negocio_usa_su_codigo(client):
+def test_conflicto_mesa(client):
     r = client.get("/conflicto")
     assert r.status_code == 409
     assert r.json()["error"]["code"] == "TABLE_NOT_AVAILABLE"
 
 
-def test_error_inesperado_no_filtra_detalles(client):
+def test_error_inesperado_sin_detalles(client):
     r = client.get("/boom")
     assert r.status_code == 500
     assert r.json()["error"]["code"] == "INTERNAL_ERROR"

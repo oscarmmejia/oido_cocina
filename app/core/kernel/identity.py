@@ -16,7 +16,7 @@ class CurrentUser(BaseModel):
 
 
 async def get_current_user() -> CurrentUser:
-
+    # TODO: TEMPORAL: sustituir en HU-AUT-04 (leer el token JWT y buscar el usuario)
     if not get_settings().auth_stubs_enabled:
         raise AppError("UNAUTHORIZED", "Autenticación requerida.", 401)
 
@@ -27,4 +27,3 @@ async def get_current_user() -> CurrentUser:
         role="superadmin",
         permissions={"*"},
     )
-

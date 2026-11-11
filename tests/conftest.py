@@ -1,3 +1,9 @@
+"""Configuración de la base de datos de pruebas.
+
+El orden de este módulo importa: la URL se resuelve y se exporta ANTES de importar
+`app.core.database_connection`, que crea el engine al importarse.
+"""
+
 import os
 from pathlib import Path
 
