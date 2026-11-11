@@ -1,10 +1,18 @@
-from fastapi import APIRouter, Depends
+from typing import Annotated
+
+from fastapi import APIRouter, Body, Depends
 from sqlalchemy.orm import Session
 
 from app.core.database_connection import get_db
 from app.core.kernel.errors import ErrorResponse
 from app.core.kernel.permissions import SystemPermission, require_permission
 from app.core.scope import get_restaurant_scope
+from app.modules.settings.examples import (
+    SETTINGS_RESPONSE_EXAMPLE,
+    SETTINGS_SUCCESS_EXAMPLES,
+    SETTINGS_UPDATE_EXAMPLES,
+    SETTINGS_VALIDATION_EXAMPLES,
+)
 from app.modules.settings.schemas import (
     RestaurantSettingsResponse,
     RestaurantSettingsUpdate,
@@ -22,6 +30,7 @@ router = APIRouter(prefix="/settings", tags=["Settings"])
     response_model=RestaurantSettingsResponse,
     description="Read settings for the restaurant associated with the authenticated user.",
     responses={
+        200: {"content": {"application/json": {"example": SETTINGS_RESPONSE_EXAMPLE}}},
         401: {"model": ErrorResponse, "description": "Missing or invalid authentication."},
         403: {"model": ErrorResponse, "description": "Invalid restaurant association."},
         404: {"model": ErrorResponse, "description": "Restaurant not found."},
@@ -46,15 +55,22 @@ def get_settings(
         "and closing times are rejected. Continuous 24-hour operation is not supported."
     ),
     responses={
+        200: {"content": {"application/json": {"examples": SETTINGS_SUCCESS_EXAMPLES}}},
         401: {"model": ErrorResponse, "description": "Missing or invalid authentication."},
         403: {"model": ErrorResponse, "description": "Missing permission or invalid restaurant association."},
         404: {"model": ErrorResponse, "description": "Restaurant not found."},
-        422: {"model": ErrorResponse, "description": "Invalid fields or resulting configuration."},
+        422: {
+            "model": ErrorResponse,
+            "description": "Invalid fields or resulting configuration.",
+            "content": {"application/json": {"examples": SETTINGS_VALIDATION_EXAMPLES}},
+        },
         500: {"model": ErrorResponse, "description": "Unexpected server error."},
     },
 )
 def patch_settings(
-    payload: RestaurantSettingsUpdate,
+    payload: Annotated[
+        RestaurantSettingsUpdate, Body(openapi_examples=SETTINGS_UPDATE_EXAMPLES)
+    ],
     restaurant_id: int = Depends(get_restaurant_scope),
     db: Session = Depends(get_db),
 ):

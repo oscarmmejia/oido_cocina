@@ -1,6 +1,10 @@
+import json
+import re
 from datetime import time, timedelta
+from pathlib import Path
 
 import pytest
+from sqlalchemy.orm import Session
 
 from app.core.kernel.identity import CurrentUser, get_current_user
 from app.core.passwords import hash_password
@@ -9,9 +13,19 @@ from app.core.scope import get_restaurant_scope
 from app.core.security import create_access_token
 from app.main import app
 from app.models import Permission, Restaurant, Role, RolePermission, User
+from app.modules.settings.schemas import RestaurantSettingsResponse
 
 PASSWORD = "settings-test-password"
 URL = "/api/v1/settings"
+DOCUMENTED_SETTINGS_EXAMPLES = [
+    ("read", "Read settings"),
+    ("complete", "Complete update"),
+    ("partial", "Partial update"),
+    ("overnight", "Overnight update"),
+    ("negative_courtesy", "Negative courtesy"),
+    ("equal_hours", "Equal opening and closing"),
+    ("kitchen_after_closing", "Kitchen closes too late"),
+]
 
 
 @pytest.fixture
@@ -309,3 +323,71 @@ def test_settings_openapi_contract(authenticated_client):
     update = schema["components"]["schemas"]["RestaurantSettingsUpdate"]
     assert update["additionalProperties"] is False
     assert "restaurant_id" not in update["properties"]
+
+
+def _read_documented_example(heading):
+    path = Path(__file__).resolve().parents[1] / "docs" / "settings" / "README.md"
+    section = re.search(
+        rf"^## {re.escape(heading)}\n(.*?)(?=^## |\Z)",
+        path.read_text(encoding="utf-8"),
+        re.MULTILINE | re.DOTALL,
+    )
+    assert section is not None, f"Missing README section: {heading}"
+    content = section.group(1)
+    blocks = [
+        json.loads(value)
+        for value in re.findall(r"```json\n(.*?)\n```", content, re.DOTALL)
+    ]
+    status = re.search(r"^### Response: (\d{3})$", content, re.MULTILINE)
+    assert status is not None
+    method = "get" if heading == "Read settings" else "patch"
+    assert f"{method.upper()} `{URL}`" in content
+    assert len(blocks) == (1 if method == "get" else 2)
+    return method, int(status.group(1)), blocks
+
+
+@pytest.fixture
+def documented_restaurant(db, restaurant, settings_headers):
+    restaurant.min_break_between_shifts = 30
+    restaurant.day_of_week = 5
+    restaurant.period = "evening"
+    restaurant.direction = "Example address"
+    db.commit()
+    return restaurant
+
+
+@pytest.mark.parametrize("example_name,heading", DOCUMENTED_SETTINGS_EXAMPLES)
+def test_readme_examples_match_api_and_persisted_settings(
+    db, authenticated_client, settings_headers, documented_restaurant,
+    example_name, heading,
+):
+    method, status_code, blocks = _read_documented_example(heading)
+    before = authenticated_client.get(URL, headers=settings_headers)
+    assert before.status_code == 200
+    kwargs = {"headers": settings_headers}
+    if method == "patch":
+        kwargs["json"] = blocks[0]
+
+    response = getattr(authenticated_client, method)(URL, **kwargs)
+
+    assert response.status_code == status_code
+    assert response.json() == blocks[-1]
+    with Session(bind=db.get_bind()) as verification_db:
+        stored = verification_db.get(Restaurant, documented_restaurant.id)
+        actual = RestaurantSettingsResponse.model_validate(stored).model_dump(
+            mode="json"
+        )
+    assert actual == (blocks[-1] if status_code == 200 else before.json())
+
+
+@pytest.mark.parametrize("example_name,heading", DOCUMENTED_SETTINGS_EXAMPLES)
+def test_openapi_examples_match_readme(authenticated_client, example_name, heading):
+    method, status_code, blocks = _read_documented_example(heading)
+    operation = authenticated_client.get("/openapi.json").json()["paths"][URL][method]
+    content = operation["responses"][str(status_code)]["content"]["application/json"]
+    if method == "get":
+        assert content["example"] == blocks[-1]
+    else:
+        request = operation["requestBody"]["content"]["application/json"]
+        assert request["examples"][example_name]["value"] == blocks[0]
+        assert content["examples"][example_name]["value"] == blocks[-1]
