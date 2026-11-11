@@ -10,7 +10,7 @@ from app.modules.users.schemas import UserCreate, UserPage, UserPagination, User
 
 
 def _email_taken() -> AppError:
-    return AppError("CONFLICT", "A user with that email already exists.", 409)
+    return AppError("CONFLICT", "Ya existe un usuario con ese correo electrónico.", 409)
 
 
 def list_users(
@@ -42,9 +42,9 @@ def create_user(db: Session, restaurant_id: int, payload: UserCreate) -> UserRea
             )
         )
         if role is None:
-            raise AppError("NOT_FOUND", "The requested role does not exist.", 404)
+            raise AppError("NOT_FOUND", "El rol solicitado no existe.", 404)
         if role.name == ROLE_SUPERADMIN:
-            raise AppError("FORBIDDEN", "Assigning the superadministrator role is not allowed.", 403)
+            raise AppError("FORBIDDEN", "No está permitido asignar el rol de superadministrador.", 403)
 
         existing = db.scalar(
             select(User.id).where(func.lower(User.email) == str(payload.email))

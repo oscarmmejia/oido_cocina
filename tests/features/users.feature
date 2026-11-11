@@ -1,62 +1,106 @@
-Feature: Administrative user listing and creation (OICO-61)
+# language: es
+Característica: Listado y creación administrativa de usuarios (OICO-61)
 
-  Background:
-    Given an authenticated administrator associated with a restaurant
+  Antecedentes:
+    Dado un administrador autenticado y asociado a un restaurante
 
-  Scenario: Create a staff member with a role from the restaurant
-    Given the administrator has the user:manage permission
-    And a waiter role exists for their restaurant
-    When they request user creation with valid data and that role_id
-    Then the response status is 201 with the public user fields
-    And the password is stored only as a hash
-    And the response contains no passwords, hashes or tokens
+  Escenario: Crear un trabajador con un rol del restaurante
+    Dado que el administrador tiene el permiso user:manage
+    Y existe un rol de camarero para su restaurante
+    Cuando solicita crear un usuario con datos válidos y ese role_id
+    Entonces la respuesta tiene estado 201 y los campos públicos del usuario
+    Y la contraseña se guarda únicamente como hash
+    Y la respuesta no contiene contraseñas, hashes ni tokens
 
-  Scenario: Reject a duplicate email
-    Given the administrator has the user:manage permission
-    And a user already exists with the email ana@example.com
-    When they request another user with the email ANA@example.com
-    Then the response status is 409
-    And no additional user is saved
+  Escenario: Rechazar un correo duplicado
+    Dado que el administrador tiene el permiso user:manage
+    Y ya existe un usuario con el correo ana@example.com
+    Cuando solicita crear otro usuario con el correo ANA@example.com
+    Entonces la respuesta tiene estado 409
+    Y el mensaje es "Ya existe un usuario con ese correo electrónico."
+    Y no se guarda ningún usuario adicional
 
-  Scenario Outline: Reject requests without permission
-    Given the administrator does not have the user:manage permission
-    When they request <method> on /api/v1/users
-    Then the response status is 403
-    And users remain unchanged
+  Esquema del escenario: Rechazar solicitudes sin permiso
+    Dado que el administrador no tiene el permiso user:manage
+    Cuando solicita <metodo> sobre /api/v1/users
+    Entonces la respuesta tiene estado 403
+    Y los usuarios permanecen sin cambios
 
-    Examples:
-      | method |
+    Ejemplos:
+      | metodo |
       | GET    |
       | POST   |
 
-  Scenario: List only restaurant users with pagination
-    Given the administrator has the user:manage permission
-    And users exist in their restaurant and another restaurant
-    When they request GET /api/v1/users with page 2 and page_size 1
-    Then the response status is 200 with the second page ordered by user ID
-    And the total and results only include users from their restaurant
-    And the response contains no hashes or tokens
+  Escenario: Listar únicamente los usuarios del restaurante con paginación
+    Dado que el administrador tiene el permiso user:manage
+    Y existen usuarios en su restaurante y en otro restaurante
+    Cuando solicita GET /api/v1/users con page 2 y page_size 1
+    Entonces la respuesta tiene estado 200 y la segunda página ordenada por ID
+    Y el total y los resultados solo incluyen usuarios de su restaurante
+    Y la respuesta no contiene hashes ni tokens
 
-  Scenario: Reject invalid creation data
-    Given the administrator has the user:manage permission
-    When they request user creation with an invalid email
-    Then the response status is 422
-    And the user is not saved
+  Escenario: Rechazar datos de creación inválidos
+    Dado que el administrador tiene el permiso user:manage
+    Cuando solicita crear un usuario con un correo inválido
+    Entonces la respuesta tiene estado 422
+    Y no se guarda el usuario
 
-  Scenario: Prevent client-selected restaurant identifiers
-    Given the administrator has the user:manage permission
-    When they send restaurant_id in the creation request body
-    Then the response status is 422
-    And the user is not saved
+  Escenario: Impedir que el cliente elija el restaurante al crear un usuario
+    Dado que el administrador tiene el permiso user:manage
+    Cuando envía restaurant_id en el cuerpo de la solicitud de creación
+    Entonces la respuesta tiene estado 422
+    Y no se guarda el usuario
 
-  Scenario: Reject a role from another restaurant
-    Given the administrator has the user:manage permission
-    When they request user creation with a role_id from another restaurant
-    Then the response status is 404
-    And the user is not saved
+  Escenario: Rechazar un rol de otro restaurante
+    Dado que el administrador tiene el permiso user:manage
+    Cuando solicita crear un usuario con un role_id de otro restaurante
+    Entonces la respuesta tiene estado 404
+    Y el mensaje es "El rol solicitado no existe."
+    Y no se guarda el usuario
 
-  Scenario: Prevent superadministrator creation
-    Given the administrator has the user:manage permission
-    When they request user creation with the superadministrator role
-    Then the response status is 403
-    And the user is not saved
+  Escenario: Impedir la creación de un superadministrador
+    Dado que el administrador tiene el permiso user:manage
+    Cuando solicita crear un usuario con el rol de superadministrador
+    Entonces la respuesta tiene estado 403
+    Y el mensaje es "No está permitido asignar el rol de superadministrador."
+    Y no se guarda el usuario
+
+  Escenario: Devolver una página vacía después del último usuario
+    Dado que el administrador tiene el permiso user:manage
+    Y su restaurante tiene un usuario
+    Cuando solicita GET /api/v1/users con page 2 y page_size 1
+    Entonces la respuesta tiene estado 200 y una lista items vacía
+    Y el total es 1
+
+  Esquema del escenario: Rechazar una paginación inválida
+    Dado que el administrador tiene el permiso user:manage
+    Cuando solicita GET /api/v1/users con <parametro> igual a <valor>
+    Entonces la respuesta tiene estado 422
+
+    Ejemplos:
+      | parametro | valor    |
+      | page      | 0        |
+      | page_size | 101      |
+      | page      | inválido |
+
+  Esquema del escenario: Rechazar solicitudes sin autenticación
+    Dado que la solicitud no tiene una autenticación válida
+    Cuando solicita <metodo> sobre /api/v1/users
+    Entonces la respuesta tiene estado 401
+
+    Ejemplos:
+      | metodo |
+      | GET    |
+      | POST   |
+
+  Escenario: Rechazar un restaurante elegido por el cliente al listar
+    Dado que el administrador tiene el permiso user:manage
+    Cuando solicita GET /api/v1/users con un parámetro de consulta restaurant_id
+    Entonces la respuesta tiene estado 422
+
+  Escenario: Resolver el restaurante desde la cuenta persistida
+    Dado que el administrador tiene el permiso user:manage
+    Y el restaurante indicado en el token difiere del restaurante de la cuenta persistida
+    Cuando solicita GET /api/v1/users sin un parámetro de restaurante
+    Entonces la respuesta tiene estado 200
+    Y los resultados solo contienen usuarios del restaurante de la cuenta persistida

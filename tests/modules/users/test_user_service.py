@@ -56,6 +56,7 @@ def test_duplicate_email_is_case_insensitive_and_atomic(db, restaurant, role):
         create_user(db, restaurant.id, _payload(role.id, "ANA@EXAMPLE.COM"))
 
     assert error.value.status_code == 409
+    assert error.value.message == "Ya existe un usuario con ese correo electrónico."
     assert db.scalar(select(func.count()).select_from(User)) == 1
 
 
@@ -99,6 +100,7 @@ def test_superadmin_role_is_rejected_without_creating_user(db, restaurant):
         create_user(db, restaurant.id, _payload(privileged.id))
 
     assert error.value.status_code == 403
+    assert error.value.message == "No está permitido asignar el rol de superadministrador."
     assert db.scalar(select(func.count()).select_from(User)) == 0
 
 
@@ -107,6 +109,7 @@ def test_unknown_role_is_rejected(db, restaurant):
         create_user(db, restaurant.id, _payload(9999))
 
     assert error.value.status_code == 404
+    assert error.value.message == "El rol solicitado no existe."
     assert db.scalar(select(func.count()).select_from(User)) == 0
 
 
