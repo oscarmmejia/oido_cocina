@@ -19,6 +19,8 @@ from app.core.kernel.seed import seed_minimum_data
 from app.modules.reservations.routes.reservation import (
     router as reservations_router,
 )
+from app.modules.schedules.routes.schedule import router as schedules_router
+from app.modules.schedules.routes.work_shift import router as work_shifts_router
 from app.modules.tables.routes.table import router as tables_router
 from app.modules.settings.routes import router as settings_router
 
@@ -48,6 +50,9 @@ app.include_router(category_router, prefix=settings.api_prefix)
 app.include_router(allergen_router, prefix=settings.api_prefix)
 app.include_router(reservations_router, prefix=settings.api_prefix)
 app.include_router(employees.router, prefix=settings.api_prefix)
+app.include_router(schedules_router, prefix=settings.api_prefix)
+app.include_router(work_shifts_router, prefix=settings.api_prefix)
+
 
 @app.get("/")
 def read_root():
