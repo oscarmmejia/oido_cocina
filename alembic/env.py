@@ -2,10 +2,6 @@ from logging.config import fileConfig
 
 from alembic import context
 
-
-
-
-
 import app.models  # noqa: F401  (registra todos los modelos en Base.metadata)
 from app.core.config import get_settings
 from app.core.database_connection import Base, engine

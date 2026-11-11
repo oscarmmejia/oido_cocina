@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.core.kernel.errors import AppError
 from app.core.passwords import verify_password
-from app.core.permissions import ROLE_SUPERADMIN, ROLE_WAITER
+from app.core.kernel.permissions import ROLE_SUPERADMIN, ROLE_WAITER
 from app.models import Restaurant, Role, User
 from app.modules.users.schemas import UserCreate, UserPagination
 from app.modules.users.services.user_service import create_user, list_users

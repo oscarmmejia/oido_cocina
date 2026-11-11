@@ -4,7 +4,7 @@ from decimal import Decimal
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.permissions import (
+from app.core.kernel.permissions import (
     ROLE_ADMIN,
     ROLE_HEAD_CHEF,
     ROLE_MANAGER,
@@ -219,7 +219,6 @@ def seed_allergens(db: Session) -> list[Allergen]:
 
     existing = {row.code: row for row in db.scalars(select(Allergen))}
 
-    # Compatibilidad con el código usado antes de unificar el catálogo.
     legacy = existing.get("FRUTOS_SECOS")
     if legacy is not None and "FRUTOS_DE_CASCARA" not in existing:
         legacy.code = "FRUTOS_DE_CASCARA"

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.core.kernel.identity import CurrentUser, get_current_user
 from app.core.passwords import hash_password
-from app.core.permissions import ROLE_ADMIN
+from app.core.kernel.permissions import ROLE_ADMIN
 from app.core.scope import get_restaurant_scope
 from app.core.security import create_access_token
 from app.main import app

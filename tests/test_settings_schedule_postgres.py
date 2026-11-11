@@ -86,7 +86,6 @@ def test_invalid_schedule_never_dirties_or_persists_partial_changes(db, restaura
     assert restaurant.kitchen_close_time == time(2)
     assert restaurant.close_time == time(3)
 
-    # Incluso un commit posterior del llamante no debe guardar cambios parciales.
     db.commit()
     db.expire_all()
     stored = db.get(Restaurant, restaurant_id)
@@ -94,7 +93,6 @@ def test_invalid_schedule_never_dirties_or_persists_partial_changes(db, restaura
     assert stored.kitchen_close_time == time(2)
     assert stored.close_time == time(3)
 
-    # La sesión sigue siendo utilizable tras un rechazo de negocio.
     update_restaurant_settings(
         db,
         restaurant_id,

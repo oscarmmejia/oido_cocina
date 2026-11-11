@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.core.kernel.errors import AppError
 from app.core.kernel.identity import CurrentUser
 from app.core.passwords import hash_password
-from app.core.permissions import ROLE_SUPERADMIN
+from app.core.kernel.permissions import ROLE_SUPERADMIN
 from app.models import Role, User
 from app.modules.users.schemas import (
     UserCreate, UserPage, UserPagination, UserRead, UserUpdate,

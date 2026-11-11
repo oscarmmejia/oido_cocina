@@ -7,9 +7,8 @@ from app.schemas.employee import EmployeeCreate, EmployeeUpdate
 
 
 def _validate_user_link(db: Session, restaurant_id: int, user_id: int | None) -> None:
-    if user_id is None:                       # vínculo opcional
+    if user_id is None:
         return
-    # TODO(HU-AUT-06): validar que el usuario existe y es del mismo restaurante (CA2)
     raise AppError("BAD_REQUEST", "El vínculo con usuario aún no está disponible.", 400)
 
 
@@ -26,7 +25,7 @@ def get_employee(db: Session, restaurant_id: int, employee_id: int) -> Employee:
 
 def create_employee(db: Session, restaurant_id: int, data: EmployeeCreate) -> Employee:
     _validate_user_link(db, restaurant_id, data.user_id)
-    emp = Employee(restaurant_id=restaurant_id, **data.model_dump())   # CA1
+    emp = Employee(restaurant_id=restaurant_id, **data.model_dump())
     db.add(emp)
     db.commit()
     db.refresh(emp)
@@ -56,7 +55,7 @@ def update_employee(
 
 def set_active(db: Session, restaurant_id: int, employee_id: int, active: bool) -> Employee:
     emp = get_employee(db, restaurant_id, employee_id)
-    emp.is_active = active                    # sin borrado: CA3
+    emp.is_active = active
     db.commit()
     db.refresh(emp)
     return emp

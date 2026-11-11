@@ -2,7 +2,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.core.passwords import hash_password
-from app.core.permissions import PERMISSIONS, ROLE_PERMISSIONS
+from app.core.kernel.permissions import PERMISSIONS, ROLE_PERMISSIONS
 from app.database.seeders.catalog import (
     DEFAULT_SCHEDULE,
     DEMO_PASSWORD,
