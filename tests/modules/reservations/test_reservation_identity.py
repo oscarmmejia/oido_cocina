@@ -7,17 +7,17 @@ pytest.importorskip(
     reason="Requiere el esquema compartido de HU-AUT-02",
 )
 
-from datetime import datetime, time, timedelta  # noqa: E402
-from zoneinfo import ZoneInfo  # noqa: E402
+from datetime import datetime, time, timedelta
+from zoneinfo import ZoneInfo
 
-from pydantic import ValidationError  # noqa: E402
+from pydantic import ValidationError
 
-from app.models import DiningTable, Role, User  # noqa: E402
-from app.modules.reservations.schemas.reservation import (  # noqa: E402
+from app.models import DiningTable, Role, User
+from app.modules.reservations.schemas.reservation import (
     ReservationCreate,
     ReservationUpdate,
 )
-from app.modules.reservations.services.creation import create_reservation  # noqa: E402
+from app.modules.reservations.services.creation import create_reservation
 
 TZ = ZoneInfo("Europe/Madrid")
 START = datetime(2026, 1, 5, 20, 0, tzinfo=TZ)

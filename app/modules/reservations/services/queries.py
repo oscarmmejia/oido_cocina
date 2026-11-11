@@ -23,7 +23,6 @@ def is_staff(user: CurrentUser) -> bool:
 
 
 def _client_email(user: CurrentUser) -> str | None:
-    # TODO(HU-AUT-05): sustituir la comparación por email por customer_user_id.
     return normalize_email(user.email)
 
 

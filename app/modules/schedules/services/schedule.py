@@ -22,7 +22,7 @@ def get_schedule(db: Session, restaurant_id: int, schedule_id: int) -> Schedule:
 
 
 def create_schedule(db: Session, restaurant_id: int, data: ScheduleCreate) -> Schedule:
-    get_employee(db, restaurant_id, data.responsible_id)  # valida pertenencia al restaurante
+    get_employee(db, restaurant_id, data.responsible_id)
     schedule = Schedule(
         restaurant_id=restaurant_id,
         period_start=data.period_start,

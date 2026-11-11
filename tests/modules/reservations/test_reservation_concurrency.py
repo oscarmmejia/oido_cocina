@@ -7,18 +7,18 @@ pytest.importorskip(
     reason="Requiere el esquema compartido de HU-AUT-02",
 )
 
-import threading  # noqa: E402
-from datetime import datetime, time  # noqa: E402
-from zoneinfo import ZoneInfo  # noqa: E402
+import threading
+from datetime import datetime, time
+from zoneinfo import ZoneInfo
 
-from sqlalchemy import func, select  # noqa: E402
+from sqlalchemy import func, select
 
-from app.core.database_connection import SessionLocal  # noqa: E402
-from app.core.kernel.errors import AppError  # noqa: E402
-from app.models import DiningTable, Reservation, Restaurant  # noqa: E402
-from app.modules.reservations.repositories import reservation as reservation_repo  # noqa: E402
-from app.modules.reservations.schemas.reservation import ReservationCreate  # noqa: E402
-from app.modules.reservations.services.creation import create_reservation  # noqa: E402
+from app.core.database_connection import SessionLocal
+from app.core.kernel.errors import AppError
+from app.models import DiningTable, Reservation, Restaurant
+from app.modules.reservations.repositories import reservation as reservation_repo
+from app.modules.reservations.schemas.reservation import ReservationCreate
+from app.modules.reservations.services.creation import create_reservation
 
 TZ = ZoneInfo("Europe/Madrid")
 START = datetime(2026, 1, 10, 20, 0, tzinfo=TZ)
@@ -116,7 +116,7 @@ def test_concurrent_duplicate_with_different_tables_and_emails(
         except AppError as error:
             with results_lock:
                 results.append(("error", error.code))
-        except Exception as error:  # pragma: no cover - diagnóstico
+        except Exception as error:
             with results_lock:
                 results.append(("unexpected", repr(error)))
         finally:

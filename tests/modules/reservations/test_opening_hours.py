@@ -7,10 +7,10 @@ pytest.importorskip(
     reason="Requiere el esquema compartido de HU-AUT-02",
 )
 
-from datetime import date, datetime, time, timezone  # noqa: E402
-from zoneinfo import ZoneInfo  # noqa: E402
+from datetime import date, datetime, time, timezone
+from zoneinfo import ZoneInfo
 
-from app.modules.reservations.services.opening_hours import (  # noqa: E402
+from app.modules.reservations.services.opening_hours import (
     calculate_end_at,
     is_within_opening_hours,
     list_opening_windows,

@@ -32,9 +32,6 @@ ACTIVE_RESERVATION_STATUSES = (
     ReservationStatus.SEATED.value,
 )
 
-# TODO(HU-RES-05): una reserva pending debe dejar de bloquear en
-# start_at + courtesy_minutes. La liberación y la caducidad se implementarán
-# en esa historia; aquí solo se contempla como estado activo.
 
 
 @dataclass(frozen=True)

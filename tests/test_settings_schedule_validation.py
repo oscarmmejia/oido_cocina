@@ -124,7 +124,6 @@ def test_simultaneous_update_validates_final_combination(restaurant):
     db = Mock(spec=Session)
     db.get.return_value = restaurant
 
-    # Reducir solo el cierre a la 01:00 sería inválido con la cocina a las 02:00.
     result = update_restaurant_settings(
         db,
         7,

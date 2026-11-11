@@ -6,7 +6,7 @@ from app.core.database_connection import Base
 from app.core.kernel.errors import AppError
 from app.controllers import employee_controller as controller
 from app.models import Employee
-from app.modules.settings.models import restaurant  # noqa: F401  (tabla "restaurant")
+from app.modules.settings.models import restaurant
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate
 
 
@@ -28,24 +28,22 @@ def _create(db, name="Ana López", position="cook", restaurant_id=RESTAURANT_ID)
     )
 
 
-# Escenario: empleado sin cuenta
 def test_create_employee_without_user(db):
     emp = _create(db)
 
     assert emp.id is not None
     assert emp.user_id is None
-    assert emp.restaurant_id == RESTAURANT_ID      # CA1
+    assert emp.restaurant_id == RESTAURANT_ID
     assert emp.is_active is True
 
 
-# Escenario: inactivar empleado (se conserva, no se borra)
 def test_deactivate_keeps_employee(db):
     emp = _create(db)
 
     result = controller.set_active(db, RESTAURANT_ID, emp.id, False)
 
     assert result.is_active is False
-    assert controller.get_employee(db, RESTAURANT_ID, emp.id).id == emp.id   # CA3
+    assert controller.get_employee(db, RESTAURANT_ID, emp.id).id == emp.id
 
 
 def test_reactivate_employee(db):

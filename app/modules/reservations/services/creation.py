@@ -23,12 +23,6 @@ from app.modules.reservations.services.validation import (
     validate_reservation,
 )
 
-# TODO(HU-RES-03): el índice uq_reservations_active_contact_date del esquema
-# compartido filtra por fecha completa, no por franja. Sustituirlo por
-# contacto + start_at cuando HU-AUT-02 esté integrado, para no rechazar dos
-# reservas válidas del mismo contacto el mismo día en horas distintas.
-# Mientras tanto, el lock consultivo por contacto de create_reservation cubre
-# la concurrencia de la ruta de servicio.
 
 
 def _translate_integrity_error(error: IntegrityError) -> AppError:

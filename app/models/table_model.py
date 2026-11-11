@@ -56,8 +56,6 @@ class DiningTable(TimestampMixin, Base):
     min_capacity: Mapped[int] = mapped_column(Integer, nullable=False)
     max_capacity: Mapped[int] = mapped_column(Integer, nullable=False)
     location: Mapped[str] = mapped_column(String(10), nullable=False)
-    # El DER nombra las columnas is_enabled / is_capacity_adjustable. Los
-    # atributos Python conservan los nombres que ya expone la API.
     is_active: Mapped[bool] = mapped_column(
         "is_enabled",
         Boolean,

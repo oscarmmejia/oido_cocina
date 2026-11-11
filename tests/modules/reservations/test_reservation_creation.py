@@ -7,13 +7,13 @@ pytest.importorskip(
     reason="Requiere el esquema compartido de HU-AUT-02",
 )
 
-from datetime import datetime, time, timedelta  # noqa: E402
-from zoneinfo import ZoneInfo  # noqa: E402
+from datetime import datetime, time, timedelta
+from zoneinfo import ZoneInfo
 
-from sqlalchemy import func, select  # noqa: E402
+from sqlalchemy import func, select
 
-from app.core.kernel.errors import AppError  # noqa: E402
-from app.models import (  # noqa: E402
+from app.core.kernel.errors import AppError
+from app.models import (
     DiningTable,
     Reservation,
     ReservationStatusHistory,
@@ -23,10 +23,10 @@ from app.models import (  # noqa: E402
     TableCombinationTable,
     User,
 )
-from app.models.enums import ReservationStatus, ReservationTableStatus  # noqa: E402
-from app.modules.reservations.repositories import reservation as reservation_repo  # noqa: E402
-from app.modules.reservations.schemas.reservation import ReservationCreate  # noqa: E402
-from app.modules.reservations.services.creation import create_reservation  # noqa: E402
+from app.models.enums import ReservationStatus, ReservationTableStatus
+from app.modules.reservations.repositories import reservation as reservation_repo
+from app.modules.reservations.schemas.reservation import ReservationCreate
+from app.modules.reservations.services.creation import create_reservation
 
 TZ = ZoneInfo("Europe/Madrid")
 START = datetime(2026, 1, 5, 20, 0, tzinfo=TZ)

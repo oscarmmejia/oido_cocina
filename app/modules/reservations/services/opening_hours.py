@@ -55,9 +55,6 @@ def list_opening_windows(
     if restaurant.open_time is None or restaurant.close_time is None:
         return []
 
-    # OICO-46 no admite apertura == cierre como jornada de 24 horas. Si el
-    # equipo confirma esa interpretación, habrá que tratar la igualdad como
-    # servicio continuo y aceptar reservas que crucen la hora de inicio.
     if restaurant.open_time == restaurant.close_time:
         return []
 

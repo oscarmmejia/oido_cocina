@@ -11,12 +11,12 @@ pytest.importorskip(
     reason="Requiere el esquema compartido de HU-AUT-02",
 )
 
-from datetime import datetime, timezone  # noqa: E402
+from datetime import datetime, timezone
 
-from pydantic import ValidationError  # noqa: E402
-from sqlalchemy import delete, func, select  # noqa: E402
+from pydantic import ValidationError
+from sqlalchemy import delete, func, select
 
-from app.models import (  # noqa: E402
+from app.models import (
     DiningTable,
     Reservation,
     ReservationStatusHistory,
@@ -25,12 +25,12 @@ from app.models import (  # noqa: E402
     TableCombination,
     TableCombinationTable,
 )
-from app.models.enums import (  # noqa: E402
+from app.models.enums import (
     ReservationStatus,
     ReservationTableStatus,
 )
-from app.modules.reservations.repositories import reservation as repo  # noqa: E402
-from app.modules.reservations.schemas.reservation import (  # noqa: E402
+from app.modules.reservations.repositories import reservation as repo
+from app.modules.reservations.schemas.reservation import (
     ReservationCreate,
     ReservationDetailRead,
 )
