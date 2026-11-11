@@ -9,12 +9,17 @@ from app.modules.tables.services import table as table_service
 
 router = APIRouter(prefix="/tables", tags=["tables"])
 
+FORBIDDEN_RESPONSE = {
+    403: {"description": "El usuario no tiene el permiso table:manage."}
+}
+
 
 @router.get(
     "",
     response_model=list[TableRead],
     summary="Listar mesas",
     description="Devuelve las mesas del restaurante autenticado, ordenadas por número.",
+    responses={**FORBIDDEN_RESPONSE},
 )
 def list_tables(
     user: CurrentUser = Depends(require_permission("table:manage")),
@@ -28,7 +33,10 @@ def list_tables(
     response_model=TableRead,
     summary="Consultar una mesa",
     description="Devuelve una mesa del restaurante autenticado por su identificador.",
-    responses={404: {"description": "No existe la mesa o pertenece a otro restaurante."}},
+    responses={
+        **FORBIDDEN_RESPONSE,
+        404: {"description": "No existe la mesa o pertenece a otro restaurante."},
+    },
 )
 def get_table(
     table_id: int,
@@ -49,6 +57,7 @@ def get_table(
         "no puede ser menor que la mínima."
     ),
     responses={
+        **FORBIDDEN_RESPONSE,
         409: {"description": "Ya existe una mesa con ese número en el restaurante."},
         422: {"description": "Los datos de la mesa no son válidos."},
     },
@@ -71,6 +80,7 @@ def create_table(
         "del restaurante."
     ),
     responses={
+        **FORBIDDEN_RESPONSE,
         404: {"description": "No existe la mesa o pertenece a otro restaurante."},
         409: {"description": "Ya existe otra mesa con ese número en el restaurante."},
         422: {"description": "Los datos enviados no son válidos."},
@@ -93,7 +103,10 @@ def update_table(
         "Marca la mesa como habilitada. Una mesa habilitada puede recibir reservas nuevas. "
         "La operación es idempotente: habilitar una mesa ya habilitada devuelve el mismo estado."
     ),
-    responses={404: {"description": "No existe la mesa o pertenece a otro restaurante."}},
+    responses={
+        **FORBIDDEN_RESPONSE,
+        404: {"description": "No existe la mesa o pertenece a otro restaurante."},
+    },
 )
 def enable_table(
     table_id: int,
@@ -112,7 +125,10 @@ def enable_table(
         "No se reasigna automáticamente ninguna reserva existente. "
         "La operación es idempotente: inhabilitar una mesa ya inhabilitada devuelve el mismo estado."
     ),
-    responses={404: {"description": "No existe la mesa o pertenece a otro restaurante."}},
+    responses={
+        **FORBIDDEN_RESPONSE,
+        404: {"description": "No existe la mesa o pertenece a otro restaurante."},
+    },
 )
 def disable_table(
     table_id: int,
