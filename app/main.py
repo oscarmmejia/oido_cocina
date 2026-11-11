@@ -19,6 +19,7 @@ from app.modules.reservations.routes.reservation import (
     router as reservations_router,
 )
 from app.modules.tables.routes.table import router as tables_router
+from app.modules.settings.routes import router as settings_router
 
 settings = get_settings()
 
@@ -37,6 +38,7 @@ app.include_router(health_router, prefix=settings.api_prefix)
 app.include_router(auth_router, prefix=settings.api_prefix)
 app.include_router(users_router, prefix=settings.api_prefix)
 app.include_router(tables_router, prefix=settings.api_prefix)
+app.include_router(settings_router, prefix=settings.api_prefix)
 app.include_router(dish_router, prefix=settings.api_prefix)
 app.include_router(category_router, prefix=settings.api_prefix)
 app.include_router(allergen_router, prefix=settings.api_prefix)
