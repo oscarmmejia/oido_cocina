@@ -10,8 +10,10 @@ from app.models.security_model import User
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 class RegisterRequest(BaseModel):
+    name: str
     email: str
     password: str
+    phone_number: str
 
 @router.post("/register")
 def register(data: RegisterRequest, db: Session = Depends(get_db)):
@@ -20,12 +22,16 @@ def register(data: RegisterRequest, db: Session = Depends(get_db)):
         raise AppError("BAD_REQUEST", "El usuario ya existe.", 400)
         
     nuevo_usuario = User(
+        name=data.name,
         email=data.email,
-        password=data.password, 
+        password_hash=data.password, 
+        phone_number=data.phone_number,
         token_version=0,
         is_active=True,
-        restaurant_id=1
+        restaurant_id=1,
+        role_id=2
     )
+    
     db.add(nuevo_usuario)
     db.commit()
     db.refresh(nuevo_usuario)
