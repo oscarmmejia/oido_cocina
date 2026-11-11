@@ -4,7 +4,6 @@ from decimal import Decimal
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.kernel.identity import DEV_RESTAURANT_ID
 from app.core.permissions import (
     ROLE_ADMIN,
     ROLE_HEAD_CHEF,
@@ -14,7 +13,7 @@ from app.core.permissions import (
 )
 from app.models.allergen_model import Allergen
 
-DEMO_RESTAURANT_ID = DEV_RESTAURANT_ID
+DEMO_RESTAURANT_ID = 1
 DEMO_RESTAURANT_NAME = "Oido Cocina"
 DEMO_TIME_ZONE = "Europe/Madrid"
 DEMO_PASSWORD = "Demo1234!"

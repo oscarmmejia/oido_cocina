@@ -1,45 +1,39 @@
-import inspect
-
-from fastapi import FastAPI, Depends
+import pytest
+from fastapi import Depends, FastAPI
 from fastapi.testclient import TestClient
 
 from app.core.kernel.errors import register_error_handlers
 from app.core.kernel.identity import CurrentUser, get_current_user
 from app.core.kernel.permissions import require_permission
-from app.api.auth import get_current_user as get_authenticated_user
 
-def test_firmas_congeladas():
-    assert list(inspect.signature(get_current_user).parameters) == ["user"]
-    assert list(inspect.signature(require_permission).parameters) == ["permission"]
 
-def test_stub_devuelve_usuario_sin_permisos_por_defecto():
-    app = FastAPI()
+@pytest.mark.parametrize(
+    "role_name,permissions,expected",
+    [
+        ("superadmin", set(), 403),
+        ("superadministrador", set(), 403),
+        ("administrador", {"settings:update"}, 200),
+        ("administrador", {"table:manage"}, 403),
+        ("camarero", {"*"}, 200),
+    ],
+)
+def test_permission_checker_uses_permissions_not_role_name(
+    role_name, permissions, expected
+):
+    probe = FastAPI()
+    register_error_handlers(probe)
+    probe.dependency_overrides[get_current_user] = lambda: CurrentUser(
+        id=2,
+        restaurant_id=1,
+        email="user@example.com",
+        role=role_name,
+        permissions=permissions,
+    )
 
-    class MockPermission:
-        def __init__(self, name):
-            self.name = name
+    @probe.get("/protected")
+    def protected(user: CurrentUser = Depends(require_permission("settings:update"))):
+        return {"id": user.id}
 
-    class MockRole:
-        def __init__(self, permissions):
-            self.permissions = permissions
-
-    class MockUser:
-        def __init__(self):
-            self.id = 1
-            self.email = "test@test.com"
-            self.role_id = 1
-            self.is_active = True
-            self.restaurant_id = 1
-            self.role = MockRole([MockPermission("x:y")])
-
-    def mock_user():
-        return MockUser()
-        
-    app.dependency_overrides[get_authenticated_user] = mock_user
-
-    @app.get("/protegido")
-    async def protegido(user: CurrentUser = Depends(require_permission("x:y"))):
-        return user
-
-    response = TestClient(app).get("/protegido")
-    assert response.status_code == 200
+    with TestClient(probe) as client:
+        response = client.get("/protected")
+    assert response.status_code == expected

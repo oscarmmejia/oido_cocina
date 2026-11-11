@@ -1,11 +1,11 @@
-from enum import Enum
 from collections.abc import Callable
-from fastapi import Depends, HTTPException, status
+from enum import Enum
 
 from fastapi import Depends
 
 from app.core.kernel.errors import AppError
 from app.core.kernel.identity import CurrentUser, get_current_user
+
 
 class SystemPermission(str, Enum):
     DISH_CREATE = "dish:create"
@@ -14,35 +14,11 @@ class SystemPermission(str, Enum):
     SETTINGS_UPDATE = "settings:update"
     USER_MANAGE = "user:manage"
 
+
 def require_permission(permission: str) -> Callable[..., CurrentUser]:
     async def checker(user: CurrentUser = Depends(get_current_user)) -> CurrentUser:
-        if not user.role:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="El usuario no tiene un rol asignado."
-            )
+        if permission in user.permissions or "*" in user.permissions:
+            return user
+        raise AppError("FORBIDDEN", "You do not have permission for this action.", 403)
 
-        user_permissions = set()
-        
-        if hasattr(user, "permissions") and user.permissions:
-            user_permissions = set(user.permissions)
-        elif hasattr(user.role, "permissions") and user.role.permissions:
-            user_permissions = {p.name for p in user.role.permissions}
-        elif isinstance(user.role, str) and user.role == "superadmin":
-            user_permissions = {permission}
-
-        if permission not in user_permissions:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="No tienes los permisos necesarios para esta acción."
-            )
-
-        return user
-
-        raise AppError(
-            "FORBIDDEN",
-            "No tienes permisos para realizar esta acción",
-            403,
-        )
-
-        return checker
+    return checker
