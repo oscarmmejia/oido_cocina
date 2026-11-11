@@ -2,7 +2,9 @@
 
 Implementación parcial de HU-AUT-06. Incluye esquemas Pydantic y servicios de
 listado paginado y creación sobre los modelos compartidos `User` y `Role`.
-No añade modelos, tablas, migraciones ni endpoints registrados.
+No añade modelos, tablas ni migraciones. El POST existente de `app/api/users.py`
+consume este servicio; el listado HTTP y su ubicación definitiva en las rutas
+del módulo siguen pendientes de OICO-61.
 
 ## Contrato de los servicios
 
@@ -25,14 +27,15 @@ No añade modelos, tablas, migraciones ni endpoints registrados.
    explícita del usuario, tras coordinarse con Patri y Jesús. Las tres pruebas
    existentes del kernel pasan y la aplicación vuelve a cargar. La corrección
    está guardada en el commit `bde50c0`, incluido en esta entrega.
-2. Integrar identidad y permisos reales de HU-AUT-04/05; no utilizar el usuario
-   provisional con permisos globales para registrar estas rutas.
-3. Coordinar el POST `/users` existente en el PR #20 para registrar una sola
-   implementación bajo `/api/v1/users`.
+2. La rama del PR #20 integra la identidad JWT y los permisos reales del rol;
+   no utiliza el usuario provisional en producción. Falta su revisión y fusión.
+3. El POST `/api/v1/users` del PR #20 delega en este servicio, sin duplicar
+   su implementación. Su autenticación y sus respuestas 201/409/403 están
+   cubiertas por pruebas HTTP con usuarios persistidos y JWT reales.
 4. La dependencia `email-validator==2.3.0`, necesaria para `EmailStr`, ya se instaló
    en `.venv` con autorización del usuario y se declaró en `requirements.txt`.
-5. Verificar que el login integrado acepta los hashes del helper compartido antes
-   de dar por terminada la creación administrativa de usuarios.
+5. Una prueba HTTP crea un usuario mediante este servicio y verifica que puede
+   iniciar sesión con el helper compartido. GET `/users` todavía está pendiente.
 
 ## Verificación
 
@@ -54,8 +57,11 @@ compartida que inserta el primero sin avanzar su secuencia PostgreSQL.
 Después pasaron 350 pruebas en la suite disponible, incluidas las de usuarios,
 con cero fallos y cero errores. Se excluyó `tests/database/test_migrations.py`
 porque ejecuta Alembic. No se ejecutaron migraciones. Estos resultados validan
-la base de servicios y esquemas, no los endpoints todavía pendientes;
-OICO-61 no está completada.
+la base original de servicios y esquemas. Las correcciones posteriores del
+PR #20 superaron 55 pruebas específicas de identidad, permisos y usuarios,
+incluyendo el POST registrado. La ejecución global posterior superó 374 pruebas,
+con cero fallos y cero errores, excluyendo las pruebas de migraciones.
+OICO-61 no está completada: falta su listado HTTP.
 
 ## Fuera del alcance de esta base
 

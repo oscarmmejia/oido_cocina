@@ -10,6 +10,7 @@ from sqlalchemy.pool import StaticPool
 from app.api.dish_routes import router
 from app.controllers.dish_controller import deactivate_dish
 from app.core.database_connection import Base, get_db
+from app.core.kernel.identity import CurrentUser, get_current_user
 from app.models.allergen_model import Allergen
 from app.models.category_model import Category
 from app.models.dish_allergen_model import DishAllergen
@@ -45,6 +46,13 @@ def client(db):
     app = FastAPI()
     app.include_router(router)
     app.dependency_overrides[get_db] = lambda: db
+    app.dependency_overrides[get_current_user] = lambda: CurrentUser(
+        id=1,
+        restaurant_id=RESTAURANT_ID,
+        email="dish-manager@example.com",
+        role="manager",
+        permissions={"dish:deactivate"},
+    )
     return TestClient(app)
 
 
@@ -255,4 +263,4 @@ def test_status_update_rejects_empty_body(client, db):
 def test_status_update_of_another_restaurant_returns_404(client, db):
     dish = add_dish(db, restaurant_id=99)
 
-    assert update_status(client, dish.id, {"is_published": False}).status_code == 404    
+    assert update_status(client, dish.id, {"is_published": False}).status_code == 404
