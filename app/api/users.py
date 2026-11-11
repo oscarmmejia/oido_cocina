@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.core.database_connection import get_db
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, UserResponse
 from app.controllers.user import create_user
 from app.core.kernel.permissions import require_permission, SystemPermission
 from app.core.kernel.identity import CurrentUser
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-@router.post("")
+@router.post("", response_model=UserResponse)
 def register_user(
     user_data: UserCreate,
     db: Session = Depends(get_db),

@@ -1,9 +1,3 @@
-"""Configuración de la base de datos de pruebas.
-
-El orden de este módulo importa: la URL se resuelve y se exporta ANTES de importar
-`app.core.database_connection`, que crea el engine al importarse.
-"""
-
 import os
 from pathlib import Path
 
@@ -27,11 +21,11 @@ from fastapi.testclient import TestClient  # noqa: E402
 from sqlalchemy import create_engine, inspect, text  # noqa: E402
 from sqlalchemy.orm import sessionmaker  # noqa: E402
 
-import app.models  # noqa: E402,F401  (registra todos los modelos)
+import app.models  # noqa: E402,F401
 from app.core.database_connection import Base, get_db  # noqa: E402
-from app.core.kernel.identity import DEV_RESTAURANT_ID  # noqa: E402
 from app.main import app  # noqa: E402
 from app.models import Restaurant  # noqa: E402
+from app.core.kernel.seed import seed_minimum_data  # noqa: E402
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 TestingSessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
@@ -53,6 +47,15 @@ def clean_database():
         connection.execute(
             text(f"TRUNCATE {table_names} RESTART IDENTITY CASCADE")
         )
+    
+    # Rellenamos con los datos mínimos (seeders) en cada limpieza de test
+    session = TestingSessionLocal()
+    try:
+        seed_minimum_data(session)
+        session.commit()
+    finally:
+        session.close()
+    
     yield
 
 
@@ -72,19 +75,29 @@ def client(db):
 
     app.dependency_overrides[get_db] = override_get_db
     with TestClient(app) as test_client:
+        # Autenticación automática del admin para evitar los 401
+        response = test_client.post(
+            "/api/v1/auth/login",
+            data={"username": "admin@oidocina.local", "password": "Demo1234!"}
+        )
+        if response.status_code == 200:
+            token = response.json().get("access_token")
+            test_client.headers = {"Authorization": f"Bearer {token}"}
+            
         yield test_client
     app.dependency_overrides.clear()
 
 
 @pytest.fixture
 def restaurant(db):
-    """Restaurante al que el kernel asigna la petición (``DEV_RESTAURANT_ID``)."""
-    demo = Restaurant(
-        id=DEV_RESTAURANT_ID,
-        name="Demo",
-        time_zone="Europe/Madrid",
-    )
-    db.add(demo)
-    db.commit()
-    db.refresh(demo)
+    demo = db.get(Restaurant, 1)
+    if not demo:
+        demo = Restaurant(
+            id=1,
+            name="Demo",
+            time_zone="Europe/Madrid",
+        )
+        db.add(demo)
+        db.commit()
+        db.refresh(demo)
     return demo

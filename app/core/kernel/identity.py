@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import Depends
 from pydantic import BaseModel
 from app.api.auth import get_current_user as get_authenticated_user
-from app.models.user import User
+from app.models import User
 
 class CurrentUser(BaseModel):
     id: int
