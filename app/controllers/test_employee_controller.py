@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.core.database_connection import Base
 from app.core.kernel.errors import AppError
 from app.controllers import employee_controller as controller
-from app.models.employee import Employee
+from app.models import Employee
 from app.modules.settings.models import restaurant  # noqa: F401  (tabla "restaurant")
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate
 
@@ -80,8 +80,8 @@ def test_update_employee(db):
     emp = _create(db)
 
     result = controller.update_employee(
-        db, RESTAURANT_ID, emp.id, EmployeeUpdate(job_position="head chef")
+        db, RESTAURANT_ID, emp.id, EmployeeUpdate(job_position="manager")
     )
 
-    assert result.job_position == "head chef"
+    assert result.job_position == "manager"
     assert result.full_name == "Ana López"

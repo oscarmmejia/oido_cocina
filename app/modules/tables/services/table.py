@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.core.kernel.errors import AppError
-from app.modules.tables.models.table import DiningTable
+from app.models import DiningTable
 from app.modules.tables.schemas.table import TableCreate, TableUpdate
 
 UNIQUE_NUMBER_CONSTRAINT = "uq_table_restaurant_number"
@@ -14,7 +14,6 @@ def _number_taken() -> AppError:
 
 
 def _is_duplicate_number(error: IntegrityError) -> bool:
-
     diag = getattr(error.orig, "diag", None)
     return getattr(diag, "constraint_name", None) == UNIQUE_NUMBER_CONSTRAINT
 
@@ -49,10 +48,33 @@ def create_table(
 
 
 def get_table(db: Session, table_id: int, restaurant_id: int) -> DiningTable:
-    table = db.get(DiningTable, table_id)
-    if table is None or table.restaurant_id != restaurant_id:
+    table = db.scalar(
+        select(DiningTable).where(
+            DiningTable.id == table_id,
+            DiningTable.restaurant_id == restaurant_id,
+        )
+    )
+    if table is None:
         raise AppError("TABLE_NOT_FOUND", "No existe la mesa", 404)
     return table
+
+
+def _set_table_active(
+    db: Session, table_id: int, restaurant_id: int, is_active: bool
+) -> DiningTable:
+    table = get_table(db, table_id, restaurant_id)
+    table.is_active = is_active
+    db.commit()
+    db.refresh(table)
+    return table
+
+
+def enable_table(db: Session, table_id: int, restaurant_id: int) -> DiningTable:
+    return _set_table_active(db, table_id, restaurant_id, True)
+
+
+def disable_table(db: Session, table_id: int, restaurant_id: int) -> DiningTable:
+    return _set_table_active(db, table_id, restaurant_id, False)
 
 
 def update_table(

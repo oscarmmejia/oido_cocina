@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.kernel.errors import AppError
-from app.models.employee import Employee
+from app.models import Employee
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate
 
 

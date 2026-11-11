@@ -18,26 +18,34 @@ if not DATABASE_URL:
 os.environ["DATABASE_URL"] = DATABASE_URL
 
 from fastapi.testclient import TestClient  # noqa: E402
-from sqlalchemy import create_engine, text  # noqa: E402
+from sqlalchemy import create_engine, inspect, text  # noqa: E402
 from sqlalchemy.orm import sessionmaker  # noqa: E402
 
+import app.models  # noqa: E402,F401  (registra todos los modelos)
 from app.core.database_connection import Base, get_db  # noqa: E402
 from app.core.kernel.identity import DEV_RESTAURANT_ID  # noqa: E402
 from app.main import app  # noqa: E402
-from app.modules.settings.models.restaurant import Restaurant  # noqa: E402
-from app.modules.tables.models.table import DiningTable  # noqa: E402,F401  (registra la tabla)
+from app.models import Restaurant  # noqa: E402
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 TestingSessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
+with engine.begin() as connection:
+    connection.execute(text("CREATE EXTENSION IF NOT EXISTS btree_gist"))
 Base.metadata.create_all(bind=engine)
 
 
 @pytest.fixture(autouse=True)
 def clean_database():
+    existing = set(inspect(engine).get_table_names())
+    table_names = ", ".join(
+        f'"{table.name}"'
+        for table in Base.metadata.sorted_tables
+        if table.name in existing
+    )
     with engine.begin() as connection:
         connection.execute(
-            text("TRUNCATE tables, restaurant RESTART IDENTITY CASCADE")
+            text(f"TRUNCATE {table_names} RESTART IDENTITY CASCADE")
         )
     yield
 

@@ -4,7 +4,6 @@ __pycache__/
 .env
 .env.*
 !.env.example
-docs
 odd
-.pytest_cache/
-INFORME*.md
+scripts
+seed_demo.py
