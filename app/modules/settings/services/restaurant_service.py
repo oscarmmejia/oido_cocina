@@ -1,4 +1,4 @@
-"""Lectura y actualización de la configuración del restaurante."""
+"""Read and update restaurant settings."""
 
 from datetime import time
 
@@ -15,7 +15,7 @@ from app.modules.settings.schemas import RestaurantSettingsUpdate
 def get_restaurant_settings(
     db: Session, restaurant_id: int, *, for_update: bool = False
 ) -> Restaurant:
-    """Obtiene la configuración, con bloqueo y recarga opcionales para actualizar."""
+    """Read settings, optionally locking and reloading the row for an update."""
     if for_update:
         restaurant = db.get(
             Restaurant, restaurant_id, with_for_update=True, populate_existing=True
@@ -32,7 +32,7 @@ def get_restaurant_settings(
 
 
 def _minutes_since_midnight(value: time) -> float:
-    """Minutos de hora local, conservando segundos y microsegundos."""
+    """Return local minutes while preserving seconds and microseconds."""
     return (
         value.hour * 60
         + value.minute
@@ -41,11 +41,11 @@ def _minutes_since_midnight(value: time) -> float:
 
 
 def _validate_schedule(settings: RestaurantSettingsUpdate) -> None:
-    """Valida una jornada inferior a 24 horas con un único cruce de medianoche.
+    """Validate a schedule shorter than 24 hours with one midnight crossing.
 
-    Un cierre anterior a la apertura corresponde al día siguiente. Apertura y
-    cierre iguales no representan un servicio de 24 horas. Sin apertura, ambos
-    cierres se comparan dentro del mismo día. Los valores nulos se conservan.
+    Closing before opening belongs to the next day. Equal opening and closing
+    times do not represent continuous 24-hour operation. Without opening, both
+    closing times are compared within the same day. Null values are preserved.
     """
     if settings.close_time is None:
         return
@@ -81,15 +81,14 @@ def _validate_schedule(settings: RestaurantSettingsUpdate) -> None:
 def update_restaurant_settings(
     db: Session, restaurant_id: int, settings: RestaurantSettingsUpdate
 ) -> Restaurant:
-    """Actualiza los campos enviados para un restaurante previamente autorizado.
+    """Update the supplied fields for a restaurant authorized by the caller.
 
-    El llamante debe obtener restaurant_id de la identidad autenticada.
-    Este servicio no sustituye la comprobación de permisos de la futura ruta.
+    The caller must resolve restaurant_id from the authenticated identity and
+    enforce settings:update before invoking this service.
     """
     restaurant = get_restaurant_settings(db, restaurant_id, for_update=True)
     changes = settings.model_dump(exclude_unset=True)
 
-    # Validar una copia completa antes de tocar atributos del objeto ORM.
     candidate_data = {
         field: getattr(restaurant, field)
         for field in RestaurantSettingsUpdate.model_fields
