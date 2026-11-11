@@ -6,14 +6,17 @@ from sqlalchemy.orm import Session
 
 from app.core.database_connection import get_db
 from app.core.kernel.errors import ErrorResponse
-from app.core.kernel.identity import CurrentUser, get_current_user
+from app.core.kernel.identity import CurrentUser
 from app.core.kernel.permissions import require_permission
-from app.modules.schedules.schemas.work_shift import WorkShiftCreate, WorkShiftRead
+from app.modules.schedules.schemas.work_shift import (
+    WorkShiftCreate,
+    WorkShiftRead,
+    WorkShiftUpdate,
+)
 from app.modules.schedules.services import work_shift as shift_service
 
 router = APIRouter(prefix="/schedules/{schedule_id}/shifts", tags=["Work shifts"])
 
-manage = Depends(require_permission("schedule:manage"))
 ScheduleId = Annotated[int, Path(gt=0, description="ID del cuadrante.", examples=[1])]
 ShiftId = Annotated[int, Path(gt=0, description="ID del turno.", examples=[10])]
 EmployeeFilter = Annotated[
@@ -34,8 +37,8 @@ CONFLICT_RESPONSES = {
     409: {
         "model": ErrorResponse,
         "description": (
-            "SCHEDULE_NOT_EDITABLE (cuadrante publicado), SHIFT_OVERLAP (solape), "
-            "SHIFT_BREAK_TOO_SHORT (descanso insuficiente) o EMPLOYEE_INACTIVE."
+            "SCHEDULE_NOT_EDITABLE (cuadrante publicado), SHIFT_OVERLAP (solape) "
+            "o SHIFT_BREAK_TOO_SHORT (descanso insuficiente)."
         ),
     },
 }
@@ -50,14 +53,19 @@ CONFLICT_RESPONSES = {
         "Valida que el turno caiga dentro del periodo, que el empleado esté activo "
         "y que no solape ni quede a menos del descanso mínimo del restaurante."
     ),
-    dependencies=[manage],
-    responses={**CONFLICT_RESPONSES, 422: {"model": ErrorResponse, "description": "Turno fuera del periodo."}},
+    responses={
+        **CONFLICT_RESPONSES,
+        422: {
+            "model": ErrorResponse,
+            "description": "Empleado inactivo o turno fuera del periodo.",
+        },
+    },
 )
 def create_shift(
     schedule_id: ScheduleId,
     data: WorkShiftCreate,
     db: Session = Depends(get_db),
-    user: CurrentUser = Depends(get_current_user),
+    user: CurrentUser = Depends(require_permission("schedule:manage")),
 ):
     return shift_service.create_shift(db, user.restaurant_id, schedule_id, data)
 
@@ -66,7 +74,6 @@ def create_shift(
     "",
     response_model=list[WorkShiftRead],
     summary="Listar turnos de un cuadrante",
-    dependencies=[manage],
     responses=CONFLICT_RESPONSES,
 )
 def list_shifts(
@@ -75,11 +82,39 @@ def list_shifts(
     date_from: DateFrom = None,
     date_to: DateTo = None,
     db: Session = Depends(get_db),
-    user: CurrentUser = Depends(get_current_user),
+    user: CurrentUser = Depends(require_permission("schedule:manage")),
 ):
     return shift_service.list_shifts(
-        db, user.restaurant_id, schedule_id,
-        employee_id=employee_id, date_from=date_from, date_to=date_to,
+        db,
+        user.restaurant_id,
+        schedule_id,
+        employee_id=employee_id,
+        date_from=date_from,
+        date_to=date_to,
+    )
+
+
+@router.patch(
+    "/{shift_id}",
+    response_model=WorkShiftRead,
+    summary="Editar turno de un cuadrante en borrador",
+    responses={
+        **CONFLICT_RESPONSES,
+        422: {
+            "model": ErrorResponse,
+            "description": "Empleado inactivo, turno fuera del periodo o fechas inválidas.",
+        },
+    },
+)
+def update_shift(
+    schedule_id: ScheduleId,
+    shift_id: ShiftId,
+    data: WorkShiftUpdate,
+    db: Session = Depends(get_db),
+    user: CurrentUser = Depends(require_permission("schedule:manage")),
+):
+    return shift_service.update_shift(
+        db, user.restaurant_id, schedule_id, shift_id, data
     )
 
 
@@ -87,14 +122,13 @@ def list_shifts(
     "/{shift_id}",
     status_code=status.HTTP_204_NO_CONTENT,
     summary="Eliminar turno de un cuadrante en borrador",
-    dependencies=[manage],
     responses=CONFLICT_RESPONSES,
 )
 def delete_shift(
     schedule_id: ScheduleId,
     shift_id: ShiftId,
     db: Session = Depends(get_db),
-    user: CurrentUser = Depends(get_current_user),
+    user: CurrentUser = Depends(require_permission("schedule:manage")),
 ):
     shift_service.delete_shift(db, user.restaurant_id, schedule_id, shift_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

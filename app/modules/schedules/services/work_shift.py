@@ -6,11 +6,11 @@ from sqlalchemy.orm import Session
 
 from app.controllers.employee_controller import get_employee
 from app.core.kernel.errors import AppError
-from app.models.enums import ScheduleStatus
+from app.models.enums import ScheduleStatus, ShiftStatus
 from app.models.restaurant_model import Restaurant
 from app.modules.schedules.models.schedule import Schedule
 from app.modules.schedules.models.work_shift import WorkShift
-from app.modules.schedules.schemas.work_shift import WorkShiftCreate
+from app.modules.schedules.schemas.work_shift import WorkShiftCreate, WorkShiftUpdate
 from app.modules.schedules.services.schedule import get_schedule
 
 
@@ -44,22 +44,42 @@ def _ensure_within_period(restaurant: Restaurant, schedule: Schedule, starts_at:
         )
 
 
+def _get_shift(db: Session, schedule_id: int, shift_id: int) -> WorkShift:
+    shift = db.scalar(
+        select(WorkShift).where(
+            WorkShift.id == shift_id, WorkShift.schedule_id == schedule_id
+        )
+    )
+    if shift is None:
+        raise AppError("SHIFT_NOT_FOUND", "Turno no encontrado.", 404)
+    return shift
+
+
 def _ensure_free_slot(
-    db: Session, restaurant: Restaurant, employee_id: int, starts_at: datetime, ends_at: datetime
+    db: Session,
+    restaurant: Restaurant,
+    employee_id: int,
+    starts_at: datetime,
+    ends_at: datetime,
+    exclude_shift_id: int | None = None,
 ) -> None:
     """Rechaza solapes y descansos más cortos que el mínimo configurado en el restaurante."""
     min_break = restaurant.min_break_between_shifts or 0
     gap = timedelta(minutes=min_break)
-    nearby = db.scalars(
+    query = (
         select(WorkShift)
         .join(Schedule, WorkShift.schedule_id == Schedule.id)
         .where(
             Schedule.restaurant_id == restaurant.id,
             WorkShift.employee_id == employee_id,
+            WorkShift.status != ShiftStatus.CANCELLED.value,
             WorkShift.start_at < ends_at + gap,
             WorkShift.end_at > starts_at - gap,
         )
-    ).all()
+    )
+    if exclude_shift_id is not None:
+        query = query.where(WorkShift.id != exclude_shift_id)
+    nearby = db.scalars(query).all()
 
     if any(s.start_at < ends_at and s.end_at > starts_at for s in nearby):
         raise AppError(
@@ -79,7 +99,7 @@ def create_shift(
     schedule = _get_editable_schedule(db, restaurant_id, schedule_id)
     employee = get_employee(db, restaurant_id, data.employee_id)
     if not employee.is_active:
-        raise AppError("EMPLOYEE_INACTIVE", "El empleado está inactivo.", 409)
+        raise AppError("EMPLOYEE_INACTIVE", "El empleado está inactivo.", 422)
 
     restaurant = _get_restaurant(db, restaurant_id)
     _ensure_within_period(restaurant, schedule, data.starts_at)
@@ -90,8 +110,64 @@ def create_shift(
         employee_id=employee.id,
         start_at=data.starts_at,
         end_at=data.ends_at,
+        type=data.type.value,
     )
     db.add(shift)
+    db.commit()
+    db.refresh(shift)
+    return shift
+
+
+def update_shift(
+    db: Session,
+    restaurant_id: int,
+    schedule_id: int,
+    shift_id: int,
+    data: WorkShiftUpdate,
+) -> WorkShift:
+    schedule = _get_editable_schedule(db, restaurant_id, schedule_id)
+    shift = _get_shift(db, schedule.id, shift_id)
+    changes = data.model_dump(exclude_unset=True)
+    if "type" in changes:
+        changes["type"] = changes["type"].value
+
+    employee_id = changes.get("employee_id", shift.employee_id)
+    starts_at = changes.get("starts_at", shift.start_at)
+    ends_at = changes.get("ends_at", shift.end_at)
+
+    if starts_at.tzinfo is None or ends_at.tzinfo is None:
+        raise AppError(
+            "SHIFT_INVALID_TIME",
+            "Las fechas deben incluir zona horaria, por ejemplo +01:00.",
+            422,
+        )
+    if ends_at <= starts_at:
+        raise AppError(
+            "SHIFT_INVALID_TIME",
+            "El fin del turno debe ser posterior al inicio.",
+            422,
+        )
+
+    employee = get_employee(db, restaurant_id, employee_id)
+    if not employee.is_active:
+        raise AppError("EMPLOYEE_INACTIVE", "El empleado está inactivo.", 422)
+
+    restaurant = _get_restaurant(db, restaurant_id)
+    _ensure_within_period(restaurant, schedule, starts_at)
+    _ensure_free_slot(
+        db,
+        restaurant,
+        employee.id,
+        starts_at,
+        ends_at,
+        exclude_shift_id=shift.id,
+    )
+
+    shift.employee_id = employee_id
+    shift.start_at = starts_at
+    shift.end_at = ends_at
+    if "type" in changes:
+        shift.type = changes["type"]
     db.commit()
     db.refresh(shift)
     return shift
@@ -124,10 +200,6 @@ def list_shifts(
 
 def delete_shift(db: Session, restaurant_id: int, schedule_id: int, shift_id: int) -> None:
     schedule = _get_editable_schedule(db, restaurant_id, schedule_id)
-    shift = db.scalar(
-        select(WorkShift).where(WorkShift.id == shift_id, WorkShift.schedule_id == schedule.id)
-    )
-    if shift is None:
-        raise AppError("SHIFT_NOT_FOUND", "Turno no encontrado.", 404)
+    shift = _get_shift(db, schedule.id, shift_id)
     db.delete(shift)
     db.commit()
