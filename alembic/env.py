@@ -2,6 +2,10 @@ from logging.config import fileConfig
 
 from alembic import context
 
+
+
+
+
 import app.models  # noqa: F401  (registra todos los modelos en Base.metadata)
 from app.core.config import get_settings
 from app.core.database_connection import Base, engine
@@ -12,7 +16,6 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
-
 
 def run_migrations_offline() -> None:
     """Ejecuta las migraciones sin conexión a base de datos."""
@@ -28,7 +31,6 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
-
 def run_migrations_online() -> None:
     """Ejecuta las migraciones con la conexión de la aplicación."""
 
@@ -43,7 +45,6 @@ def run_migrations_online() -> None:
 
         with context.begin_transaction():
             context.run_migrations()
-
 
 if context.is_offline_mode():
     run_migrations_offline()
