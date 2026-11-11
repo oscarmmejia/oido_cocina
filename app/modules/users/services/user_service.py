@@ -11,7 +11,7 @@ from app.core.permissions import ROLE_SUPERADMIN
 from app.models import Role, User
 from app.modules.users.schemas import (
     UserCreate, UserPage, UserPagination, UserRead, UserUpdate,
-    UserRoleUpdate,
+    UserRoleUpdate, UserStatusUpdate,
 )
 
 
@@ -144,6 +144,17 @@ def update_user_role(db: Session, actor: CurrentUser, user_id: int, payload: Use
             raise AppError("FORBIDDEN", "No está permitido asignar el rol de superadministrador.", 403)
         if user.role_id != role.id:
             user.role_id = role.id
+            user.token_version += 1
+        db.flush()
+        response = UserRead.model_validate(user)
+    return response
+
+
+def update_user_status(db: Session, actor: CurrentUser, user_id: int, payload: UserStatusUpdate) -> UserRead:
+    with _user_transaction(db):
+        user = _editable_user(db, actor, user_id)
+        if user.is_active != payload.is_active:
+            user.is_active = payload.is_active
             user.token_version += 1
         db.flush()
         response = UserRead.model_validate(user)

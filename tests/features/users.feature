@@ -1,5 +1,5 @@
 # language: es
-Característica: Listado y creación administrativa de usuarios (OICO-61)
+Característica: Gestión administrativa de usuarios (OICO-61, OICO-62 y OICO-63)
 
   Antecedentes:
     Dado un administrador autenticado y asociado a un restaurante
@@ -104,3 +104,49 @@ Característica: Listado y creación administrativa de usuarios (OICO-61)
     Cuando solicita GET /api/v1/users sin un parámetro de restaurante
     Entonces la respuesta tiene estado 200
     Y los resultados solo contienen usuarios del restaurante de la cuenta persistida
+
+  Escenario: Editar datos sin modificar los campos omitidos
+    Dado que el administrador tiene el permiso user:manage
+    Cuando cambia el nombre y el teléfono de un usuario de su restaurante
+    Entonces la respuesta tiene estado 200
+    Y conserva el correo, la contraseña y el rol anteriores
+    Y las sesiones existentes siguen siendo válidas
+
+  Escenario: Cambiar una contraseña y revocar las sesiones
+    Dado que el administrador tiene el permiso user:manage
+    Cuando establece una contraseña nueva para un trabajador de su restaurante
+    Entonces la contraseña se guarda como hash
+    Y el trabajador puede iniciar sesión con la contraseña nueva
+    Y sus tokens anteriores reciben 401
+
+  Escenario: Rechazar cualquier cambio del rol propio
+    Dado que el administrador tiene el permiso user:manage
+    Cuando solicita cambiar su propio rol
+    Entonces la respuesta tiene estado 403
+    Y su rol permanece sin cambios
+
+  Escenario: Cambiar el rol único de otro trabajador
+    Dado que el administrador tiene el permiso user:manage
+    Cuando asigna a otro trabajador un rol existente de su restaurante
+    Entonces la respuesta tiene estado 200
+    Y el rol nuevo sustituye al anterior
+    Y los tokens anteriores del trabajador reciben 401
+
+  Escenario: Inactivar sin borrar el historial
+    Dado un trabajador con reservas registradas y un token vigente
+    Cuando el administrador autorizado lo inactiva
+    Entonces la respuesta tiene estado 200
+    Y la fila del trabajador y sus reservas siguen existiendo
+    Y su inicio de sesión recibe 401
+    Y su token anterior recibe 401
+
+  Escenario: Reactivar no recupera sesiones anteriores
+    Dado un trabajador inactivo con tokens emitidos antes de su baja
+    Cuando el administrador autorizado lo reactiva
+    Entonces el trabajador puede iniciar una sesión nueva
+    Y sus tokens anteriores siguen recibiendo 401
+
+  Escenario: Rechazar un token anterior al contrato de revocación
+    Dado un token sin token_version
+    Cuando se utiliza para acceder a una ruta autenticada
+    Entonces la respuesta tiene estado 401

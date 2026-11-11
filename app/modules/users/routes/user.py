@@ -10,10 +10,10 @@ from app.core.kernel.identity import CurrentUser
 from app.core.kernel.permissions import SystemPermission, require_permission
 from app.core.scope import get_restaurant_scope
 from app.modules.users.schemas import (
-    UserPage, UserPagination, UserRead, UserUpdate, UserRoleUpdate,
+    UserPage, UserPagination, UserRead, UserUpdate, UserRoleUpdate, UserStatusUpdate,
 )
 from app.modules.users.services.user_service import (
-    list_users, update_user, update_user_role,
+    list_users, update_user, update_user_role, update_user_status,
 )
 
 
@@ -89,3 +89,20 @@ def patch_user_role(
     db: Session = Depends(get_db),
 ) -> UserRead:
     return update_user_role(db, actor, user_id, payload)
+
+
+@router.patch(
+    "/{user_id}/status", response_model=UserRead,
+    summary="Activate or deactivate a restaurant user",
+    description=(
+        "Requires user:manage. Change is_active without deleting the user or "
+        "history. Each actual status change revokes sessions. Repeating the "
+        "current status is a no-op. Reactivating never restores old tokens."
+    ), responses=USER_UPDATE_RESPONSES,
+)
+def patch_user_status(
+    user_id: int, payload: UserStatusUpdate,
+    actor: CurrentUser = Depends(require_permission(SystemPermission.USER_MANAGE.value)),
+    db: Session = Depends(get_db),
+) -> UserRead:
+    return update_user_status(db, actor, user_id, payload)

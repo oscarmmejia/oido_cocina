@@ -1,4 +1,4 @@
-# Administrative user listing and creation (OICO-61)
+# Administrative user management (OICO-61, OICO-62 and OICO-63)
 
 GET and POST `/api/v1/users` reuse the canonical `User` and `Role` models,
 Pydantic schemas and shared services. Both operations require JWT authentication
@@ -95,8 +95,52 @@ Run tests only against the local disposable PostgreSQL database
 `tests/database/test_migrations.py` when migrations are not authorized. No new
 models, tables, environment variables or migrations are required by OICO-61.
 
+## Administrative updates (OICO-62 and OICO-63)
+
+All PATCH operations require the real `user:manage` permission and resolve the
+restaurant from the authenticated account. Missing or foreign users return 404.
+An administrator cannot modify a superadministrator account. Responses use
+`UserRead` and never expose passwords, hashes or token versions.
+
+| Endpoint | Body | Behavior |
+| --- | --- | --- |
+| PATCH /api/v1/users/{user_id} | Optional name, email, phone_number, password | Preserve omitted fields; hash supplied passwords; normalize email |
+| PATCH /api/v1/users/{user_id}/role | role_id | Replace the single role with one from the same restaurant |
+| PATCH /api/v1/users/{user_id}/status | is_active | Activate or deactivate without deleting the user or history |
+
+Profile updates reject unknown or protected fields. Explicit null is allowed only
+for phone_number. Other input restrictions match creation. An empty profile PATCH
+preserves the account. Duplicate email returns 409 and rejects all supplied changes.
+The update locks and reloads the scoped user before mutation and commits atomically.
+
+Every request to change the caller's own role returns 403, including the same role.
+Assigning superadministrator returns 403. A missing or foreign role returns 404.
+Repeating the target's existing role or status does not increment token_version.
+
+Changing email, role or status increments token_version. Supplying a password
+also increments it, even when the supplied password matches the previous one.
+Name and phone changes preserve sessions. User inactivation preserves reservations
+and their author references, rejects login and rejects existing access tokens.
+Reactivation requires a new login and never restores previous tokens.
+
+## JWT compatibility
+
+Login now emits token_version from the stored account. Authentication requires
+that version to be a nonnegative integer matching the account, resolves the user
+by user_id and checks the email subject. This prevents an old email token from
+identifying another account if the address is later reused.
+
+Existing tokens without token_version return 401: users must sign in again after
+deployment. No database migration is needed for this feature because the shared
+User model already has token_version. The shared token encoder remains unchanged;
+tests constructing valid tokens supply the current version explicitly.
+
+`tests/modules/users/test_user_updates.py` covers partial updates, revocation,
+protected roles and accounts, atomic rejection, history preservation and status
+idempotency with real JWTs and PostgreSQL. Gherkin scenarios remain descriptive.
+
 ## Remaining HU-AUT-06 work
 
-OICO-61 provides listing and creation. User profile updates, role and status
-changes, logical deactivation, physical deletion and administrative audit logging
-belong to other subtasks. This implementation does not complete all of HU-AUT-06.
+Physical deletion and general administrative audit logging remain outside this
+delivery. Password recovery, public registration and logout are not implemented
+by these subtasks. This implementation does not complete all of HU-AUT-06.

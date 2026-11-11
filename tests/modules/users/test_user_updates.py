@@ -128,9 +128,38 @@ def test_incompatible_role_preserves_user(
     assert _snapshot(worker) == before
 
 
+def test_inactivation_preserves_history_and_reactivation_does_not_restore_tokens(
+    db, authenticated_client, manager_headers, worker
+):
+    headers = _login(authenticated_client, worker)
+    start = datetime.now(timezone.utc)
+    reservation = Reservation(
+        restaurant_id=worker.restaurant_id, created_by_user_id=worker.id,
+        customer_name="Customer", phone="555123456", party_size=2,
+        start_at=start, end_at=start + timedelta(hours=1),
+    )
+    db.add(reservation)
+    db.commit()
+    reservation_id = reservation.id
+    for active, version in ((False, 1), (False, 1), (True, 2)):
+        response = authenticated_client.patch(
+            f"{URL}/{worker.id}/status", headers=manager_headers, json={"is_active": active}
+        )
+        assert response.status_code == 200
+        db.expire_all()
+        assert db.get(User, worker.id).is_active is active
+        assert worker.token_version == version
+        assert db.get(Reservation, reservation_id).created_by_user_id == worker.id
+        assert authenticated_client.get("/api/v1/auth/me", headers=headers).status_code == 401
+        login = authenticated_client.post("/api/v1/auth/login", data={
+            "username": worker.email, "password": PASSWORD,
+        })
+        assert login.status_code == (200 if active else 401)
+
 
 @pytest.mark.parametrize("suffix,payload", [
     ("", {"name": "Changed"}), ("/role", {"role_id": 1}),
+    ("/status", {"is_active": False}),
 ])
 @pytest.mark.parametrize("kind", ["foreign", "missing", "superadmin", "no_permission", "anonymous"])
 def test_patch_authorization_and_scope(
@@ -171,6 +200,7 @@ def test_patch_authorization_and_scope(
     ("", {"password": ""}), ("", {"email": "invalid"}), ("", {"role_id": 1}),
     ("", {"restaurant_id": 2}), ("", {"token_version": 3}), ("", {"is_active": False}),
     ("/role", {"role_id": 0}), ("/role", {"role_id": 1, "is_active": True}),
+    ("/status", {"is_active": None}), ("/status", {"is_active": "invalid"}),
 ])
 def test_invalid_patch_is_atomic(db, authenticated_client, manager_headers, worker, suffix, payload):
     before = _snapshot(worker)
@@ -218,7 +248,7 @@ def test_signed_token_cannot_mix_user_id_and_subject(authenticated_client, manag
 
 def test_update_openapi_contract(authenticated_client):
     paths = authenticated_client.get("/openapi.json").json()["paths"]
-    for suffix in ("", "/role"):
+    for suffix in ("", "/role", "/status"):
         operation = paths[f"{URL}/{{user_id}}{suffix}"]["patch"]
         assert operation["security"]
         assert "user:manage" in operation["description"]

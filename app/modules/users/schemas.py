@@ -67,3 +67,9 @@ class UserRoleUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     role_id: int = Field(gt=0)
+
+
+class UserStatusUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    is_active: bool
