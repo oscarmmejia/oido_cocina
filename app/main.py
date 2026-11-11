@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from app.api.auth import router as auth_router
 from app.api import employees
 from app.api.allergen_routes import router as allergen_router
+from app.api.auth_routes import router as auth_router
 from app.api.category_routes import router as category_router
 from app.api.dish_routes import router as dish_router
 from app.api.menu_collection_routes import router as menu_collection_router
@@ -48,6 +49,7 @@ app.include_router(category_router, prefix=settings.api_prefix)
 app.include_router(allergen_router, prefix=settings.api_prefix)
 app.include_router(reservations_router, prefix=settings.api_prefix)
 app.include_router(employees.router, prefix=settings.api_prefix)
+app.include_router(auth_router, prefix=settings.api_prefix)
 
 @app.get("/")
 def read_root():
