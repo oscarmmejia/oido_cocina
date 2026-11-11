@@ -152,7 +152,8 @@ def test_get_users_uses_persisted_scope_instead_of_token_claim(
     db.flush()
     user_factory(other.id, role.id, "other@example.com")
     token = create_access_token({
-        "sub": manager.email, "user_id": manager.id, "restaurant_id": other.id
+        "sub": manager.email, "user_id": manager.id, "restaurant_id": other.id,
+        "token_version": manager.token_version,
     })
 
     response = authenticated_client.get(URL, headers={"Authorization": f"Bearer {token}"})
@@ -276,7 +277,8 @@ def test_user_routes_reject_expired_or_inactive_identity(
     if reason == "expired":
         token = create_access_token(
             {"sub": manager.email, "user_id": manager.id,
-             "restaurant_id": manager.restaurant_id},
+             "restaurant_id": manager.restaurant_id,
+             "token_version": manager.token_version},
             expires_delta=timedelta(seconds=-1),
         )
         headers = {"Authorization": f"Bearer {token}"}

@@ -225,7 +225,8 @@ def test_settings_rejects_expired_or_inactive_identity(
     if reason == "expired":
         token = create_access_token(
             {"sub": settings_account.email, "user_id": settings_account.id,
-             "restaurant_id": settings_account.restaurant_id},
+             "restaurant_id": settings_account.restaurant_id,
+             "token_version": settings_account.token_version},
             expires_delta=timedelta(seconds=-1),
         )
         headers = {"Authorization": f"Bearer {token}"}
@@ -284,6 +285,7 @@ def test_client_identifiers_cannot_select_another_restaurant(
     token = create_access_token({
         "sub": settings_account.email, "user_id": settings_account.id,
         "restaurant_id": other.id,
+        "token_version": settings_account.token_version,
     })
     forged_scope_headers = {"Authorization": f"Bearer {token}"}
 

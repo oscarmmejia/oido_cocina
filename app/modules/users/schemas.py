@@ -40,3 +40,36 @@ class UserPage(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class UserUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str | None = Field(default=None, min_length=1, max_length=150)
+    email: EmailStr | None = Field(default=None, max_length=255)
+    password: SecretStr | None = Field(default=None, min_length=1)
+    phone_number: str | None = Field(default=None, max_length=30)
+
+    @field_validator("name", "email", "password")
+    @classmethod
+    def reject_explicit_null(cls, value):
+        if value is None:
+            raise ValueError("El campo no admite null.")
+        return value
+
+    @field_validator("email", mode="after")
+    @classmethod
+    def normalize_email(cls, value):
+        return UserCreate.normalize_email(value)
+
+
+class UserRoleUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    role_id: int = Field(gt=0)
+
+
+class UserStatusUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    is_active: bool
