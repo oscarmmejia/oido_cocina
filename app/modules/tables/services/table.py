@@ -48,8 +48,13 @@ def create_table(
 
 
 def get_table(db: Session, table_id: int, restaurant_id: int) -> DiningTable:
-    table = db.get(DiningTable, table_id)
-    if table is None or table.restaurant_id != restaurant_id:
+    table = db.scalar(
+        select(DiningTable).where(
+            DiningTable.id == table_id,
+            DiningTable.restaurant_id == restaurant_id,
+        )
+    )
+    if table is None:
         raise AppError("TABLE_NOT_FOUND", "No existe la mesa", 404)
     return table
 
