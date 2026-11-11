@@ -3,16 +3,16 @@ from datetime import date, timedelta
 import pytest
 from fastapi import status
 
-from app.core.kernel.identity import DEV_RESTAURANT_ID
 from app.models import Employee, Restaurant
 from app.modules.schedules.models.schedule import Schedule, ScheduleStatus
 from app.modules.schedules.schemas.schedule import ScheduleCreate
+from tests.conftest import TEST_RESTAURANT_ID
 
 PREFIX = "/api/v1/schedules"
 PERIOD = {"period_start": "2026-11-09", "period_end": "2026-11-15"}
 
 
-def make_employee(db, restaurant_id=DEV_RESTAURANT_ID, *, name="Empleado Demo", active=True):
+def make_employee(db, restaurant_id=TEST_RESTAURANT_ID, *, name="Empleado Demo", active=True):
     employee = Employee(
         restaurant_id=restaurant_id,
         full_name=name,
@@ -111,7 +111,7 @@ def test_list_schedules_returns_only_restaurant_schedules(client, db, restaurant
     ).json()
     second = client.post(f"{PREFIX}/", json=schedule_payload(employee.id)).json()
 
-    other = Restaurant(id=DEV_RESTAURANT_ID + 1, name="Otro", time_zone="Europe/Madrid")
+    other = Restaurant(id=TEST_RESTAURANT_ID + 1, name="Otro", time_zone="Europe/Madrid")
     db.add(other)
     db.commit()
     other_employee = make_employee(db, other.id, name="Otra")
