@@ -3,6 +3,7 @@ import inspect
 from fastapi import FastAPI, Depends
 from fastapi.testclient import TestClient
 
+from app.core.kernel.errors import register_error_handlers
 from app.core.kernel.identity import CurrentUser, get_current_user
 from app.core.kernel.permissions import require_permission
 from app.api.auth import get_current_user as get_authenticated_user
