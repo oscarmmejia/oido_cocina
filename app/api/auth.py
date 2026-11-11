@@ -5,7 +5,9 @@ from jose import JWTError, jwt
 from app.core.database_connection import get_db
 from app.schemas.user import UserResponse
 from app.core.security import verify_password, create_access_token, SECRET_KEY, ALGORITHM
-from app.models.user import User
+
+
+from app.models.security_model import User
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
