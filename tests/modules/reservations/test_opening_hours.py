@@ -97,6 +97,26 @@ def test_day_without_schedule_is_rejected(db, restaurant):
     )
 
 
+def test_equal_open_and_close_is_not_treated_as_24_hours(db, restaurant):
+    _set_schedule(
+        db,
+        restaurant,
+        open_time=time(20, 0),
+        close_time=time(20, 0),
+    )
+
+    assert not is_within_opening_hours(
+        restaurant,
+        _at(MONDAY, 19, 30),
+        _at(MONDAY, 20, 30),
+    )
+    assert not is_within_opening_hours(
+        restaurant,
+        _at(MONDAY, 20, 0),
+        _at(MONDAY, 21, 0),
+    )
+
+
 def test_schedule_can_be_limited_to_one_weekday(db, restaurant):
     _set_schedule(
         db,
