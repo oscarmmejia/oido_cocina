@@ -4,7 +4,7 @@ from decimal import Decimal
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.permissions import (
+from app.core.kernel.permissions import (
     ROLE_ADMIN,
     ROLE_HEAD_CHEF,
     ROLE_MANAGER,
@@ -19,7 +19,6 @@ DEMO_TIME_ZONE = "Europe/Madrid"
 DEMO_PASSWORD = "Demo1234!"
 SUPERADMIN_EMAIL = "superadmin@oidocina.local"
 
-# Catálogo oficial de los catorce alérgenos de declaración obligatoria en la UE.
 EU_ALLERGENS: list[dict[str, str]] = [
     {"code": "GLUTEN", "name": "Cereales que contienen gluten"},
     {"code": "CRUSTACEOS", "name": "Crustáceos y productos a base de crustáceos"},
@@ -37,8 +36,6 @@ EU_ALLERGENS: list[dict[str, str]] = [
     {"code": "MOLUSCOS", "name": "Moluscos y productos a base de moluscos"},
 ]
 
-# Horario demo por defecto. El equipo acordó que estos campos viven en
-# restaurant, no en una tabla opening_hours.
 DEFAULT_SCHEDULE: dict[str, object] = {
     "day_of_week": 1,
     "period": "morning",
@@ -219,7 +216,6 @@ def seed_allergens(db: Session) -> list[Allergen]:
 
     existing = {row.code: row for row in db.scalars(select(Allergen))}
 
-    # Compatibilidad con el código usado antes de unificar el catálogo.
     legacy = existing.get("FRUTOS_SECOS")
     if legacy is not None and "FRUTOS_DE_CASCARA" not in existing:
         legacy.code = "FRUTOS_DE_CASCARA"

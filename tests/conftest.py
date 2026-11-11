@@ -29,7 +29,7 @@ from sqlalchemy.orm import sessionmaker
 import app.models
 from app.core.database_connection import Base, get_db
 from app.core.kernel.identity import CurrentUser, get_current_user
-from app.core.permissions import PERMISSION_NAMES, ROLE_SUPERADMIN
+from app.core.kernel.permissions import PERMISSION_NAMES, ROLE_SUPERADMIN
 from app.main import app
 from app.models import Restaurant
 

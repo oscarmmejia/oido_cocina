@@ -4,7 +4,7 @@ import pytest
 from sqlalchemy import func, select
 
 from app.core.passwords import hash_password, verify_password
-from app.core.permissions import ROLE_ADMIN, ROLE_SUPERADMIN, ROLE_WAITER
+from app.core.kernel.permissions import ROLE_ADMIN, ROLE_SUPERADMIN, ROLE_WAITER
 from app.core.security import create_access_token
 from app.models import Permission, Restaurant, Role, RolePermission, User
 from app.modules.users.routes import router

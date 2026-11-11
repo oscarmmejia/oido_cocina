@@ -2,7 +2,7 @@ from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 
 from app.core.passwords import hash_password
-from app.core.permissions import PERMISSIONS, ROLE_PERMISSIONS
+from app.core.kernel.permissions import PERMISSIONS, ROLE_PERMISSIONS
 from app.database.seeders.catalog import (
     DEFAULT_SCHEDULE,
     DEMO_PASSWORD,
@@ -123,8 +123,6 @@ def seed_users(
                 is_active=True,
             )
             db.add(user)
-            # El superadministrador debe quedar con DEV_USER_ID en una base
-            # recién sembrada.
             if spec["email"] == SUPERADMIN_EMAIL:
                 db.flush()
         result[spec["email"]] = user

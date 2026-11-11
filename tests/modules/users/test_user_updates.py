@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 
 from app.core.passwords import verify_password
-from app.core.permissions import ROLE_SUPERADMIN, ROLE_WAITER
+from app.core.kernel.permissions import ROLE_SUPERADMIN, ROLE_WAITER
 from app.core.security import create_access_token
 from app.models import Reservation, Restaurant, Role, User
 from tests.modules.users.test_user_routes import (

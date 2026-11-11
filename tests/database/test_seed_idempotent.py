@@ -1,7 +1,7 @@
 from sqlalchemy import func, select
 
 from app.core.database_connection import Base
-from app.core.permissions import PERMISSIONS
+from app.core.kernel.permissions import PERMISSIONS
 from app.database.seeders import seed_all
 from app.models import Allergen, Permission, Restaurant, Role, User
 
