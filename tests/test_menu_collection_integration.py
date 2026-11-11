@@ -3,7 +3,8 @@ from decimal import Decimal
 
 import pytest
 
-from app.core.kernel.identity import DEV_RESTAURANT_ID, CurrentUser, get_current_user
+from app.core.kernel.identity import CurrentUser, get_current_user
+from tests.conftest import TEST_RESTAURANT_ID
 from app.main import app
 from app.models import Restaurant
 from app.models.menu_model import Menu, MenuCollection
@@ -15,7 +16,7 @@ BASE = "/api/v1/menu-collections"
 def forbidden_client(client):
     app.dependency_overrides[get_current_user] = lambda: CurrentUser(
         id=999,
-        restaurant_id=DEV_RESTAURANT_ID,
+        restaurant_id=TEST_RESTAURANT_ID,
         email="sin-permisos@example.com",
         role="viewer",
         permissions=set(),
@@ -30,12 +31,10 @@ def _url(collection_id=None, *, public=False):
         path = f"{BASE}/"
     else:
         path = f"{BASE}/{collection_id}"
-    return f"{path}?restaurant_id={DEV_RESTAURANT_ID}"
-
+    return f"{path}?restaurant_id={TEST_RESTAURANT_ID}"
 
 def _status_url(collection_id):
-    return f"{BASE}/{collection_id}/status?restaurant_id={DEV_RESTAURANT_ID}"
-
+    return f"{BASE}/{collection_id}/status?restaurant_id={TEST_RESTAURANT_ID}"
 
 def _create(client, name="Mensual", **overrides):
     payload = {"name": name, "type": "seasonal"}
@@ -53,7 +52,7 @@ def test_create_returns_201(client, restaurant):
     assert body["name"] == "Mensual"
     assert body["type"] == "seasonal"
     assert body["is_active"] is True
-    assert body["restaurant_id"] == DEV_RESTAURANT_ID
+    assert body["restaurant_id"] == TEST_RESTAURANT_ID
 
 
 def test_create_duplicate_name_returns_409(client, restaurant):
