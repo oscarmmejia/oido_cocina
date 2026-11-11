@@ -12,7 +12,7 @@ PERIOD = {"period_start": "2026-11-09", "period_end": "2026-11-15", "responsible
 
 def make_employee(db, *, active=True, name="Ana", restaurant_id=1):
     emp = Employee(
-        restaurant_id=restaurant_id, full_name=name, job_position="Camarero/a", is_active=active
+        restaurant_id=restaurant_id, full_name=name, job_position="waiter", is_active=active
     )
     db.add(emp)
     db.commit()

@@ -36,5 +36,5 @@ class WorkShiftRead(BaseModel):
     id: int
     schedule_id: int
     employee_id: int
-    starts_at: datetime
-    ends_at: datetime
+    starts_at: datetime = Field(validation_alias="start_at")
+    ends_at: datetime = Field(validation_alias="end_at")

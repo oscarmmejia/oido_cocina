@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class ScheduleCreate(BaseModel):
@@ -32,5 +32,11 @@ class ScheduleResponse(BaseModel):
     period_start: date
     period_end: date
     status: str = Field(description="'borrador' (editable) o 'publicado' (inmutable).")
-    responsible_id: int
+    responsible_id: int | None = None
     published_at: datetime | None = None
+
+    @field_validator("status", mode="before")
+    @classmethod
+    def expose_api_status(cls, value: str) -> str:
+        """Traduce los estados persistidos a los valores públicos de la API."""
+        return {"draft": "borrador", "published": "publicado"}.get(value, value)

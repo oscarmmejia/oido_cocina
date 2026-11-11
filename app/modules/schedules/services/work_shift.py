@@ -6,11 +6,12 @@ from sqlalchemy.orm import Session
 
 from app.controllers.employee_controller import get_employee
 from app.core.kernel.errors import AppError
-from app.modules.schedules.models.schedule import Schedule, ScheduleStatus
+from app.models.enums import ScheduleStatus
+from app.models.restaurant_model import Restaurant
+from app.modules.schedules.models.schedule import Schedule
 from app.modules.schedules.models.work_shift import WorkShift
 from app.modules.schedules.schemas.work_shift import WorkShiftCreate
 from app.modules.schedules.services.schedule import get_schedule
-from app.modules.settings.models.restaurant import Restaurant
 
 
 def _get_restaurant(db: Session, restaurant_id: int) -> Restaurant:
@@ -26,7 +27,7 @@ def _local_zone(restaurant: Restaurant) -> ZoneInfo:
 
 def _get_editable_schedule(db: Session, restaurant_id: int, schedule_id: int) -> Schedule:
     schedule = get_schedule(db, restaurant_id, schedule_id)
-    if schedule.status != ScheduleStatus.BORRADOR.value:
+    if schedule.status != ScheduleStatus.DRAFT.value:
         raise AppError(
             "SCHEDULE_NOT_EDITABLE", "Un cuadrante publicado no se puede modificar.", 409
         )
@@ -55,12 +56,12 @@ def _ensure_free_slot(
         .where(
             Schedule.restaurant_id == restaurant.id,
             WorkShift.employee_id == employee_id,
-            WorkShift.starts_at < ends_at + gap,
-            WorkShift.ends_at > starts_at - gap,
+            WorkShift.start_at < ends_at + gap,
+            WorkShift.end_at > starts_at - gap,
         )
     ).all()
 
-    if any(s.starts_at < ends_at and s.ends_at > starts_at for s in nearby):
+    if any(s.start_at < ends_at and s.end_at > starts_at for s in nearby):
         raise AppError(
             "SHIFT_OVERLAP", "El empleado ya tiene un turno que se solapa con esa franja.", 409
         )
@@ -87,8 +88,8 @@ def create_shift(
     shift = WorkShift(
         schedule_id=schedule.id,
         employee_id=employee.id,
-        starts_at=data.starts_at,
-        ends_at=data.ends_at,
+        start_at=data.starts_at,
+        end_at=data.ends_at,
     )
     db.add(shift)
     db.commit()
@@ -113,12 +114,12 @@ def list_shifts(
         query = query.where(WorkShift.employee_id == employee_id)
     if date_from is not None:
         start_local = datetime.combine(date_from, time.min, tzinfo=zone)
-        query = query.where(WorkShift.starts_at >= start_local)
+        query = query.where(WorkShift.start_at >= start_local)
     if date_to is not None:
         end_local = datetime.combine(date_to + timedelta(days=1), time.min, tzinfo=zone)
-        query = query.where(WorkShift.starts_at < end_local)
+        query = query.where(WorkShift.start_at < end_local)
 
-    return list(db.scalars(query.order_by(WorkShift.starts_at)))
+    return list(db.scalars(query.order_by(WorkShift.start_at)))
 
 
 def delete_shift(db: Session, restaurant_id: int, schedule_id: int, shift_id: int) -> None:

@@ -16,7 +16,7 @@ def create_dummy_employee(db, restaurant_id):
             id=1,
             restaurant_id=restaurant_id,
             full_name="Empleado Demo",
-            job_position="Cocinero/a de turno",
+            job_position="cook",
             is_active=True,
         )
         db.add(employee)
