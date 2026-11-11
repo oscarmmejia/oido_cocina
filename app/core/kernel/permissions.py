@@ -17,4 +17,4 @@ def require_permission(permission: str) -> Callable[..., CurrentUser]:
             403,
         )
 
-        return checker
+    return checker
