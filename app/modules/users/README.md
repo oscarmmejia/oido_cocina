@@ -1,71 +1,102 @@
-# Base de OICO-61: listado y creación de usuarios
+# Administrative user listing and creation (OICO-61)
 
-Implementación parcial de HU-AUT-06. Incluye esquemas Pydantic y servicios de
-listado paginado y creación sobre los modelos compartidos `User` y `Role`.
-No añade modelos, tablas ni migraciones. El POST existente de `app/api/users.py`
-consume este servicio; el listado HTTP y su ubicación definitiva en las rutas
-del módulo siguen pendientes de OICO-61.
+GET and POST `/api/v1/users` reuse the canonical `User` and `Role` models,
+Pydantic schemas and shared services. Both operations require JWT authentication
+and the real `user:manage` permission. Restaurant scope comes from the persisted
+authenticated user, rather than a restaurant identifier selected by the client.
 
-## Contrato de los servicios
+## API contract
 
-- `list_users(db, restaurant_id, pagination)` devuelve `UserPage`, ordenado por ID
-  y limitado al restaurante indicado. Página inicial 1, tamaño inicial 20 y máximo 100.
-- `create_user(db, restaurant_id, payload)` devuelve `UserRead`. Requiere un rol
-  existente del mismo restaurante y rechaza el rol compartido de superadministrador.
-- El llamante debe obtener `restaurant_id` de la identidad autenticada del servidor
-  y exigir `user:manage` en ambas operaciones. Los servicios no autentican ni
-  autorizan peticiones y no deben exponerse directamente sin esas dependencias.
-- La contraseña utiliza el helper compartido `app.core.passwords.hash_password`.
-  Las respuestas solo contienen campos públicos. No se modifica el módulo de login.
-- El índice compartido `uq_users_email_lower` establece la unicidad global del
-  correo sin distinguir mayúsculas. La creación convierte esa colisión en un error
-  409 genérico y revierte la transacción. Otros errores de integridad se propagan.
+| Method | Input | Success |
+| --- | --- | --- |
+| GET /api/v1/users | Query parameters `page` and `page_size` | 200 with `items`, `total`, `page` and `page_size` |
+| POST /api/v1/users | `name`, `email`, `password`, `role_id`; optional `phone_number` | 201 with public user fields |
 
-## Dependencias pendientes de integración
+GET starts at page 1 with 20 users per page. Page and page size must be positive
+integers; maximum page size is 100. Unknown query parameters, including
+`restaurant_id`, return 422 through the existing pagination schema.
 
-1. La devolución de `require_permission` se corrigió localmente con autorización
-   explícita del usuario, tras coordinarse con Patri y Jesús. Las tres pruebas
-   existentes del kernel pasan y la aplicación vuelve a cargar. La corrección
-   está guardada en el commit `bde50c0`, incluido en esta entrega.
-2. La rama del PR #20 integra la identidad JWT y los permisos reales del rol;
-   no utiliza el usuario provisional en producción. Falta su revisión y fusión.
-3. El POST `/api/v1/users` del PR #20 delega en este servicio, sin duplicar
-   su implementación. Su autenticación y sus respuestas 201/409/403 están
-   cubiertas por pruebas HTTP con usuarios persistidos y JWT reales.
-4. La dependencia `email-validator==2.3.0`, necesaria para `EmailStr`, ya se instaló
-   en `.venv` con autorización del usuario y se declaró en `requirements.txt`.
-5. Una prueba HTTP crea un usuario mediante este servicio y verifica que puede
-   iniciar sesión con el helper compartido. GET `/users` todavía está pendiente.
+Results include active and inactive users from the authenticated restaurant,
+ordered by user ID. The total uses the same restaurant scope as the results.
+A page beyond the results returns an empty `items` list while preserving the total.
 
-## Verificación
+Example GET response for an account with no other restaurant users:
 
-Pruebas preparadas en `tests/modules/users/`: validación de entrada, campos
-protegidos, respuestas sin secretos, creación, duplicados, rollback, roles y
-paginación por restaurante. Los casos con `Mock` verifican traducción de errores;
-no representan una prueba de concurrencia real.
+```json
+{
+  "items": [
+    {
+      "id": 1,
+      "restaurant_id": 1,
+      "role_id": 1,
+      "name": "Manager",
+      "email": "manager@example.com",
+      "phone_number": null,
+      "is_active": true
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "page_size": 20
+}
+```
 
-`tests/features/users.feature` describe escenarios de aceptación HTTP futuros.
-Es documentación Gherkin y no un conjunto de pruebas ejecutadas automáticamente.
+The example IDs are illustrative; role IDs do not grant permissions automatically.
 
-Se verificaron la sintaxis de los archivos y la conexión exclusiva a
-`oido_cocina_test`. Tras corregir la devolución del comprobador de permisos,
-las tres pruebas del kernel pasaron. Con `email-validator` instalado, pasaron
-las 28 pruebas de esquemas y servicios de usuarios. La preparación de nuestros
-tests usa un ID explícito para el segundo restaurante, compatible con la fixture
-compartida que inserta el primero sin avanzar su secuencia PostgreSQL.
+POST requires an existing role from the authenticated restaurant. A role belonging
+to another restaurant or a missing role returns 404. Assigning the shared
+superadministrator role returns 403. Unknown and protected body fields, such as
+`restaurant_id`, `is_active` or `password_hash`, return 422.
 
-Después pasaron 350 pruebas en la suite disponible, incluidas las de usuarios,
-con cero fallos y cero errores. Se excluyó `tests/database/test_migrations.py`
-porque ejecuta Alembic. No se ejecutaron migraciones. Estos resultados validan
-la base original de servicios y esquemas. Las correcciones posteriores del
-PR #20 superaron 55 pruebas específicas de identidad, permisos y usuarios,
-incluyendo el POST registrado. La ejecución global posterior superó 374 pruebas,
-con cero fallos y cero errores, excluyendo las pruebas de migraciones.
-OICO-61 no está completada: falta su listado HTTP.
+Emails are normalized to lowercase. The shared `uq_users_email_lower` PostgreSQL
+index enforces global case-insensitive uniqueness, including across restaurants.
+An email collision returns 409 with no insert. Passwords use the shared
+`app.core.passwords.hash_password` helper and work with the integrated login.
 
-## Fuera del alcance de esta base
+Both operations expose only `id`, `restaurant_id`, `role_id`, `name`, `email`,
+`phone_number` and `is_active`. Passwords, hashes, token versions and tokens are
+excluded. Missing, invalid, expired or inactive authentication returns 401; missing
+permission or invalid restaurant association returns 403. Errors use the shared
+`ErrorResponse` envelope. Swagger at `/docs` documents responses and query limits.
 
-PATCH de datos y rol, baja lógica, borrado físico, consulta de auditoría y servicio
-general de auditoría corresponden a otras subtareas. El rechazo de superadministrador
-al crear evita exponer esa operación mientras se implementan los controles completos
-de gestión de roles. HU-AUT-06 no queda completada con esta base.
+Business error messages produced by the users service are in Spanish. Error
+codes, JSON keys and permission names remain unchanged. Some authentication and
+permission errors still use English messages from shared infrastructure; those
+modules are not translated or overridden by this feature.
+
+## Routing and service responsibilities
+
+`app/modules/users/routes/` exposes the existing POST router from
+`app/api/users.py` and adds GET. The application registers this router once.
+The existing POST delegates through its existing controller to `create_user`;
+GET delegates directly to `list_users`. No duplicate creation implementation
+or alternative authentication is introduced.
+
+The services take a previously authorized restaurant ID. They implement scoped
+queries, pagination, validation, hashing and transaction handling; they do not
+authenticate requests. Callers must use the shared identity and permission checks.
+
+## Verification
+
+`tests/modules/users/test_user_routes.py` exercises the API using real JWT login
+and the real permission checker. It covers listing, defaults, pagination,
+restaurant isolation, public fields, creation, duplicate email, invalid inputs,
+401 and 403, plus the OpenAPI contract and one route per operation.
+Existing `tests/test_auth_integration.py` also covers cross-restaurant roles and
+superadministrator creation rejection.
+
+Schema and service tests remain in `tests/modules/users/`. The Gherkin file
+`tests/features/users.feature` documents acceptance scenarios in Spanish using
+the `# language: es` directive; it is not executed
+by a BDD runner.
+
+Run tests only against the local disposable PostgreSQL database
+`oido_cocina_test`, with no fallback to development. Exclude
+`tests/database/test_migrations.py` when migrations are not authorized. No new
+models, tables, environment variables or migrations are required by OICO-61.
+
+## Remaining HU-AUT-06 work
+
+OICO-61 provides listing and creation. User profile updates, role and status
+changes, logical deactivation, physical deletion and administrative audit logging
+belong to other subtasks. This implementation does not complete all of HU-AUT-06.

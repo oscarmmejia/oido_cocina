@@ -11,11 +11,11 @@ from app.api.category_routes import router as category_router
 from app.api.dish_routes import router as dish_router
 from app.api.menu_collection_routes import router as menu_collection_router
 from app.api.test_routes import router as health_router
-from app.api.users import router as users_router
 from app.core.config import get_settings
 from app.core.database_connection import SessionLocal
 from app.core.kernel.errors import register_error_handlers
 from app.core.kernel.seed import seed_minimum_data
+from app.modules.users.routes import router as users_router
 from app.modules.reservations.routes.reservation import (
     router as reservations_router,
 )
