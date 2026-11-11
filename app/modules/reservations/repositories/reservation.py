@@ -11,7 +11,7 @@ ocupaciones y el historial se consultan de forma explícita.
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import delete, exists, func, or_, select, update
+from sqlalchemy import delete, exists, func, or_, select, text, update
 from sqlalchemy.orm import Session
 
 from app.models import (
@@ -213,6 +213,27 @@ def list_reservations(
         )
     )
     return items, total
+
+
+def acquire_advisory_locks(
+    db: Session,
+    restaurant_id: int,
+    keys: list[str],
+) -> None:
+    """Adquiere locks consultivos de transacción en orden estable.
+
+    Los locks se liberan solos al terminar la transacción. Ordenar las claves
+    evita interbloqueos entre peticiones que comparten más de una.
+    """
+
+    for key in sorted(set(keys)):
+        db.execute(
+            text(
+                "SELECT pg_advisory_xact_lock("
+                "CAST(:restaurant_id AS integer), hashtext(:key))"
+            ),
+            {"restaurant_id": restaurant_id, "key": key},
+        )
 
 
 def lock_tables(db: Session, table_ids: list[int]) -> list[DiningTable]:

@@ -19,6 +19,7 @@ from app.modules.reservations.repositories.reservation import ReservationDetail
 from app.modules.reservations.schemas.reservation import ReservationCreate
 from app.modules.reservations.services.validation import (
     ValidatedReservation,
+    lock_contact,
     validate_reservation,
 )
 
@@ -26,6 +27,8 @@ from app.modules.reservations.services.validation import (
 # compartido filtra por fecha completa, no por franja. Sustituirlo por
 # contacto + start_at cuando HU-AUT-02 esté integrado, para no rechazar dos
 # reservas válidas del mismo contacto el mismo día en horas distintas.
+# Mientras tanto, el lock consultivo por contacto de create_reservation cubre
+# la concurrencia de la ruta de servicio.
 
 
 def _translate_integrity_error(error: IntegrityError) -> AppError:
@@ -143,6 +146,7 @@ def create_reservation(
     """
 
     try:
+        lock_contact(db, restaurant, payload.phone, payload.email)
         validated = validate_reservation(db, restaurant, payload)
         table_ids = [table.id for table in validated.tables]
 

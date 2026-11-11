@@ -11,6 +11,7 @@ from app.modules.reservations.repositories.reservation import ReservationDetail
 from app.modules.reservations.schemas.reservation import ReservationUpdate
 from app.modules.reservations.services.validation import (
     ValidatedReservation,
+    contact_lock_keys,
     validate_reservation_update,
 )
 
@@ -142,13 +143,26 @@ def update_reservation(
                 409,
             )
 
+        fields_set = payload.model_fields_set
+        effective_phone = (
+            payload.phone if "phone" in fields_set else reservation.phone
+        )
+        effective_email = (
+            payload.email if "email" in fields_set else reservation.email
+        )
+        reservation_repo.acquire_advisory_locks(
+            db,
+            restaurant.id,
+            contact_lock_keys(reservation.phone, reservation.email)
+            + contact_lock_keys(effective_phone, effective_email),
+        )
+
         validated = validate_reservation_update(
             db,
             restaurant,
             reservation,
             payload,
         )
-        fields_set = payload.model_fields_set
         current_table_ids = reservation_repo.list_active_occupation_table_ids(
             db,
             reservation.id,

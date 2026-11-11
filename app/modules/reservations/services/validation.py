@@ -32,6 +32,10 @@ ACTIVE_RESERVATION_STATUSES = (
     ReservationStatus.SEATED.value,
 )
 
+# TODO(HU-RES-05): una reserva pending debe dejar de bloquear en
+# start_at + courtesy_minutes. La liberación y la caducidad se implementarán
+# en esa historia; aquí solo se contempla como estado activo.
+
 
 @dataclass(frozen=True)
 class ValidatedReservation:
@@ -61,6 +65,39 @@ def normalize_email(email: str | None) -> str | None:
 
     normalized = email.strip().lower()
     return normalized or None
+
+
+def contact_lock_keys(phone: str | None, email: str | None) -> list[str]:
+    """Claves de bloqueo por contacto normalizado (teléfono y/o email)."""
+
+    keys: list[str] = []
+    normalized_phone = normalize_phone(phone or "")
+    normalized_email = normalize_email(email)
+    if normalized_phone:
+        keys.append(f"reservation:phone:{normalized_phone}")
+    if normalized_email is not None:
+        keys.append(f"reservation:email:{normalized_email}")
+    return keys
+
+
+def lock_contact(
+    db: Session,
+    restaurant: Restaurant,
+    phone: str | None,
+    email: str | None,
+) -> None:
+    """Serializa las reservas concurrentes del mismo contacto.
+
+    Dos peticiones con el mismo teléfono y mesas distintas no comparten ningún
+    bloqueo de mesa, así que sin esto ambas podrían superar la comprobación de
+    duplicados. El lock se libera al terminar la transacción.
+    """
+
+    reservation_repo.acquire_advisory_locks(
+        db,
+        restaurant.id,
+        contact_lock_keys(phone, email),
+    )
 
 
 def _load_tables(
