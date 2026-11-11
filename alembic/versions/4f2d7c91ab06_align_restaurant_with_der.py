@@ -16,6 +16,7 @@ depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
+    # PostgreSQL conserva los ids y adapta las FK al renombrar una tabla.
     op.rename_table("restaurants", "restaurant")
     op.alter_column(
         "restaurant", "timezone",
@@ -37,6 +38,7 @@ def upgrade() -> None:
     op.add_column("restaurant", sa.Column("kitchen_close_time", sa.Time()))
     op.add_column("restaurant", sa.Column("direction", sa.String(length=255)))
 
+    # Conservar tiempos previamente registrados, si los hubiera.
     op.execute("""
         UPDATE restaurant AS r
         SET curtesy_minutes = s.courtesy_minutes,
@@ -60,7 +62,10 @@ def upgrade() -> None:
         "day_of_week IS NULL OR day_of_week BETWEEN 1 AND 7",
     )
 
+    # Ya se han copiado los tiempos necesarios a restaurant.
+    # default_reservation_minutes desaparece por decisión del equipo.
     op.drop_table("restaurant_settings")
+    # El DER no incluye estos campos en restaurant.
     op.drop_column("restaurant", "created_at")
     op.drop_column("restaurant", "updated_at")
     op.alter_column("restaurant", "is_active", server_default=sa.text("true"),
@@ -68,6 +73,8 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+    # El downgrade restaura el esquema, NO los antiguos valores de
+    # default_reservation_minutes ni las marcas temporales originales.
     op.add_column("restaurant", sa.Column(
         "created_at", sa.DateTime(timezone=True),
         server_default=sa.text("now()"), nullable=False,
@@ -88,6 +95,8 @@ def downgrade() -> None:
         sa.ForeignKeyConstraint(["restaurant_id"], ["restaurant.id"]),
         sa.PrimaryKeyConstraint("restaurant_id"),
     )
+    # Al no existir ya un valor independiente, reconstruimos el antiguo
+    # default_reservation_minutes con slot_minutes (acuerdo del equipo).
     op.execute("""
         INSERT INTO restaurant_settings
             (restaurant_id, courtesy_minutes, slot_minutes, default_reservation_minutes)

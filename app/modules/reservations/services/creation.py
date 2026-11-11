@@ -24,7 +24,6 @@ from app.modules.reservations.services.validation import (
 )
 
 
-
 def _translate_integrity_error(error: IntegrityError) -> AppError:
     """Traduce las violaciones de integridad relevantes a errores de negocio."""
 

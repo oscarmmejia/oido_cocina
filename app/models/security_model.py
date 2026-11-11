@@ -106,6 +106,7 @@ class User(TimestampMixin, Base):
         default=True,
         server_default=text("true"),
     )
+    # Permite invalidar todos los tokens emitidos para el usuario.
     token_version: Mapped[int] = mapped_column(
         Integer,
         nullable=False,

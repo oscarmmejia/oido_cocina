@@ -7,17 +7,17 @@ pytest.importorskip(
     reason="Requiere el esquema compartido de HU-AUT-02",
 )
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone  # noqa: E402
 
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError  # noqa: E402
 
-from app.models import (
+from app.models import (  # noqa: E402
     Reservation,
     ReservationStatusHistory,
     Role,
     User,
 )
-from app.models.enums import ReservationStatus
+from app.models.enums import ReservationStatus  # noqa: E402
 
 START = datetime(2026, 1, 10, 20, 0, tzinfo=timezone.utc)
 END = datetime(2026, 1, 10, 21, 0, tzinfo=timezone.utc)

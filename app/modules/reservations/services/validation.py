@@ -33,7 +33,6 @@ ACTIVE_RESERVATION_STATUSES = (
 )
 
 
-
 @dataclass(frozen=True)
 class ValidatedReservation:
     """Reserva validada, todavía sin persistir."""

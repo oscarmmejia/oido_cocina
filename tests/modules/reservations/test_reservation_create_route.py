@@ -7,19 +7,19 @@ pytest.importorskip(
     reason="Requiere el esquema compartido de HU-AUT-02",
 )
 
-from datetime import datetime, time
-from zoneinfo import ZoneInfo
+from datetime import datetime, time  # noqa: E402
+from zoneinfo import ZoneInfo  # noqa: E402
 
-from app.core.kernel.identity import CurrentUser, get_current_user
-from app.main import app
-from app.models import (
+from app.core.kernel.identity import CurrentUser, get_current_user  # noqa: E402
+from app.main import app  # noqa: E402
+from app.models import (  # noqa: E402
     DiningTable,
     Reservation,
     ReservationTable,
     Role,
     User,
 )
-from app.models.enums import ReservationStatus, ReservationTableStatus
+from app.models.enums import ReservationStatus, ReservationTableStatus  # noqa: E402
 
 TZ = ZoneInfo("Europe/Madrid")
 START = datetime(2026, 1, 10, 20, 0, tzinfo=TZ)

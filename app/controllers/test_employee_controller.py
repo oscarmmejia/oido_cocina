@@ -6,7 +6,7 @@ from app.core.database_connection import Base
 from app.core.kernel.errors import AppError
 from app.controllers import employee_controller as controller
 from app.models import Employee
-from app.modules.settings.models import restaurant
+from app.modules.settings.models import restaurant  # noqa: F401  (tabla "restaurant")
 from app.schemas.employee import EmployeeCreate, EmployeeUpdate
 
 

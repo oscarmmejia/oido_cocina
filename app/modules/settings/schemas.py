@@ -43,6 +43,7 @@ class RestaurantSettingsUpdate(BaseModel):
     @field_validator("time_zone", "courtesy_minutes", "slot_minutes")
     @classmethod
     def reject_explicit_null(cls, value: str | int | None) -> str | int:
+        # Los valores omitidos usan el default sin pasar por este validador.
         if value is None:
             raise ValueError("El campo no admite null")
         return value

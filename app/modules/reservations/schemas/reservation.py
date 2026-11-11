@@ -12,6 +12,8 @@ from app.models.enums import ReservationStatus, ReservationTableStatus
 
 
 class ReservationCreate(BaseModel):
+    # end_at, status, created_by_user_id, created_at y updated_at los fija
+    # el servidor: no forman parte del contrato de entrada.
     model_config = ConfigDict(extra="forbid")
 
     customer_name: str = Field(min_length=1, max_length=150)
@@ -33,6 +35,7 @@ class ReservationCreate(BaseModel):
 
 
 class ReservationUpdate(BaseModel):
+    # Los campos derivados o inmutables se rechazan explícitamente con 422.
     model_config = ConfigDict(extra="forbid")
 
     customer_name: str | None = Field(default=None, min_length=1, max_length=150)

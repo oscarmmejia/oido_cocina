@@ -56,6 +56,8 @@ class Restaurant(TimestampMixin, Base):
         default=True,
         server_default=text("true"),
     )
+    # El DER escribe "curtesy_minutes"; el atributo Python conserva la
+    # ortografía correcta.
     courtesy_minutes: Mapped[int] = mapped_column(
         "curtesy_minutes",
         Integer,

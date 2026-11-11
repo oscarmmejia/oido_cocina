@@ -7,9 +7,9 @@ pytest.importorskip(
     reason="Requiere el esquema compartido de HU-AUT-02",
 )
 
-from app.core.kernel.errors import AppError
-from app.models.enums import ReservationStatus
-from app.modules.reservations.services.state_machine import (
+from app.core.kernel.errors import AppError  # noqa: E402
+from app.models.enums import ReservationStatus  # noqa: E402
+from app.modules.reservations.services.state_machine import (  # noqa: E402
     ALLOWED_TRANSITIONS,
     FINAL_STATUSES,
     allowed_targets,

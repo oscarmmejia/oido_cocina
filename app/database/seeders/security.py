@@ -123,6 +123,8 @@ def seed_users(
                 is_active=True,
             )
             db.add(user)
+            # El superadministrador debe quedar con DEV_USER_ID en una base
+            # recién sembrada.
             if spec["email"] == SUPERADMIN_EMAIL:
                 db.flush()
         result[spec["email"]] = user

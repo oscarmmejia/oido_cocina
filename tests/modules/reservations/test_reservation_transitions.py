@@ -7,12 +7,12 @@ pytest.importorskip(
     reason="Requiere el esquema compartido de HU-AUT-02",
 )
 
-from datetime import datetime, timezone
+from datetime import datetime, timezone  # noqa: E402
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select  # noqa: E402
 
-from app.core.kernel.errors import AppError
-from app.models import (
+from app.core.kernel.errors import AppError  # noqa: E402
+from app.models import (  # noqa: E402
     AuditLog,
     Reservation,
     ReservationStatusHistory,
@@ -20,9 +20,9 @@ from app.models import (
     Role,
     User,
 )
-from app.models.enums import ReservationStatus
-from app.modules.reservations.repositories import audit as audit_repo
-from app.modules.reservations.services.transitions import (
+from app.models.enums import ReservationStatus  # noqa: E402
+from app.modules.reservations.repositories import audit as audit_repo  # noqa: E402
+from app.modules.reservations.services.transitions import (  # noqa: E402
     transition_reservation,
 )
 

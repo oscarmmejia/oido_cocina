@@ -32,7 +32,7 @@ async def validation_error_handler(request: Request, exc: RequestValidationError
     return _response(422, ErrorCode.VALIDATION_ERROR, "Los datos enviados no son válidos")
 
 async def unexpected_error_handler(request: Request, exc: Exception):
-    logger.exception("Error no controlado")
+    logger.exception("Error no controlado")  # la traza va al log, nunca al cliente
     return _response(500, ErrorCode.INTERNAL_ERROR, "Error interno del servidor")
 
 def register_exception_handlers(app: FastAPI) -> None:
