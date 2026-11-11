@@ -16,26 +16,33 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="No se pudieron validar las credenciales.",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email: str = payload.get("sub")
+        user_id = payload.get("user_id")
+        token_version = payload.get("token_version")
 
-        if email is None or payload.get("user_id") is None or "restaurant_id" not in payload or "exp" not in payload:
+        if (
+            not isinstance(email, str) or not email
+            or type(user_id) is not int or user_id <= 0
+            or type(token_version) is not int or token_version < 0
+            or "restaurant_id" not in payload or "exp" not in payload
+        ):
             raise credentials_exception
     except JWTError:
         raise credentials_exception
 
-    user = db.query(User).filter(User.email == email).first()
-    if user is None:
+    user = db.get(User, user_id, populate_existing=True)
+    if user is None or user.email != email or user.token_version != token_version:
         raise credentials_exception
 
     if not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Inactive user account"
+            detail="La cuenta de usuario está inactiva."
         )
 
     return user
@@ -47,21 +54,22 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
+            detail="El correo electrónico o la contraseña no son correctos.",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
     if not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Inactive account"
+            detail="La cuenta de usuario está inactiva."
         )
 
     access_token = create_access_token(
         data={
             "sub": user.email,
             "user_id": user.id,
-            "restaurant_id": user.restaurant_id
+            "restaurant_id": user.restaurant_id,
+            "token_version": user.token_version,
         }
     )
 

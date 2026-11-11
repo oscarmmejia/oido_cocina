@@ -106,7 +106,8 @@ def test_invalid_token_is_rejected(authenticated_client):
 def test_expired_token_is_rejected(db, restaurant, authenticated_client):
     user = _account(db, restaurant, permissions={"table:manage"})
     token = create_access_token(
-        {"sub": user.email, "user_id": user.id, "restaurant_id": restaurant.id},
+        {"sub": user.email, "user_id": user.id, "restaurant_id": restaurant.id,
+         "token_version": user.token_version},
         expires_delta=timedelta(seconds=-1),
     )
 
