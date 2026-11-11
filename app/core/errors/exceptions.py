@@ -15,3 +15,13 @@ class DuplicateReservationError(AppError):
     def __init__(self):
         super().__init__(ErrorCode.DUPLICATE_RESERVATION,
                          "Ya existe una reserva igual", 409)
+class EmployeeNotFoundError(AppError):
+    def __init__(self):
+        super().__init__(ErrorCode.EMPLOYEE_NOT_FOUND,
+                         "Empleado no encontrado", 404)
+
+
+class UserNotInRestaurantError(AppError):
+    def __init__(self):
+        super().__init__(ErrorCode.USER_NOT_IN_RESTAURANT,
+                         "El usuario no pertenece a este restaurante", 422)

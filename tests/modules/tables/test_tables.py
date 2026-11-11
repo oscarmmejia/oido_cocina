@@ -1,11 +1,80 @@
 import pytest
 
+from app.core.kernel.identity import DEV_RESTAURANT_ID, CurrentUser, get_current_user
+from app.main import app
+from app.models import DiningTable, Restaurant
+
 VALID_TABLE = {
     "number": 5,
     "min_capacity": 2,
     "max_capacity": 4,
     "location": "interior",
 }
+
+PROTECTED_REQUESTS = [
+    ("GET", "/api/v1/tables", None),
+    ("POST", "/api/v1/tables", VALID_TABLE),
+    ("GET", "/api/v1/tables/9999", None),
+    ("PATCH", "/api/v1/tables/9999", {"number": 7}),
+    ("POST", "/api/v1/tables/9999/enable", None),
+    ("POST", "/api/v1/tables/9999/disable", None),
+]
+
+
+@pytest.fixture
+def user_without_permissions():
+    def override() -> CurrentUser:
+        return CurrentUser(
+            id=2,
+            restaurant_id=DEV_RESTAURANT_ID,
+            email="sin-permisos@example.com",
+            role="viewer",
+            permissions=set(),
+        )
+
+    app.dependency_overrides[get_current_user] = override
+    yield
+    app.dependency_overrides.pop(get_current_user, None)
+
+
+@pytest.fixture
+def user_with_table_manage():
+    def override() -> CurrentUser:
+        return CurrentUser(
+            id=3,
+            restaurant_id=DEV_RESTAURANT_ID,
+            email="mesas@example.com",
+            role="gerente",
+            permissions={"table:manage"},
+        )
+
+    app.dependency_overrides[get_current_user] = override
+    yield
+    app.dependency_overrides.pop(get_current_user, None)
+
+
+@pytest.fixture
+def other_restaurant_table(db):
+    other = Restaurant(
+        id=DEV_RESTAURANT_ID + 1,
+        name="Otra sucursal",
+        time_zone="Europe/Madrid",
+    )
+    db.add(other)
+    db.flush()
+
+    table = DiningTable(
+        restaurant_id=other.id,
+        number=1,
+        min_capacity=1,
+        max_capacity=4,
+        location="interior",
+        is_active=True,
+    )
+    db.add(table)
+    db.commit()
+    db.refresh(table)
+    return table
 
 
 def create_table(client, payload=None):
@@ -14,6 +83,10 @@ def create_table(client, payload=None):
 
 def list_tables(client):
     return client.get("/api/v1/tables")
+
+
+def change_table_status(client, table_id, action):
+    return client.post(f"/api/v1/tables/{table_id}/{action}")
 
 
 def test_create_table_returns_201(client, restaurant):
@@ -40,6 +113,22 @@ def test_create_table_with_invalid_location_returns_422(client, restaurant):
     assert response.status_code == 422
 
 
+def test_create_table_with_bar_location_returns_201(client, restaurant):
+    response = create_table(client, {**VALID_TABLE, "location": "bar"})
+
+    assert response.status_code == 201
+    assert response.json()["location"] == "bar"
+
+
+def test_update_table_to_bar_location_returns_200(client, restaurant):
+    table_id = create_table(client).json()["id"]
+
+    response = client.patch(f"/api/v1/tables/{table_id}", json={"location": "bar"})
+
+    assert response.status_code == 200
+    assert response.json()["location"] == "bar"
+
+
 def test_create_duplicate_number_in_same_restaurant_returns_409(client, restaurant):
     assert create_table(client).status_code == 201
 
@@ -56,6 +145,131 @@ def test_list_tables_returns_created_tables(client, restaurant):
 
     assert response.status_code == 200
     assert [table["number"] for table in response.json()] == [VALID_TABLE["number"]]
+
+
+def test_get_table_returns_200(client, restaurant):
+    created = create_table(client).json()
+
+    response = client.get(f"/api/v1/tables/{created['id']}")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["id"] == created["id"]
+    assert body["number"] == VALID_TABLE["number"]
+    assert body["restaurant_id"] == restaurant.id
+
+
+def test_get_missing_table_returns_404(client, restaurant):
+    response = client.get("/api/v1/tables/9999")
+
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "TABLE_NOT_FOUND"
+
+
+def test_list_tables_excludes_other_restaurant(
+    client, restaurant, other_restaurant_table
+):
+    create_table(client)
+
+    response = list_tables(client)
+
+    assert response.status_code == 200
+    assert [table["restaurant_id"] for table in response.json()] == [restaurant.id]
+
+
+def test_get_other_restaurant_table_returns_404(
+    client, restaurant, other_restaurant_table
+):
+    response = client.get(f"/api/v1/tables/{other_restaurant_table.id}")
+
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "TABLE_NOT_FOUND"
+
+
+def test_update_other_restaurant_table_returns_404_and_keeps_data(
+    client, restaurant, other_restaurant_table, db
+):
+    before = (other_restaurant_table.number, other_restaurant_table.is_active)
+
+    response = client.patch(
+        f"/api/v1/tables/{other_restaurant_table.id}",
+        json={"number": 9, "is_active": False},
+    )
+
+    assert response.status_code == 404
+    db.refresh(other_restaurant_table)
+    assert (other_restaurant_table.number, other_restaurant_table.is_active) == before
+
+
+@pytest.mark.parametrize("action", ["enable", "disable"])
+def test_status_change_other_restaurant_table_returns_404(
+    client, restaurant, other_restaurant_table, db, action
+):
+    before = other_restaurant_table.is_active
+
+    response = change_table_status(client, other_restaurant_table.id, action)
+
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "TABLE_NOT_FOUND"
+    db.refresh(other_restaurant_table)
+    assert other_restaurant_table.is_active is before
+
+
+@pytest.mark.parametrize("method,url,payload", PROTECTED_REQUESTS)
+def test_endpoint_without_table_manage_returns_403(
+    client, restaurant, user_without_permissions, method, url, payload
+):
+    response = client.request(method, url, json=payload)
+
+    assert response.status_code == 403
+    assert response.json()["error"]["code"] == "FORBIDDEN"
+
+
+def test_endpoints_accept_exact_table_manage_permission(
+    client, restaurant, user_with_table_manage
+):
+    created = create_table(client)
+    assert created.status_code == 201
+    table_id = created.json()["id"]
+
+    assert list_tables(client).status_code == 200
+    assert client.get(f"/api/v1/tables/{table_id}").status_code == 200
+    assert (
+        client.patch(f"/api/v1/tables/{table_id}", json={"number": 6}).status_code
+        == 200
+    )
+    assert change_table_status(client, table_id, "disable").status_code == 200
+    assert change_table_status(client, table_id, "enable").status_code == 200
+
+
+def test_patch_is_active_false_returns_200_and_disables(client, restaurant):
+    table_id = create_table(client).json()["id"]
+
+    response = client.patch(
+        f"/api/v1/tables/{table_id}", json={"is_active": False}
+    )
+
+    assert response.status_code == 200
+    assert response.json()["is_active"] is False
+    assert list_tables(client).json()[0]["is_active"] is False
+
+
+def test_patch_is_active_true_returns_200_and_enables(client, restaurant):
+    table_id = create_table(client).json()["id"]
+    assert (
+        client.patch(
+            f"/api/v1/tables/{table_id}", json={"is_active": False}
+        ).status_code
+        == 200
+    )
+
+    response = client.patch(
+        f"/api/v1/tables/{table_id}", json={"is_active": True}
+    )
+
+    assert response.status_code == 200
+    assert response.json()["is_active"] is True
+    assert list_tables(client).json()[0]["is_active"] is True
 
 
 def test_update_table_returns_200(client, restaurant):
@@ -146,3 +360,44 @@ def test_rejected_duplicate_is_not_persisted(client, restaurant):
     assert [table["number"] for table in list_tables(client).json()] == [
         VALID_TABLE["number"]
     ]
+
+
+def test_disable_table_returns_200_and_deactivates(client, restaurant):
+    table_id = create_table(client).json()["id"]
+
+    response = change_table_status(client, table_id, "disable")
+
+    assert response.status_code == 200
+    assert response.json()["is_active"] is False
+    assert list_tables(client).json()[0]["is_active"] is False
+
+
+def test_enable_table_returns_200_and_reactivates(client, restaurant):
+    table_id = create_table(client).json()["id"]
+    assert change_table_status(client, table_id, "disable").status_code == 200
+
+    response = change_table_status(client, table_id, "enable")
+
+    assert response.status_code == 200
+    assert response.json()["is_active"] is True
+    assert list_tables(client).json()[0]["is_active"] is True
+
+
+@pytest.mark.parametrize("action", ["enable", "disable"])
+def test_repeated_status_change_is_idempotent(client, restaurant, action):
+    table_id = create_table(client).json()["id"]
+
+    first = change_table_status(client, table_id, action)
+    second = change_table_status(client, table_id, action)
+
+    assert first.status_code == 200
+    assert second.status_code == 200
+    assert first.json()["is_active"] == second.json()["is_active"]
+
+
+@pytest.mark.parametrize("action", ["enable", "disable"])
+def test_status_change_missing_table_returns_404(client, restaurant, action):
+    response = change_table_status(client, 9999, action)
+
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "TABLE_NOT_FOUND"
