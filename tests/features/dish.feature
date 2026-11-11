@@ -45,3 +45,49 @@ Feature: Gestión de platos con alérgenos
     Then la operación se rechaza
     And el plato conserva sus datos anteriores
     And conserva sus relaciones de alérgenos anteriores
+
+  Scenario: Ocultar un plato no publicado en la carta pública
+    Given que existe un plato activo pero no publicado
+    When se consulta la carta pública
+    Then el plato no aparece
+
+  Scenario: Mostrar un plato no disponible como no disponible
+    Given que existe un plato publicado y no disponible
+    When se consulta la carta pública
+    Then el plato aparece marcado como no disponible
+
+  Scenario: Filtrar la carta pública por alérgeno
+    Given un catálogo con platos con y sin gluten
+    When se filtra por el alérgeno gluten
+    Then solo aparecen los platos que lo contienen
+
+  Scenario: Filtrar la carta pública por categoría y disponibilidad
+    Given que existen platos de varias categorías y con distinta disponibilidad
+    When se filtra por una categoría y por disponibilidad
+    Then solo aparecen los platos que cumplen ambos filtros
+
+  Scenario: Paginar la carta pública
+    Given que existen cinco platos publicados
+    When se consulta la segunda página con dos platos por página
+    Then aparecen el tercer y el cuarto plato
+    And el total indica cinco platos y tres páginas
+
+  Scenario: Rechazar una paginación no válida
+    When se consulta la carta pública con página 0
+    Then la operación se rechaza con un error 422
+
+  Scenario: Dar de baja un plato sin borrarlo
+    Given que existe un plato activo
+    When se desactiva el plato
+    Then el plato se conserva en la base de datos
+    And no aparece en la carta pública
+
+  Scenario: Cambiar el estado de un plato
+    Given que existe un plato no publicado
+    When se cambia su estado a publicado
+    Then el plato aparece en la carta pública
+
+  Scenario: Rechazar un cambio de estado vacío
+    Given que existe un plato guardado
+    When se envía un cambio de estado sin ningún campo
+    Then la operación se rechaza con un error 422

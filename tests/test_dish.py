@@ -86,24 +86,30 @@ def test_create_dish_rejects_duplicate_allergens_before_database_queries():
 
 
 def test_create_dish_rejects_unknown_allergen_without_saving():
-    class FakeResult:
+    from app.models.category_model import Category
+    from app.models.allergen_model import Allergen
+
+    class FakeQuery:
+        def __init__(self, result):
+            self.result = result
+
+        def filter(self, *conditions):
+            return self
+
         def first(self):
-            return (1,)
+            return self.result
 
     class FakeDB:
         def __init__(self):
             self.rollback_called = False
             self.add_called = False
 
-        def execute(self, statement, parameters):
-            if '"Category"' in str(statement):
-                return FakeResult()
-
-            return type(
-                "EmptyResult",
-                (),
-                {"first": lambda self: None}
-            )()
+        def query(self, model):
+            if model is Category:
+                return FakeQuery(object())
+            if model is Allergen:
+                return FakeQuery(None)
+            raise AssertionError("Consulta inesperada")
 
         def rollback(self):
             self.rollback_called = True
@@ -135,10 +141,15 @@ def test_create_dish_rejects_unknown_allergen_without_saving():
 def test_create_dish_saves_valid_dish_with_allergens():
     from app.models.dish_model import Dish
     from app.models.dish_allergen_model import DishAllergen
+    from app.models.category_model import Category
+    from app.models.allergen_model import Allergen
 
-    class FakeResult:
+    class FakeQuery:
+        def filter(self, *conditions):
+            return self
+
         def first(self):
-            return (1,)
+            return object()
 
     class FakeDB:
         def __init__(self):
@@ -146,8 +157,10 @@ def test_create_dish_saves_valid_dish_with_allergens():
             self.committed = False
             self.refreshed = False
 
-        def execute(self, statement, parameters):
-            return FakeResult()
+        def query(self, model):
+            if model in (Category, Allergen):
+                return FakeQuery()
+            raise AssertionError("Consulta inesperada")
 
         def add(self, item):
             self.added_objects.append(item)
@@ -349,7 +362,6 @@ def test_get_dishes_returns_only_restaurant_dishes_with_allergens():
     assert result[1]["allergen_ids"] == [3]
 
 
-
 def test_update_dish_changes_name_and_price():
     from types import SimpleNamespace
     from app.controllers.dish_controller import update_dish
@@ -383,7 +395,6 @@ def test_update_dish_changes_name_and_price():
         def __init__(self):
             self.committed = False
             self.refreshed = False
-            self.query_count = 0
 
         def query(self, model):
             from app.models.dish_model import Dish
@@ -475,6 +486,8 @@ def test_update_dish_returns_404_for_another_restaurant():
 def test_update_dish_rejects_unknown_allergen_without_committing():
     from types import SimpleNamespace
     from app.controllers.dish_controller import update_dish
+    from app.models.dish_model import Dish
+    from app.models.allergen_model import Allergen
 
     dish = SimpleNamespace(
         id=100,
@@ -488,16 +501,15 @@ def test_update_dish_rejects_unknown_allergen_without_committing():
         is_available=True
     )
 
-    class FakeResult:
-        def first(self):
-            return None
-
     class FakeQuery:
+        def __init__(self, result):
+            self.result = result
+
         def filter(self, *conditions):
             return self
 
         def first(self):
-            return dish
+            return self.result
 
     class FakeDB:
         def __init__(self):
@@ -505,10 +517,11 @@ def test_update_dish_rejects_unknown_allergen_without_committing():
             self.rollback_called = False
 
         def query(self, model):
-            return FakeQuery()
-
-        def execute(self, statement, parameters):
-            return FakeResult()
+            if model is Dish:
+                return FakeQuery(dish)
+            if model is Allergen:
+                return FakeQuery(None)
+            raise AssertionError("Consulta inesperada")
 
         def commit(self):
             self.committed = True
@@ -534,7 +547,6 @@ def test_update_dish_rejects_unknown_allergen_without_committing():
     assert error.value.detail == "El alérgeno 999 no existe"
     assert db.committed is False
     assert db.rollback_called is True
-
 
 
 def test_update_dish_can_remove_all_allergens():
@@ -628,6 +640,7 @@ def test_update_dish_replaces_allergens():
     from app.controllers.dish_controller import update_dish
     from app.models.dish_model import Dish
     from app.models.dish_allergen_model import DishAllergen
+    from app.models.allergen_model import Allergen
 
     dish = SimpleNamespace(
         id=100,
@@ -666,16 +679,16 @@ def test_update_dish_replaces_allergens():
             if model is Dish:
                 return FakeQuery(dish)
 
-            if model is DishAllergen:
-                return FakeQuery([])
+            if model is Allergen:
+                return FakeQuery(SimpleNamespace())
 
             if model is DishAllergen.allergen_id:
                 return FakeQuery([(2,), (3,)])
 
-            raise AssertionError("Consulta inesperada")
+            if model is DishAllergen:
+                return FakeQuery([])
 
-        def execute(self, statement, parameters):
-            return FakeQuery(SimpleNamespace(id=parameters["allergen_id"]))
+            raise AssertionError("Consulta inesperada")
 
         def add(self, item):
             self.added.append(item)
@@ -701,6 +714,7 @@ def test_update_dish_replaces_allergens():
     assert result["allergen_ids"] == [2, 3]
     assert len(db.added) == 2
     assert db.committed is True
+
 
 def test_update_dish_rejects_duplicate_allergens():
     from fastapi import HTTPException
@@ -751,11 +765,14 @@ def test_update_dish_rejects_duplicate_allergens():
     assert error.value.status_code == 422
     assert db.committed is False
 
-def test_create_dish_rejects_category_from_another_restaurant():
-    from fastapi import HTTPException
-    from app.controllers.dish_controller import create_dish
 
-    class FakeResult:
+def test_create_dish_rejects_category_from_another_restaurant():
+    from app.models.category_model import Category
+
+    class FakeQuery:
+        def filter(self, *args):
+            return self
+
         def first(self):
             return None
 
@@ -763,8 +780,9 @@ def test_create_dish_rejects_category_from_another_restaurant():
         committed = False
         added = []
 
-        def execute(self, statement, parameters):
-            return FakeResult()
+        def query(self, model):
+            assert model is Category
+            return FakeQuery()
 
         def add(self, item):
             self.added.append(item)

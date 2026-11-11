@@ -1,29 +1,32 @@
+from fastapi import Depends
 from pydantic import BaseModel
 
-from app.core.config import get_settings
+from app.api.auth import get_current_user as get_authenticated_user
 from app.core.kernel.errors import AppError
-
-DEV_RESTAURANT_ID = 1
-DEV_USER_ID = 1
+from app.models import User
 
 
 class CurrentUser(BaseModel):
     id: int
-    restaurant_id: int
+    restaurant_id: int | None = None
     email: str
     role: str
     permissions: set[str]
 
 
-async def get_current_user() -> CurrentUser:
-    # TODO: TEMPORAL: sustituir en HU-AUT-04 (leer el token JWT y buscar el usuario)
-    if not get_settings().auth_stubs_enabled:
-        raise AppError("UNAUTHORIZED", "Autenticación requerida.", 401)
+async def get_current_user(user: User = Depends(get_authenticated_user)) -> CurrentUser:
+    role = user.role
+    if (
+        user.restaurant_id is None
+        or role is None
+        or role.restaurant_id != user.restaurant_id
+    ):
+        raise AppError("FORBIDDEN", "The user has no valid restaurant role.", 403)
 
     return CurrentUser(
-        id=DEV_USER_ID,
-        restaurant_id=DEV_RESTAURANT_ID,
-        email="dev@oidocina.local",
-        role="superadmin",
-        permissions={"*"},
+        id=user.id,
+        restaurant_id=user.restaurant_id,
+        email=user.email,
+        role=role.name,
+        permissions={permission.name for permission in role.permissions},
     )

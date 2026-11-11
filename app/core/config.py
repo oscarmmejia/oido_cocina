@@ -9,8 +9,9 @@ class Settings(BaseSettings):
 
     app_name: str = "Oido_cocina"
     api_prefix: str = "/api/v1"
-    database_url: str  # TODO: obligatoria: sin valor por defecto
-    auth_stubs_enabled: bool = True  # TODO: TEMPORAL: se elimina con HU-AUT-04
+    database_url: str
+    auth_stubs_enabled: bool = True
+    seed_on_startup: bool = False
 
 
 @lru_cache

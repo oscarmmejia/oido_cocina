@@ -6,6 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 class TableLocation(str, Enum):
     interior = "interior"
     exterior = "exterior"
+    bar = "bar"
 
 
 class TableCreate(BaseModel):

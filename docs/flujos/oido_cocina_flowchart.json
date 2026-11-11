@@ -1,0 +1,4750 @@
+{
+  "version": "32.6.10",
+  "pages": [
+    {
+      "id": "oido-01",
+      "name": "01 · Vista general",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Flujo general del backend"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "Jira OICO · 5 épicas · Revisión 30/10/2026 + acuerdos del chat · Diseño, no implementación"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Petición HTTP al backend"
+        },
+        {
+          "id": "v",
+          "type": "node",
+          "parent": "1",
+          "label": "Resolver ruta y validar entrada\nFastAPI + esquemas Pydantic"
+        },
+        {
+          "id": "q",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Petición válida?"
+        },
+        {
+          "id": "bad",
+          "type": "node",
+          "parent": "1",
+          "label": "400 / 422 · Rechazar entrada"
+        },
+        {
+          "id": "sec",
+          "type": "node",
+          "parent": "1",
+          "label": "Aplicar acceso público o protegido\nVer 02–05 · Autenticación y permisos"
+        },
+        {
+          "id": "mod",
+          "type": "node",
+          "parent": "1",
+          "label": "Ejecutar servicio del módulo\nEP-01 Horarios → 13–14\nEP-02 Seguridad/configuración → 02–05, 12\nEP-03 Reservas e informes → 08–11, 15, 17, 21\nEP-04 Carta → 06–07, 18–19\nEP-05 Documentación → 16, 20"
+        },
+        {
+          "id": "db",
+          "type": "node",
+          "parent": "1",
+          "label": "Consultar o guardar mediante ORM\nTransacciones para cambios compuestos\nUna base PostgreSQL"
+        },
+        {
+          "id": "ok",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Operación correcta?"
+        },
+        {
+          "id": "err",
+          "type": "node",
+          "parent": "1",
+          "label": "Rollback si hay escritura fallida\n404 / 409 / 422 / 500, según causa\nSin trazas ni secretos"
+        },
+        {
+          "id": "res",
+          "type": "node",
+          "parent": "1",
+          "label": "200 / 201 / 204 · Responder\nDatos limitados al ámbito autorizado"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "v"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "v",
+          "target": "q"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "q",
+          "target": "bad"
+        },
+        {
+          "id": "label-2",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "q",
+          "target": "sec"
+        },
+        {
+          "id": "label-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "sec",
+          "target": "mod"
+        },
+        {
+          "id": "label-4",
+          "type": "node",
+          "parent": "1",
+          "label": "Acceso permitido"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "mod",
+          "target": "db"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "db",
+          "target": "ok"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "err"
+        },
+        {
+          "id": "label-7",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "res"
+        },
+        {
+          "id": "label-8",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "CONFIRMADO: Python + FastAPI + PostgreSQL; monolito modular. Contratos públicos, servicios y\ntransacciones separados; entrada por esquemas Pydantic."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Lectura: verde = inicio/resultado; azul = proceso; amarillo = decisión; morado = subflujo; rojo = error;\nnaranja = acuerdo nuevo, propuesta o decisión pendiente. Guardas de seguridad comunes → 03."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Fuentes: EP-01 OICO-141; EP-02 OICO-29; EP-03 OICO-190; EP-04 OICO-83; EP-05 OICO-1. Usuario confirma\ncombinaciones de mesas completas por backend/Swagger; no hay plano gráfico."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Errores con error.code y error.message; rollback ante fallo de escritura compuesta. Detalle de reglas,\npruebas y límites → 16 y 20."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 01/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-02",
+      "name": "02 · Login y logout",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "Autenticación · Inicio y cierre de sesión"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-02 · OICO-47/HU-AUT-04 y OICO-79/HU-AUT-10 · AUT-01, USR-01"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "POST /auth/login\nCorreo y contraseña"
+        },
+        {
+          "id": "schema",
+          "type": "node",
+          "parent": "1",
+          "label": "Validar formato de credenciales"
+        },
+        {
+          "id": "find",
+          "type": "node",
+          "parent": "1",
+          "label": "Buscar cuenta y consultar su estado"
+        },
+        {
+          "id": "found",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Existe y está activa?"
+        },
+        {
+          "id": "hash",
+          "type": "node",
+          "parent": "1",
+          "label": "Verificar contraseña contra el hash\nArgon2id o bcrypt; nunca texto plano"
+        },
+        {
+          "id": "valid",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Contraseña correcta?"
+        },
+        {
+          "id": "fail",
+          "type": "node",
+          "parent": "1",
+          "label": "401 · Acceso rechazado\nMensaje genérico para todos los casos\nSin revelar si la cuenta existe"
+        },
+        {
+          "id": "session",
+          "type": "node",
+          "parent": "1",
+          "label": "Establecer identidad autenticada\nEmitir JWT: usuario, restaurante, expiración\nResolver roles y permisos autorizados"
+        },
+        {
+          "id": "done",
+          "type": "node",
+          "parent": "1",
+          "label": "200 · Acceso concedido\nGET /auth/me para perfil propio"
+        },
+        {
+          "id": "ls",
+          "type": "node",
+          "parent": "1",
+          "label": "POST /auth/logout\nSesión autenticada"
+        },
+        {
+          "id": "check",
+          "type": "node",
+          "parent": "1",
+          "label": "Comprobar identidad → pestaña 03"
+        },
+        {
+          "id": "revoke",
+          "type": "node",
+          "parent": "1",
+          "label": "Invalidar el JWT / sesión utilizados\nPersistir revocación según técnica elegida\nEl cliente deja de usar la credencial"
+        },
+        {
+          "id": "le",
+          "type": "node",
+          "parent": "1",
+          "label": "204 · Sesión cerrada\nReutilizar ese token devuelve 401"
+        },
+        {
+          "id": "format",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Formato válido?"
+        },
+        {
+          "id": "formaterr",
+          "type": "node",
+          "parent": "1",
+          "label": "422 · Error de validación\nFormato uniforme → 20"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "schema"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "schema",
+          "target": "format"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "find",
+          "target": "found"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "found",
+          "target": "hash"
+        },
+        {
+          "id": "label-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "found",
+          "target": "fail"
+        },
+        {
+          "id": "label-4",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "hash",
+          "target": "valid"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "valid",
+          "target": "fail"
+        },
+        {
+          "id": "label-6",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "valid",
+          "target": "session"
+        },
+        {
+          "id": "label-7",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "session",
+          "target": "done"
+        },
+        {
+          "id": "edge-9",
+          "type": "edge",
+          "parent": "1",
+          "source": "ls",
+          "target": "check"
+        },
+        {
+          "id": "edge-10",
+          "type": "edge",
+          "parent": "1",
+          "source": "check",
+          "target": "revoke"
+        },
+        {
+          "id": "edge-11",
+          "type": "edge",
+          "parent": "1",
+          "source": "revoke",
+          "target": "le"
+        },
+        {
+          "id": "edge-12",
+          "type": "edge",
+          "parent": "1",
+          "source": "format",
+          "target": "find"
+        },
+        {
+          "id": "label-12",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-13",
+          "type": "edge",
+          "parent": "1",
+          "source": "format",
+          "target": "formaterr"
+        },
+        {
+          "id": "label-13",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "JWT ya está especificado en Jira. PENDIENTE técnico: duración exacta y mecanismo de revocación. Recuperación de contraseña y renovación de token quedan\nfuera del alcance de HU-AUT-04."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Cuenta activa y token no revocado son comprobaciones independientes: comprobar solo que la cuenta sigue activa no cumple la invalidación tras logout. No se\nalmacenan secretos en auditoría."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Verificación: OICO-50 token válido/expirado/manipulado; OICO-51 credenciales e inactivo; OICO-80–82 logout 204, reutilización 401 e inactivación con token\nvigente."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 02/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-03",
+      "name": "03 · Permisos y ámbito",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "Autorización · Control de cada petición"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-02 · OICO-54/HU-AUT-05; OICO-66/HU-AUT-07; OICO-79/HU-AUT-10"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Petición a un endpoint"
+        },
+        {
+          "id": "public",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Ruta pública autorizada?"
+        },
+        {
+          "id": "pub",
+          "type": "node",
+          "parent": "1",
+          "label": "Aplicar solo reglas de publicación\nCarta pública sin iniciar sesión"
+        },
+        {
+          "id": "identity",
+          "type": "node",
+          "parent": "1",
+          "label": "Validar JWT: firma, algoritmo permitido,\nexpiración y datos de identidad\nConsultar estado activo y revocación"
+        },
+        {
+          "id": "valid",
+          "type": "node",
+          "parent": "1",
+          "label": "¿JWT válido, cuenta activa\ny token no revocado?"
+        },
+        {
+          "id": "401",
+          "type": "node",
+          "parent": "1",
+          "label": "401 · Identidad inválida"
+        },
+        {
+          "id": "perms",
+          "type": "node",
+          "parent": "1",
+          "label": "Cargar permisos vigentes en servidor\nNunca confiar en el rol enviado"
+        },
+        {
+          "id": "allow",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Permiso para\nla operación?"
+        },
+        {
+          "id": "403",
+          "type": "node",
+          "parent": "1",
+          "label": "403 · Falta el permiso requerido"
+        },
+        {
+          "id": "scope",
+          "type": "node",
+          "parent": "1",
+          "label": "Comprobar restaurante del recurso\ny propiedad cuando corresponda\nCliente: solo sus propias reservas"
+        },
+        {
+          "id": "scopeok",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Ámbito y propiedad\nautorizados?"
+        },
+        {
+          "id": "run",
+          "type": "node",
+          "parent": "1",
+          "label": "Ejecutar servicio de negocio\nFiltrar también listados y respuestas"
+        },
+        {
+          "id": "404",
+          "type": "node",
+          "parent": "1",
+          "label": "404 · Recurso ajeno o inexistente\nSin revelar sus datos"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "public"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "public",
+          "target": "pub"
+        },
+        {
+          "id": "label-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "public",
+          "target": "identity"
+        },
+        {
+          "id": "label-2",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "pub",
+          "target": "run"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "identity",
+          "target": "valid"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "valid",
+          "target": "401"
+        },
+        {
+          "id": "label-5",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "valid",
+          "target": "perms"
+        },
+        {
+          "id": "label-6",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "perms",
+          "target": "allow"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "allow",
+          "target": "403"
+        },
+        {
+          "id": "label-8",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-9",
+          "type": "edge",
+          "parent": "1",
+          "source": "allow",
+          "target": "scope"
+        },
+        {
+          "id": "label-9",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-10",
+          "type": "edge",
+          "parent": "1",
+          "source": "scope",
+          "target": "scopeok"
+        },
+        {
+          "id": "edge-11",
+          "type": "edge",
+          "parent": "1",
+          "source": "scopeok",
+          "target": "run"
+        },
+        {
+          "id": "label-11",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-12",
+          "type": "edge",
+          "parent": "1",
+          "source": "scopeok",
+          "target": "404"
+        },
+        {
+          "id": "label-12",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "401 = no hay identidad válida; 403 = falta permiso de operación; 404 = recurso no visible por\nrestaurante/propiedad. Validar permisos y ámbito también en listados y modificaciones."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "UserRole permite varios roles por usuario. Un catálogo único define permisos con nombre; no se confía en el\nrol ni restaurantId manipulados desde el cliente. Acceso global del superadministrador debe ser expreso."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Carta y catálogo de alérgenos son públicos → 18. Reservas públicas como invitado: PENDIENTE de modalidad\ny mecanismo seguro. Cliente autenticado solo ve/cancela reservas propias."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Pruebas: OICO-57 y 59 permisos por rol; OICO-68 y 69 recursos propios/ajenos y dos restaurantes; OICO-82\nrevocación e inactivación."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 03/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-04",
+      "name": "04 · Gestión de cuentas",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "Usuarios · Altas, roles y baja lógica"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-02 · OICO-54, OICO-60 y OICO-70 · HU-AUT-05/06/08 · USR-02, AUT-06"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Crear cuenta, cambiar rol/estado\no solicitar borrado excepcional"
+        },
+        {
+          "id": "auth",
+          "type": "node",
+          "parent": "1",
+          "label": "Validar identidad, permiso y ámbito\nuser:manage → pestaña 03"
+        },
+        {
+          "id": "limit",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Acción y rol destino\nautorizados?"
+        },
+        {
+          "id": "deny",
+          "type": "node",
+          "parent": "1",
+          "label": "403 · Rechazar escalada de privilegios\nSin cambios"
+        },
+        {
+          "id": "op",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Operación solicitada?"
+        },
+        {
+          "id": "create",
+          "type": "node",
+          "parent": "1",
+          "label": "ALTA / EDICIÓN\nValidar email único y datos permitidos\nContraseña nueva: hash robusto\nRol y restaurante validados en servidor"
+        },
+        {
+          "id": "deactivate",
+          "type": "node",
+          "parent": "1",
+          "label": "INACTIVAR\nMarcar cuenta inactiva\nBloquear nuevos accesos y sesiones\nConservar todo el historial"
+        },
+        {
+          "id": "delete",
+          "type": "node",
+          "parent": "1",
+          "label": "BORRADO FÍSICO\nVerificar superadministrador\ny ausencia de historial asociado"
+        },
+        {
+          "id": "can",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Borrado permitido?"
+        },
+        {
+          "id": "blocked",
+          "type": "node",
+          "parent": "1",
+          "label": "403 / 409 · Impedir borrado\nOfrecer baja lógica si procede"
+        },
+        {
+          "id": "save",
+          "type": "node",
+          "parent": "1",
+          "label": "Transacción: guardar cambio\ny registro de auditoría obligatorio\nAutor, fecha, acción, valores y resultado"
+        },
+        {
+          "id": "end",
+          "type": "node",
+          "parent": "1",
+          "label": "200 / 201 / 204 · Operación guardada"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "auth"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "auth",
+          "target": "limit"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "limit",
+          "target": "deny"
+        },
+        {
+          "id": "label-2",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "limit",
+          "target": "op"
+        },
+        {
+          "id": "label-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "op",
+          "target": "create"
+        },
+        {
+          "id": "label-4",
+          "type": "node",
+          "parent": "1",
+          "label": "Alta / rol / activar"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "op",
+          "target": "deactivate"
+        },
+        {
+          "id": "label-5",
+          "type": "node",
+          "parent": "1",
+          "label": "Inactivar"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "op",
+          "target": "delete"
+        },
+        {
+          "id": "label-6",
+          "type": "node",
+          "parent": "1",
+          "label": "Borrar"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "create",
+          "target": "save"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "deactivate",
+          "target": "save"
+        },
+        {
+          "id": "edge-9",
+          "type": "edge",
+          "parent": "1",
+          "source": "delete",
+          "target": "can"
+        },
+        {
+          "id": "edge-10",
+          "type": "edge",
+          "parent": "1",
+          "source": "can",
+          "target": "blocked"
+        },
+        {
+          "id": "label-10",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-11",
+          "type": "edge",
+          "parent": "1",
+          "source": "can",
+          "target": "save"
+        },
+        {
+          "id": "label-11",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-12",
+          "type": "edge",
+          "parent": "1",
+          "source": "save",
+          "target": "end"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "Gerente: solo usuarios y roles permitidos de su restaurante; no crea ni asigna superadministradores. Ningún usuario modifica su\npropio rol. Varios roles: asignación y revocación mediante UserRole."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Baja lógica conserva autoría e historial. Toda ruta protegida vuelve a comprobar cuenta activa y token no revocado → 03. El borrado\nfísico exige superadministrador y ausencia de historial."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Auditoría de cambios administrativos y consulta audit:view → 19. PENDIENTE: campos editables de perfil y atribuciones globales\ndetalladas; no se habilita registro público de clientes."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Pruebas: OICO-61 correo duplicado 409; OICO-64 autoelevación 403; OICO-65 historial conservado; OICO-72 rollback de auditoría."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 04/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-05",
+      "name": "05 · Contraseña propuesta",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "Propuesta futura · Cambio y recuperación de contraseña"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "FUERA DEL ALCANCE ACTUAL · Propuesta del briefing §3.2.7 · Sin HU aprobada de recuperación"
+        },
+        {
+          "id": "gate",
+          "type": "node",
+          "parent": "1",
+          "label": "¿El equipo incluye\nesta función en la entrega?"
+        },
+        {
+          "id": "out",
+          "type": "node",
+          "parent": "1",
+          "label": "No añadir endpoints al alcance actual"
+        },
+        {
+          "id": "type",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Cambio o recuperación?"
+        },
+        {
+          "id": "change",
+          "type": "node",
+          "parent": "1",
+          "label": "CAMBIO CON SESIÓN\nAutenticar al usuario y verificar\nsu identidad con el método acordado"
+        },
+        {
+          "id": "request",
+          "type": "node",
+          "parent": "1",
+          "label": "RECUPERACIÓN SIN SESIÓN\nRecibir solicitud y limitar abuso\nRespuesta uniforme exista o no cuenta"
+        },
+        {
+          "id": "send",
+          "type": "node",
+          "parent": "1",
+          "label": "Si procede: enviar enlace/código\ntemporal, seguro y de un solo uso\nCanal pendiente de definir"
+        },
+        {
+          "id": "verify",
+          "type": "node",
+          "parent": "1",
+          "label": "Validar prueba de identidad o código\nNo caducado y no consumido"
+        },
+        {
+          "id": "ok",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Verificación válida?"
+        },
+        {
+          "id": "bad",
+          "type": "node",
+          "parent": "1",
+          "label": "Rechazar sin revelar datos sensibles"
+        },
+        {
+          "id": "new",
+          "type": "node",
+          "parent": "1",
+          "label": "Validar nueva contraseña\nGenerar hash Argon2id o bcrypt"
+        },
+        {
+          "id": "save",
+          "type": "node",
+          "parent": "1",
+          "label": "Guardar hash y consumir código\nen una transacción, si se usa código\nInvalidar sesiones según política"
+        },
+        {
+          "id": "done",
+          "type": "node",
+          "parent": "1",
+          "label": "Confirmar cambio sin devolver secretos"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "gate",
+          "target": "out"
+        },
+        {
+          "id": "label-0",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "gate",
+          "target": "type"
+        },
+        {
+          "id": "label-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "type",
+          "target": "change"
+        },
+        {
+          "id": "label-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Cambio"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "type",
+          "target": "request"
+        },
+        {
+          "id": "label-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Recuperación"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "change",
+          "target": "verify"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "request",
+          "target": "send"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "send",
+          "target": "verify"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "verify",
+          "target": "ok"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "bad"
+        },
+        {
+          "id": "label-8",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-9",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "new"
+        },
+        {
+          "id": "label-9",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-10",
+          "type": "edge",
+          "parent": "1",
+          "source": "new",
+          "target": "save"
+        },
+        {
+          "id": "edge-11",
+          "type": "edge",
+          "parent": "1",
+          "source": "save",
+          "target": "done"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "Esta pestaña es una propuesta futura, no una función comprometida ni implementada. OICO-47 y OICO-60\nexcluyen recuperación; OICO-79 excluye rotación automática y sesiones por dispositivo."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Solo se habilita si el equipo añade alcance, contratos y criterios. Canal, caducidad, límite de intentos y política\nde contraseña siguen pendientes. No bloquea login ni logout actuales."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 05/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-06",
+      "name": "06 · Platos y menús",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-04 · Crear o modificar platos y menús"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-04 · OICO-84/89/93/99/108/113/119 · HU-CAR-01–04 y 06–08"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Solicitud autorizada de carta o menú\nControles comunes → 03"
+        },
+        {
+          "id": "kind",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Qué recurso?"
+        },
+        {
+          "id": "dish",
+          "type": "node",
+          "parent": "1",
+          "label": "PLATO\nNombre obligatorio; precio ≥ 0\nCategoría del restaurante (tabla Category)\nAlérgenos del catálogo; tres estados"
+        },
+        {
+          "id": "dv",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Datos y referencias\nválidos?"
+        },
+        {
+          "id": "ds",
+          "type": "node",
+          "parent": "1",
+          "label": "Transacción: guardar plato\ny relaciones plato–alérgeno\nSin alérgenos repetidos"
+        },
+        {
+          "id": "menu",
+          "type": "node",
+          "parent": "1",
+          "label": "MENÚ / COLECCIÓN\nPrecio propio ≥ 0; vigencia coherente\nMenuDish: rol, obligatorio y bebida\nMotivo obligatorio al inactivar"
+        },
+        {
+          "id": "mv",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Referencias y reglas\ndel menú válidas?"
+        },
+        {
+          "id": "ms",
+          "type": "node",
+          "parent": "1",
+          "label": "Transacción: menú y composición\nSin platos duplicados ni ajenos\nBebida: plato de categoría bebidas\nDisponibilidad según platos obligatorios"
+        },
+        {
+          "id": "err",
+          "type": "node",
+          "parent": "1",
+          "label": "422 / 404 / 409 · Rechazar\nSin escrituras parciales"
+        },
+        {
+          "id": "done",
+          "type": "node",
+          "parent": "1",
+          "label": "200 / 201 · Recurso guardado\nRegistrar autor y trazabilidad"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "kind"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "kind",
+          "target": "dish"
+        },
+        {
+          "id": "label-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Plato"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "kind",
+          "target": "menu"
+        },
+        {
+          "id": "label-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Menú / colección"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "dish",
+          "target": "dv"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "dv",
+          "target": "ds"
+        },
+        {
+          "id": "label-4",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "dv",
+          "target": "err"
+        },
+        {
+          "id": "label-5",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "ds",
+          "target": "done"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "menu",
+          "target": "mv"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "mv",
+          "target": "ms"
+        },
+        {
+          "id": "label-8",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-9",
+          "type": "edge",
+          "parent": "1",
+          "source": "mv",
+          "target": "err"
+        },
+        {
+          "id": "label-9",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-10",
+          "type": "edge",
+          "parent": "1",
+          "source": "ms",
+          "target": "done"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "Category es tabla por restaurante: nombre único; borrado bloqueado con platos asociados (OICO-84/87).\nAllergen es catálogo común estructurado de exactamente 14 elementos, con código único (OICO-89)."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "El precio del menú nunca es la suma de platos. Puede haber varios menús activos; cambiar precio exige\nmenu:updatePrice y genera auditoría e historial → 19."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Colección: validar fechas y ocultar menús de colecciones inactivas/vencidas en consulta pública → 18.\nPENDIENTE: colección obligatoria u opcional; Jira permite como máximo una en CA4."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Reactivar menú → 07. Público: filtros, paginación y alérgenos agregados → 18. Pruebas: OICO-98, 111, 117,\n121–124; fallo parcial revierte todo."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 06/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-07",
+      "name": "07 · Cascada y reactivación",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-04 · Cascada y reactivación manual"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "OICO-125/HU-CAR-09 y OICO-130/HU-CAR-10 · MEN-03–05 · Revisión OICO-132"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Petición autorizada de cambio de estado"
+        },
+        {
+          "id": "kind",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Acción solicitada?"
+        },
+        {
+          "id": "dish",
+          "type": "node",
+          "parent": "1",
+          "label": "CAMBIAR PLATO\nAbrir transacción y aplicar cambio\nBuscar menús activos que lo requieren"
+        },
+        {
+          "id": "ready",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Platos obligatorios\nactivos y disponibles?"
+        },
+        {
+          "id": "off",
+          "type": "node",
+          "parent": "1",
+          "label": "Menú no disponible\nMotivo automático con nombre del plato\nAuditoría por cada menú afectado"
+        },
+        {
+          "id": "keep",
+          "type": "node",
+          "parent": "1",
+          "label": "Conservar estado del menú\nNo reactivarlo automáticamente"
+        },
+        {
+          "id": "manual",
+          "type": "node",
+          "parent": "1",
+          "label": "REACTIVAR MENÚ\nCargar composición y comprobar\ntodos los platos obligatorios"
+        },
+        {
+          "id": "can",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Todos disponibles?"
+        },
+        {
+          "id": "blocked",
+          "type": "node",
+          "parent": "1",
+          "label": "409 · Reactivación bloqueada\nDetallar platos que lo impiden"
+        },
+        {
+          "id": "on",
+          "type": "node",
+          "parent": "1",
+          "label": "Marcar menú activo/disponible\nRegistrar reactivación e historial"
+        },
+        {
+          "id": "save",
+          "type": "node",
+          "parent": "1",
+          "label": "Guardar todos los cambios y auditoría\nen una misma transacción"
+        },
+        {
+          "id": "ok",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Commit correcto?"
+        },
+        {
+          "id": "err",
+          "type": "node",
+          "parent": "1",
+          "label": "Rollback completo · 409 / 500\nNingún cambio parcial persiste"
+        },
+        {
+          "id": "end",
+          "type": "node",
+          "parent": "1",
+          "label": "200 · Resultado\nCascada: número de menús afectados"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "kind"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "kind",
+          "target": "dish"
+        },
+        {
+          "id": "label-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Plato"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "kind",
+          "target": "manual"
+        },
+        {
+          "id": "label-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Reactivar menú"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "dish",
+          "target": "ready"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "ready",
+          "target": "off"
+        },
+        {
+          "id": "label-4",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "ready",
+          "target": "keep"
+        },
+        {
+          "id": "label-5",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "off",
+          "target": "save"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "keep",
+          "target": "save"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "manual",
+          "target": "can"
+        },
+        {
+          "id": "edge-9",
+          "type": "edge",
+          "parent": "1",
+          "source": "can",
+          "target": "blocked"
+        },
+        {
+          "id": "label-9",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-10",
+          "type": "edge",
+          "parent": "1",
+          "source": "can",
+          "target": "on"
+        },
+        {
+          "id": "label-10",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-11",
+          "type": "edge",
+          "parent": "1",
+          "source": "on",
+          "target": "save"
+        },
+        {
+          "id": "edge-12",
+          "type": "edge",
+          "parent": "1",
+          "source": "save",
+          "target": "ok"
+        },
+        {
+          "id": "edge-13",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "err"
+        },
+        {
+          "id": "label-13",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-14",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "end"
+        },
+        {
+          "id": "label-14",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "OICO-132 precisa bloqueo si falta un plato obligatorio. El escenario de OICO-130 todavía dice rechazar o advertir: se representa la variante estricta de la\nsubtarea, pendiente de armonizar el texto de la HU."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Inactivación manual: motivo no vacío obligatorio (422 si falta); menú inactivo no público. Reactivación requiere permiso menu:deactivate. Un plato opcional\nno provoca cascada por sí solo."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Pruebas OICO-126–129 y 131–133: obligatorio/opcional, auditoría por menú, conteo, motivo ausente y rollback completo."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 07/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-08",
+      "name": "08 · Mesas y disponibilidad",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-03 · Mesas y disponibilidad por grupo"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "OICO-191/196/200 · HU-RES-01–03 + COM-01–04 acordadas en chat"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Consulta de disponibilidad\nFecha, intervalo y número de comensales"
+        },
+        {
+          "id": "cfg",
+          "type": "node",
+          "parent": "1",
+          "label": "Leer restaurante y configuración\nGenerar franjas: inicio y fin\ndentro del horario de apertura"
+        },
+        {
+          "id": "free",
+          "type": "node",
+          "parent": "1",
+          "label": "Obtener mesas físicas habilitadas\nExcluir toda mesa ocupada por\nreserva individual o combinación"
+        },
+        {
+          "id": "single",
+          "type": "node",
+          "parent": "1",
+          "label": "Buscar mesas individuales libres\nque admitan al grupo"
+        },
+        {
+          "id": "one",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Hay individual adecuada?"
+        },
+        {
+          "id": "yes",
+          "type": "node",
+          "parent": "1",
+          "label": "Devolver opción individual\nNo bloquear hasta guardar"
+        },
+        {
+          "id": "combo",
+          "type": "node",
+          "parent": "1",
+          "label": "Consultar combinaciones autorizadas\nde varias mesas → 17\nTodas sus mesas deben estar libres"
+        },
+        {
+          "id": "valid",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Alguna combinación\nadmite al grupo?"
+        },
+        {
+          "id": "cy",
+          "type": "node",
+          "parent": "1",
+          "label": "Devolver combinaciones compatibles\ncon capacidad real y mesas integrantes\nSon alternativas, no plazas sumables"
+        },
+        {
+          "id": "no",
+          "type": "node",
+          "parent": "1",
+          "label": "Sin opción para ese intervalo\nOfrecer lista de espera → 11"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "cfg"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "cfg",
+          "target": "free"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "free",
+          "target": "single"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "single",
+          "target": "one"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "one",
+          "target": "yes"
+        },
+        {
+          "id": "label-4",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "one",
+          "target": "combo"
+        },
+        {
+          "id": "label-5",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "combo",
+          "target": "valid"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "valid",
+          "target": "cy"
+        },
+        {
+          "id": "label-7",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "valid",
+          "target": "no"
+        },
+        {
+          "id": "label-8",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "ACUERDO DEL CHAT · Ampliar significa combinar mesas físicas completas. Sustituye la regla anterior de una\nsola mesa por reserva. OICO-191 aún excluye unir mesas: requiere alineación posterior del backlog; Jira no\nse modifica aquí."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "COM-01: no se comparten sillas sobrantes con otro grupo. COM-02: capacidad combinada explícita por\nrestaurante, nunca suma automática. COM-03: cada mesa integrante debe estar libre. COM-04: preferir\nindividual; combinar solo si hace falta."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Gestión de mesa (table:manage): número único por restaurante; capacidad mínima ≥ 1 y máxima ≥ mínima;\ninterior/exterior; habilitar/inhabilitar. Inhabilitar avisa de reservas futuras, incluidas combinaciones, y las\nconserva; no reasigna automáticamente."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Intervalos [inicio, fin): una reserva 20:00–21:00 no bloquea las 21:00. confirmed y seated bloquean; pending\ndepende de la política aún abierta. completed/cancelled/noShow liberan. Medición <1 s con datos demo:\nOICO-204."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 08/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-09",
+      "name": "09 · Crear reserva",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-03 · Crear reserva individual o ampliada"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-03 · OICO-205/211/218 · HU-RES-04–06 + COM-03/05 (chat)"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Personal autorizado registra la reserva\nCliente externo: modalidad pendiente"
+        },
+        {
+          "id": "input",
+          "type": "node",
+          "parent": "1",
+          "label": "Validar contacto, fecha y comensales\nLeer configuración del restaurante\nCalcular hora de fin prevista"
+        },
+        {
+          "id": "valid",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Datos y horario\nválidos?"
+        },
+        {
+          "id": "bad",
+          "type": "node",
+          "parent": "1",
+          "label": "422 · Corregir solicitud"
+        },
+        {
+          "id": "find",
+          "type": "node",
+          "parent": "1",
+          "label": "Seleccionar una individual o combinación\nValidar capacidad real y todas las mesas\nVer 08 y 17; selección automática → 21"
+        },
+        {
+          "id": "free",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Existe opción\ncompleta válida?"
+        },
+        {
+          "id": "wait",
+          "type": "node",
+          "parent": "1",
+          "label": "409 · Sin mesa disponible\nOfrecer lista de espera → 11"
+        },
+        {
+          "id": "tx",
+          "type": "node",
+          "parent": "1",
+          "label": "Abrir una transacción\nBloquear TODAS las mesas seleccionadas\nen orden estable; revalidar\ndisponibilidad y contacto duplicado"
+        },
+        {
+          "id": "conflict",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Conflicto concurrente\no reserva duplicada?"
+        },
+        {
+          "id": "rollback",
+          "type": "node",
+          "parent": "1",
+          "label": "Rollback · 409\nNo guardar datos parciales"
+        },
+        {
+          "id": "save",
+          "type": "node",
+          "parent": "1",
+          "label": "Guardar reserva, ocupaciones por mesa\ny capacidad real utilizada\nComensales, inicio/fin y autor inmutable\nEstado inicial e historial"
+        },
+        {
+          "id": "db",
+          "type": "node",
+          "parent": "1",
+          "label": "Commit con exclusión por mesa física\ny rango temporal en ocupaciones\nÍndices de duplicados activos"
+        },
+        {
+          "id": "ok",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Commit correcto?"
+        },
+        {
+          "id": "end",
+          "type": "node",
+          "parent": "1",
+          "label": "201 · Reserva y estado guardados"
+        },
+        {
+          "id": "error",
+          "type": "node",
+          "parent": "1",
+          "label": "Rollback · 409 si conflicto\n500 si fallo inesperado"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "input"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "input",
+          "target": "valid"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "valid",
+          "target": "bad"
+        },
+        {
+          "id": "label-2",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "valid",
+          "target": "find"
+        },
+        {
+          "id": "label-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "find",
+          "target": "free"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "free",
+          "target": "wait"
+        },
+        {
+          "id": "label-5",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "free",
+          "target": "tx"
+        },
+        {
+          "id": "label-6",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "tx",
+          "target": "conflict"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "conflict",
+          "target": "rollback"
+        },
+        {
+          "id": "label-8",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-9",
+          "type": "edge",
+          "parent": "1",
+          "source": "conflict",
+          "target": "save"
+        },
+        {
+          "id": "label-9",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-10",
+          "type": "edge",
+          "parent": "1",
+          "source": "save",
+          "target": "db"
+        },
+        {
+          "id": "edge-11",
+          "type": "edge",
+          "parent": "1",
+          "source": "db",
+          "target": "ok"
+        },
+        {
+          "id": "edge-12",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "end"
+        },
+        {
+          "id": "label-12",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-13",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "error"
+        },
+        {
+          "id": "label-13",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "ACUERDO DEL CHAT · Ampliar significa combinar mesas físicas completas. Sustituye la regla anterior de una sola mesa por\nreserva. OICO-191 aún excluye unir mesas: requiere alineación posterior del backlog; Jira no se modifica aquí."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "COM-05: una reserva tiene una o varias mesas físicas mediante asignaciones/ocupaciones; una restricción solo sobre\nReservation.tableId ya no basta. Cada ocupación bloquea su mesa incluso frente a otras combinaciones."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Registro interno confirmado según OICO-205. Duplicado: mismo teléfono o email normalizados, restaurante, fecha/franja y\nestado activo. Revalidar en transacción; índices coherentes con ambos contactos. COM-06: si falla una mesa, rollback de\ntodas."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Ejemplo acordado: dos mesas de 4 → combinación con capacidad real 6, grupo de 5 o 6; 7 se rechaza. Regla mínima de uso\nsegún configuración → 17. Modalidad pública y bloqueo/caducidad de pending siguen pendientes."
+        },
+        {
+          "id": "note-4",
+          "type": "node",
+          "parent": "1",
+          "label": "Pruebas OICO-208/210/212/215/216/220 + T-COM-01–04 en 20: carrera sobre una mesa compartida, rollback completo y no\ndoble asignación."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 09/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-10",
+      "name": "10 · Gestionar reservas",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-03 · Gestionar reservas y sus mesas"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-03 · OICO-221/226 · HU-RES-07–08 + COM-05/06 (chat)"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Petición autorizada sobre una reserva"
+        },
+        {
+          "id": "load",
+          "type": "node",
+          "parent": "1",
+          "label": "Cargar reserva visible del restaurante\nCliente, si se aprueba: solo la propia"
+        },
+        {
+          "id": "found",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Existe y es accesible?"
+        },
+        {
+          "id": "404",
+          "type": "node",
+          "parent": "1",
+          "label": "404 · Recurso no visible"
+        },
+        {
+          "id": "op",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Operación?"
+        },
+        {
+          "id": "modify",
+          "type": "node",
+          "parent": "1",
+          "label": "MODIFICAR / REASIGNAR / CONFIRMAR\nValidar transición, horario y capacidad\nRevalidar todas las mesas destino\nExcluir ocupaciones de la propia reserva"
+        },
+        {
+          "id": "state",
+          "type": "node",
+          "parent": "1",
+          "label": "CAMBIAR ESTADO\npending → confirmed / cancelled\nconfirmed → seated / cancelled\nseated → completed"
+        },
+        {
+          "id": "allowed",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Cambio permitido\ny reglas válidas?"
+        },
+        {
+          "id": "deny",
+          "type": "node",
+          "parent": "1",
+          "label": "409 / 422 · Rechazar\nConservar reserva y mesa previas"
+        },
+        {
+          "id": "tx",
+          "type": "node",
+          "parent": "1",
+          "label": "Una transacción: bloquear mesas\nantiguas y nuevas en orden estable\nRevalidar, actualizar ocupaciones\ny registrar historial/auditoría"
+        },
+        {
+          "id": "release",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Estado final?"
+        },
+        {
+          "id": "free",
+          "type": "node",
+          "parent": "1",
+          "label": "completed / cancelled / noShow\nLiberar TODAS las mesas de la reserva\nActualizar estado de ocupaciones\nBuscar candidatos de espera → 11"
+        },
+        {
+          "id": "end",
+          "type": "node",
+          "parent": "1",
+          "label": "200 / 204 · Cambio realizado"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "load"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "load",
+          "target": "found"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "found",
+          "target": "404"
+        },
+        {
+          "id": "label-2",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "found",
+          "target": "op"
+        },
+        {
+          "id": "label-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "op",
+          "target": "modify"
+        },
+        {
+          "id": "label-4",
+          "type": "node",
+          "parent": "1",
+          "label": "Datos / mesa / confirmar"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "op",
+          "target": "state"
+        },
+        {
+          "id": "label-5",
+          "type": "node",
+          "parent": "1",
+          "label": "Llegada / cierre / cancelar"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "modify",
+          "target": "allowed"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "state",
+          "target": "allowed"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "allowed",
+          "target": "deny"
+        },
+        {
+          "id": "label-8",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-9",
+          "type": "edge",
+          "parent": "1",
+          "source": "allowed",
+          "target": "tx"
+        },
+        {
+          "id": "label-9",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-10",
+          "type": "edge",
+          "parent": "1",
+          "source": "tx",
+          "target": "release"
+        },
+        {
+          "id": "edge-11",
+          "type": "edge",
+          "parent": "1",
+          "source": "release",
+          "target": "free"
+        },
+        {
+          "id": "label-11",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-12",
+          "type": "edge",
+          "parent": "1",
+          "source": "release",
+          "target": "end"
+        },
+        {
+          "id": "label-12",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-13",
+          "type": "edge",
+          "parent": "1",
+          "source": "free",
+          "target": "end"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "ACUERDO DEL CHAT · Ampliar significa combinar mesas físicas completas. Sustituye la regla anterior de una\nsola mesa por reserva. OICO-191 aún excluye unir mesas: requiere alineación posterior del backlog; Jira no\nse modifica aquí."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Estados Jira: pending, confirmed, seated, completed, cancelled, noShow y waitlisted. Finales inmutables.\nHistorial de cada transición y GET de historial autorizado; no se borra. Confirmar/asignar/modificar vuelven a\nvalidar disponibilidad."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Cliente autenticado: solo sus reservas; una ajena devuelve 404 (OICO-226). Cambiar de combinación es\natómico: si el destino falla, se mantienen todas las mesas anteriores."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Pruebas OICO-223–229: cada transición válida/inválida, terminales, historial sin huérfanos y liberación\ncompleta. Pagos y penalizaciones no se implementan."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 10/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-11",
+      "name": "11 · Cortesía y espera",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-03 · Cortesía y lista de espera"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-03 · OICO-230/236 · HU-RES-09–10 + COM-03/06 (chat)"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Proceso periódico / consulta acordada\no disparo manual autorizado\nComprobar reservas confirmadas"
+        },
+        {
+          "id": "cfg",
+          "type": "node",
+          "parent": "1",
+          "label": "Leer cortesía por restaurante\nValor inicial: 5 min configurable"
+        },
+        {
+          "id": "due",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Superó inicio + cortesía\nsin haber llegado?"
+        },
+        {
+          "id": "keep",
+          "type": "node",
+          "parent": "1",
+          "label": "Conservar estado y mesa"
+        },
+        {
+          "id": "tx",
+          "type": "node",
+          "parent": "1",
+          "label": "Transacción: bloquear y releer reserva\nRevalidar hora y ausencia de llegada"
+        },
+        {
+          "id": "still",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Sigue confirmada\ny fuera de cortesía?"
+        },
+        {
+          "id": "skip",
+          "type": "node",
+          "parent": "1",
+          "label": "Sin cambios: ya llegó o cambió"
+        },
+        {
+          "id": "no",
+          "type": "node",
+          "parent": "1",
+          "label": "Marcar noShow y liberar TODAS las mesas\nGuardar historial y auditoría\nCommit e incrementar conteo del lote"
+        },
+        {
+          "id": "wait",
+          "type": "node",
+          "parent": "1",
+          "label": "Tras liberar: buscar mesa individual\no combinación válida para el grupo\nComprobar todas sus mesas integrantes"
+        },
+        {
+          "id": "has",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Hay candidato?"
+        },
+        {
+          "id": "none",
+          "type": "node",
+          "parent": "1",
+          "label": "Fin · Mesa disponible"
+        },
+        {
+          "id": "propose",
+          "type": "node",
+          "parent": "1",
+          "label": "Proponer al personal el primero\ncompatible por orden de llegada\nSin asignación automática"
+        },
+        {
+          "id": "accept",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Personal confirma\nla promoción?"
+        },
+        {
+          "id": "stay",
+          "type": "node",
+          "parent": "1",
+          "label": "Mantener solicitud en espera"
+        },
+        {
+          "id": "create",
+          "type": "node",
+          "parent": "1",
+          "label": "Revalidar y crear/asignar reserva\ncon el flujo 09 en una transacción\nActualizar entrada solo si hay éxito"
+        },
+        {
+          "id": "done",
+          "type": "node",
+          "parent": "1",
+          "label": "Reserva registrada y espera actualizada"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "cfg"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "cfg",
+          "target": "due"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "due",
+          "target": "keep"
+        },
+        {
+          "id": "label-2",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "due",
+          "target": "tx"
+        },
+        {
+          "id": "label-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "tx",
+          "target": "still"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "still",
+          "target": "skip"
+        },
+        {
+          "id": "label-5",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "still",
+          "target": "no"
+        },
+        {
+          "id": "label-6",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "no",
+          "target": "wait"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "wait",
+          "target": "has"
+        },
+        {
+          "id": "edge-9",
+          "type": "edge",
+          "parent": "1",
+          "source": "has",
+          "target": "none"
+        },
+        {
+          "id": "label-9",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-10",
+          "type": "edge",
+          "parent": "1",
+          "source": "has",
+          "target": "propose"
+        },
+        {
+          "id": "label-10",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-11",
+          "type": "edge",
+          "parent": "1",
+          "source": "propose",
+          "target": "accept"
+        },
+        {
+          "id": "edge-12",
+          "type": "edge",
+          "parent": "1",
+          "source": "accept",
+          "target": "stay"
+        },
+        {
+          "id": "label-12",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-13",
+          "type": "edge",
+          "parent": "1",
+          "source": "accept",
+          "target": "create"
+        },
+        {
+          "id": "label-13",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-14",
+          "type": "edge",
+          "parent": "1",
+          "source": "create",
+          "target": "done"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "ACUERDO DEL CHAT · Ampliar significa combinar mesas físicas completas. Sustituye la regla anterior de una sola mesa por\nreserva. OICO-191 aún excluye unir mesas: requiere alineación posterior del backlog; Jira no se modifica aquí."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "No-show idempotente (OICO-232): repetir la comprobación no duplica historial ni auditoría. La llegada simultánea se revalida bajo\nbloqueo antes de cambiar estado. Disparo manual devuelve el número de reservas marcadas, no mesas."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Waitlist: GET/POST con waitlist:manage; contacto, grupo y franja; orden de llegada. Un candidato requiere que todas las mesas de\nsu opción estén libres y compatibles; promoción manual, nunca automática."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Promover reutiliza 09: reserva y cierre de entrada en una transacción. Carrera entre dos promociones: una prevalece y la otra\nconserva la entrada si falla. Cortesía en reservas existentes y bloqueo de pending: PENDIENTE."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 11/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-12",
+      "name": "12 · Configuración",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-02 · Configuración del restaurante"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-02 · OICO-40/HU-AUT-03 + OICO-186/HU-HOR-10 · CFG-01–04"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Gerente autorizado solicita un cambio\nsettings:update y ámbito → 03"
+        },
+        {
+          "id": "load",
+          "type": "node",
+          "parent": "1",
+          "label": "Cargar una configuración por restaurante\nHorarios mañana/tarde y cocina\nCortesía, duraciones y descansos\nSi no existe: error explícito"
+        },
+        {
+          "id": "validate",
+          "type": "node",
+          "parent": "1",
+          "label": "Validar apertura y cierre\nCocina no cierra después del local\nCortesía: entero ≥ 0\nDuraciones válidas"
+        },
+        {
+          "id": "valid",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Configuración válida?"
+        },
+        {
+          "id": "bad",
+          "type": "node",
+          "parent": "1",
+          "label": "422 · Mantener configuración anterior"
+        },
+        {
+          "id": "impact",
+          "type": "node",
+          "parent": "1",
+          "label": "Comprobar impacto en reservas\ny horarios ya registrados\nNo alterar el histórico silenciosamente"
+        },
+        {
+          "id": "policy",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Cambio compatible con\nla política aprobada?"
+        },
+        {
+          "id": "review",
+          "type": "node",
+          "parent": "1",
+          "label": "409 / revisión manual\nResolver impacto antes de aplicar"
+        },
+        {
+          "id": "save",
+          "type": "node",
+          "parent": "1",
+          "label": "Transacción: guardar configuración\ny trazabilidad del cambio"
+        },
+        {
+          "id": "end",
+          "type": "node",
+          "parent": "1",
+          "label": "200 · Nuevos valores disponibles\nLos servicios los leen desde la BD"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "load"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "load",
+          "target": "validate"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "validate",
+          "target": "valid"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "valid",
+          "target": "bad"
+        },
+        {
+          "id": "label-3",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "valid",
+          "target": "impact"
+        },
+        {
+          "id": "label-4",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "impact",
+          "target": "policy"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "policy",
+          "target": "review"
+        },
+        {
+          "id": "label-6",
+          "type": "node",
+          "parent": "1",
+          "label": "No / sin definir"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "policy",
+          "target": "save"
+        },
+        {
+          "id": "label-7",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "save",
+          "target": "end"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "Horarios, cortesía y descansos se leen de BD por restaurante. Abrir/cerrar local y cocina coherentes; cortesía\ny descansos no negativos. Configuración inexistente devuelve error uniforme con código definido por el\nequipo."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Combinaciones físicas y sus capacidades reales se configuran por restaurante → 17; no dependen de un\nplano visual. Gestionar settings requiere permiso y ámbito de 03."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "PENDIENTE: efecto de cambios sobre reservas existentes y apertura que cruza medianoche. La revisión\nmanual del impacto es propuesta de diseño. Los turnos laborales nocturnos sí están requeridos."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Orden propuesto sin ciclo: definir campos/lectura de descansos antes del validador de cuadrantes. No\nsignifica que las dependencias de Jira se hayan editado."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 12/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-13",
+      "name": "13 · Personal y horarios",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-01 · Planificar y publicar cuadrantes"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-01 · OICO-142/147/151/156/166/172/177/186 · HU-HOR-01–04 y 06–08/10"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Gerente con permiso crea\no modifica un cuadrante"
+        },
+        {
+          "id": "draft",
+          "type": "node",
+          "parent": "1",
+          "label": "Seleccionar periodo y responsable\nCrear borrador o abrir versión vigente"
+        },
+        {
+          "id": "shift",
+          "type": "node",
+          "parent": "1",
+          "label": "Asignar turnos a empleados activos\nInicio y fin completos, con fecha\nNocturnos: fin al día siguiente"
+        },
+        {
+          "id": "validate",
+          "type": "node",
+          "parent": "1",
+          "label": "Validar turnos antes de escribir\ny antes de publicar: solapamientos,\nausencias y descansos configurados\nDevolver conflictos y sus causas"
+        },
+        {
+          "id": "ok",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Sin conflictos\nbloqueantes?"
+        },
+        {
+          "id": "bad",
+          "type": "node",
+          "parent": "1",
+          "label": "422 / 409 · No publicar\nCorregir turnos y volver a validar"
+        },
+        {
+          "id": "save",
+          "type": "node",
+          "parent": "1",
+          "label": "Guardar borrador validado\nRestricción por empleado y [inicio, fin)\nSi solo valida: devolver resultado\nsin publicar ni cambiar estado"
+        },
+        {
+          "id": "pub",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Solicita publicar?"
+        },
+        {
+          "id": "draftend",
+          "type": "node",
+          "parent": "1",
+          "label": "200 / 201 · Borrador guardado"
+        },
+        {
+          "id": "permit",
+          "type": "node",
+          "parent": "1",
+          "label": "Comprobar schedule:publish\ny revalidar planificación vigente"
+        },
+        {
+          "id": "ready",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Autorizado y sin\nconflictos actuales?"
+        },
+        {
+          "id": "deny",
+          "type": "node",
+          "parent": "1",
+          "label": "403 / 409 · Mantener estado anterior"
+        },
+        {
+          "id": "commit",
+          "type": "node",
+          "parent": "1",
+          "label": "Transacción: publicar cuadrante\nRegistrar responsable y fecha"
+        },
+        {
+          "id": "own",
+          "type": "node",
+          "parent": "1",
+          "label": "Empleado consulta horario publicado\nGET /me/shifts · Solo datos propios"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "draft"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "draft",
+          "target": "shift"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "shift",
+          "target": "validate"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "validate",
+          "target": "ok"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "bad"
+        },
+        {
+          "id": "label-4",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "save"
+        },
+        {
+          "id": "label-5",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "bad",
+          "target": "shift"
+        },
+        {
+          "id": "label-6",
+          "type": "node",
+          "parent": "1",
+          "label": "Corregir"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "save",
+          "target": "pub"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "pub",
+          "target": "draftend"
+        },
+        {
+          "id": "label-8",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-9",
+          "type": "edge",
+          "parent": "1",
+          "source": "pub",
+          "target": "permit"
+        },
+        {
+          "id": "label-9",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-10",
+          "type": "edge",
+          "parent": "1",
+          "source": "permit",
+          "target": "ready"
+        },
+        {
+          "id": "edge-11",
+          "type": "edge",
+          "parent": "1",
+          "source": "ready",
+          "target": "deny"
+        },
+        {
+          "id": "label-11",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-12",
+          "type": "edge",
+          "parent": "1",
+          "source": "ready",
+          "target": "commit"
+        },
+        {
+          "id": "label-12",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-13",
+          "type": "edge",
+          "parent": "1",
+          "source": "commit",
+          "target": "own"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "Empleado: usuario opcional del mismo restaurante; baja lógica conserva turnos. Cuadrante nuevo borrador;\npersonal solo ve turnos publicados propios. Sin versionado automático de cuadrantes."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Jornada partida: dos registros/intervalos separados; duración total = suma. Ejemplo 12–16 y 20–23 = 7 h\nplanificadas; no son fichajes. Nocturno: fechas completas y fin al día siguiente; duración cero rechazada."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Cambios tras publicación: revalidación obligatoria, rechazo de conflictos y auditoría (OICO-172/175).\nDistinguir avisos informativos de conflictos bloqueantes; validar sin publicar → OICO-171."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Descansos entre jornadas y semanal configurables. PENDIENTE técnico: cálculo semanal preciso y política de\nperiodo. Jira mantiene un ciclo textual HOR-06/HOR-10 que el equipo debe resolver; no impide definir\nprimero los campos y después su validador."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 13/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-14",
+      "name": "14 · Ausencias y cambios",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-01 · Ausencias e intercambio de turnos"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-01 · OICO-160/HU-HOR-05 y OICO-180/HU-HOR-09 · HOR-05/09–11"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Empleado autenticado presenta solicitud\nSolo datos propios y restaurante"
+        },
+        {
+          "id": "request",
+          "type": "node",
+          "parent": "1",
+          "label": "Validar intervalo o turnos solicitados\nGuardar solicitud pending\nNo equivale a aprobada"
+        },
+        {
+          "id": "review",
+          "type": "node",
+          "parent": "1",
+          "label": "Gerente autorizado revisa\nPermiso timeoff:approve y ámbito → 03\nComprobar solicitud aún pending"
+        },
+        {
+          "id": "approve",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Aprueba la solicitud?"
+        },
+        {
+          "id": "reject",
+          "type": "node",
+          "parent": "1",
+          "label": "Transacción: marcar rejected\nRegistrar resolución, autor y fecha"
+        },
+        {
+          "id": "re",
+          "type": "node",
+          "parent": "1",
+          "label": "200 · Solicitud rechazada\nPlanificación conservada"
+        },
+        {
+          "id": "type",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Tipo de solicitud?"
+        },
+        {
+          "id": "absence",
+          "type": "node",
+          "parent": "1",
+          "label": "AUSENCIA [Must]\nValidar impacto en turnos existentes\nResolver conflictos de planificación"
+        },
+        {
+          "id": "swap",
+          "type": "node",
+          "parent": "1",
+          "label": "CAMBIO DE TURNO [Should]\nValidar a ambos empleados: activos,\nsin solapamiento, ausencia ni\nincumplimiento de descansos"
+        },
+        {
+          "id": "ok",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Resultado coherente\nsin conflictos pendientes?"
+        },
+        {
+          "id": "conflict",
+          "type": "node",
+          "parent": "1",
+          "label": "409 · No aprobar todavía\nCorregir o rechazar solicitud"
+        },
+        {
+          "id": "save",
+          "type": "node",
+          "parent": "1",
+          "label": "Transacción única: aprobar solicitud\ny actualizar planificación afectada\nRegistrar resolución y trazabilidad"
+        },
+        {
+          "id": "end",
+          "type": "node",
+          "parent": "1",
+          "label": "200 · Solicitud aprobada\nHorario actualizado para su consulta"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "request"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "request",
+          "target": "review"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "review",
+          "target": "approve"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "approve",
+          "target": "reject"
+        },
+        {
+          "id": "label-3",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "approve",
+          "target": "type"
+        },
+        {
+          "id": "label-4",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "reject",
+          "target": "re"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "type",
+          "target": "absence"
+        },
+        {
+          "id": "label-6",
+          "type": "node",
+          "parent": "1",
+          "label": "Ausencia"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "type",
+          "target": "swap"
+        },
+        {
+          "id": "label-7",
+          "type": "node",
+          "parent": "1",
+          "label": "Cambio"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "absence",
+          "target": "ok"
+        },
+        {
+          "id": "edge-9",
+          "type": "edge",
+          "parent": "1",
+          "source": "swap",
+          "target": "ok"
+        },
+        {
+          "id": "edge-10",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "conflict"
+        },
+        {
+          "id": "label-10",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-11",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "save"
+        },
+        {
+          "id": "label-11",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-12",
+          "type": "edge",
+          "parent": "1",
+          "source": "save",
+          "target": "end"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "Una solicitud ya resuelta no se aprueba/rechaza otra vez: 409, sin cambios (OICO-163). Una pendiente no cuenta como\nausencia aprobada. Una aprobada sí bloquea turnos incompatibles."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "PENDIENTE de política: resolución de turnos afectados por una ausencia. El flujo propone no completar aprobación hasta\nresolver conflictos; OICO-164 requiere detectar y comunicar el impacto."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Intercambio: validar ambos empleados, horarios, ausencias y descansos. Actualización atómica con revalidación de\ncuadrante y auditoría; rollback conserva los turnos anteriores. Pruebas OICO-183–185."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 14/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-15",
+      "name": "15 · Informes y disponibilidad",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-03 · Ocupación nominal y disponibilidad"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "OICO-242/HU-RES-11 · Fórmula aclarada en chat + COM-07 · Jira pendiente de alinear"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Consultar informe de fecha/franja\nreport:view y ámbito → 03"
+        },
+        {
+          "id": "read",
+          "type": "node",
+          "parent": "1",
+          "label": "Leer mesas físicas habilitadas\ny reservas activas del restaurante\nNo contar espera/canceladas/noShow/completed"
+        },
+        {
+          "id": "count",
+          "type": "node",
+          "parent": "1",
+          "label": "Sumar comensales UNA VEZ por reserva\nNo multiplicarlos por las mesas asignadas\nCnom = capacidad nominal de mesas\nhabilitadas, consideradas separadas"
+        },
+        {
+          "id": "cap",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Cnom > 0?"
+        },
+        {
+          "id": "zero",
+          "type": "node",
+          "parent": "1",
+          "label": "Porcentaje no calculable\nValor nulo y explicación\nPropuesta de contrato"
+        },
+        {
+          "id": "nom",
+          "type": "node",
+          "parent": "1",
+          "label": "Ocupación nominal = comensales/Cnom\nPlazas nominales = Cnom − comensales\nIndicar que NO garantizan una mesa"
+        },
+        {
+          "id": "actual",
+          "type": "node",
+          "parent": "1",
+          "label": "Reutilizar disponibilidad → 08\nObtener mesas físicas libres y opciones\nindividuales/combinadas para el grupo\nNo sumar capacidades de alternativas"
+        },
+        {
+          "id": "end",
+          "type": "node",
+          "parent": "1",
+          "label": "200 · Personas y ocupación nominal\nMesas libres y opciones reservables\nGrupo e intervalo consultados"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "read"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "read",
+          "target": "count"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "count",
+          "target": "cap"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "cap",
+          "target": "zero"
+        },
+        {
+          "id": "label-3",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "cap",
+          "target": "nom"
+        },
+        {
+          "id": "label-4",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "zero",
+          "target": "actual"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "nom",
+          "target": "actual"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "actual",
+          "target": "end"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "COM-07, aclaración del chat: reserva de mesa completa/combinación; las sillas sobrantes no son vendibles a\nterceros. Capacidad nominal informativa y capacidad real de una combinación son magnitudes diferentes."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Ejemplo: A=4 y B=4; A+B admite 6 y está reservada para 5. Cnom=8, comensales=5 y plazas nominales=3;\nmesas físicas libres=0 y opciones adicionales=0. El 62,5 % nominal no significa que quepa otro grupo ni\nmide aforo legal."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "No restar otra vez comensales a la capacidad de mesas ya libres. No sumar A+B y B+C como si ambas\npudieran venderse juntas: comparten B. OICO-242 CA2 aún contradice su ejemplo; se documenta la fórmula\npropuesta sin cambiar Jira."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Informe por periodo de noShow/cancelaciones: consultar historial sin contarlos como ocupación. Prioridad de\nentrega a acordar; pertenecer a EP-03 no convierte automáticamente todo informe en Must."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 15/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-16",
+      "name": "16 · Guía y decisiones",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "Guía · Fuentes, acuerdos y decisiones abiertas"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "Revisión 30/10/2026 · Jira OICO + aclaraciones explícitas del usuario · Versión de diseño 3"
+        },
+        {
+          "id": "jira",
+          "type": "node",
+          "parent": "1",
+          "label": "BASE CONTRASTADA EN JIRA\nEP-01 Horarios · EP-02 Seguridad/configuración\nEP-03 Reservas/informes · EP-04 Carta\nEP-05 Gestión/documentación\n5 épicas, 49 historias, 196 subtareas"
+        },
+        {
+          "id": "chat",
+          "type": "node",
+          "parent": "1",
+          "label": "ACUERDOS NUEVOS DEL CHAT\nAmpliar = combinar varias mesas completas\nCapacidad real definida por combinación\nBloquear y liberar todas las mesas\nPreferir individual; mínimos de uso\nNominal no equivale a disponible"
+        },
+        {
+          "id": "changes",
+          "type": "node",
+          "parent": "1",
+          "label": "AJUSTES INCORPORADOS\nJWT; revocación y cuenta activa separadas\n401/403/404; auditoría y error uniforme\nCategory; MenuDish; reactivación manual\nConsulta pública, PriceHistory y alérgenos\nPruebas y trazabilidad → 20"
+        },
+        {
+          "id": "open",
+          "type": "node",
+          "parent": "1",
+          "label": "DECISIONES AÚN ABIERTAS\nTécnica/duración de revocación JWT\nModalidad pública de reserva y autoría\npending: bloqueo, caducidad y confirmación\nCambios de configuración en reservas previas\nObligatoriedad de colección y periodo laboral\nAlinear fórmulas y dependencias en Jira"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "El chat autoriza actualizar este diagrama, no cambiar Jira. Las combinaciones contradicen RES-08 y el fuera\nde alcance de OICO-191: este documento adopta el acuerdo nuevo y señala el desfase; no afirma que el\nbacklog haya sido corregido."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "COM-01: mesas completas sin compartir sobrantes. COM-02: capacidad real explícita. COM-03: libres todas.\nCOM-04: preferir individual y ampliar solo lo necesario. COM-05: asignaciones por mesa. COM-06: atomicidad\ny liberación total. COM-07: nominal separado de disponibilidad."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "La política mínima evita ampliar sin necesidad: dos mesas de 4 con capacidad conjunta 6 se usan para 5–6.\nNo es un mínimo físico ni una fórmula universal para cualquier restaurante. Registrar el rango y las\ncombinaciones admitidas → 17."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Fuera de entrega: pagos, plano gráfico, pedidos anticipados y fichajes. Propuesta futura de contraseña → 05.\nPrioridades de extras se mantienen separadas del detalle de su diseño."
+        },
+        {
+          "id": "note-4",
+          "type": "node",
+          "parent": "1",
+          "label": "Sprint 1 hasta 05/11 y Sprint 2 del 06 al 12/11. Mesas OICO-191 está en Sprint 2 según Jira consultado; la\nampliación es alcance nuevo que el equipo debe planificar. No se añaden fechas de compromiso al chat."
+        },
+        {
+          "id": "note-5",
+          "type": "node",
+          "parent": "1",
+          "label": "Conflictos pendientes: OICO-242 plazas; OICO-81 revocación; dependencias AUT-04/AUT-06/AUT-08 y\nHOR-06/HOR-10. No confundir una relación funcional con bloqueo total de desarrollo."
+        },
+        {
+          "id": "note-6",
+          "type": "node",
+          "parent": "1",
+          "label": "Todo es editable. Abrir archivo .drawio en diagrams.net y usar Ajustar al contenido. Los flujos modelan\ncomportamiento esperado; no prueban que exista código ni que pytest esté en verde."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 16/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-17",
+      "name": "17 · Configurar ampliaciones",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-03 · Configurar combinaciones de mesas"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "ACUERDO DEL CHAT · COM-01–06 · Nuevo respecto a OICO-191; backend/Swagger, sin plano"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Personal con permiso de gestión\nPropone combinación de varias mesas"
+        },
+        {
+          "id": "tables",
+          "type": "node",
+          "parent": "1",
+          "label": "Recibir identificadores sin repetidos\nRestaurante, capacidad real conjunta\ny mínimo de uso acordado"
+        },
+        {
+          "id": "own",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Mesas distintas del mismo\nrestaurante y combinación\nfísicamente permitida?"
+        },
+        {
+          "id": "bad",
+          "type": "node",
+          "parent": "1",
+          "label": "422 / 404 · Rechazar definición\nNo guardar combinación inválida"
+        },
+        {
+          "id": "capacity",
+          "type": "node",
+          "parent": "1",
+          "label": "Validar capacidad real entera > 0\nMínimo de uso entero ≥ 1 y ≤ máximo\nNo sumar capacidades automáticamente"
+        },
+        {
+          "id": "valid",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Rango y composición\ncoherentes?"
+        },
+        {
+          "id": "impact",
+          "type": "node",
+          "parent": "1",
+          "label": "Si cambia una combinación usada:\ncomprobar reservas futuras afectadas\nNo alterar su histórico silenciosamente"
+        },
+        {
+          "id": "save",
+          "type": "node",
+          "parent": "1",
+          "label": "Transacción: guardar combinación\ny relación con sus mesas integrantes\nAuditoría de la configuración"
+        },
+        {
+          "id": "end",
+          "type": "node",
+          "parent": "1",
+          "label": "200 / 201 · Opción disponible\npara cálculo de disponibilidad → 08"
+        },
+        {
+          "id": "safe",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Cambio compatible con\nreservas existentes?"
+        },
+        {
+          "id": "inuse",
+          "type": "node",
+          "parent": "1",
+          "label": "409 · Conservar definición previa\nResolver o reasignar antes de cambiar"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "tables"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "tables",
+          "target": "own"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "own",
+          "target": "bad"
+        },
+        {
+          "id": "label-2",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "own",
+          "target": "capacity"
+        },
+        {
+          "id": "label-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "capacity",
+          "target": "valid"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "valid",
+          "target": "bad"
+        },
+        {
+          "id": "label-5",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "valid",
+          "target": "impact"
+        },
+        {
+          "id": "label-6",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "impact",
+          "target": "safe"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "save",
+          "target": "end"
+        },
+        {
+          "id": "edge-9",
+          "type": "edge",
+          "parent": "1",
+          "source": "safe",
+          "target": "save"
+        },
+        {
+          "id": "label-9",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-10",
+          "type": "edge",
+          "parent": "1",
+          "source": "safe",
+          "target": "inuse"
+        },
+        {
+          "id": "label-10",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "Ejemplo confirmado: A=4, B=4 y capacidad real A+B=6. Rango de uso 5–6 para evitar ampliar si basta una\nmesa de 4; 7 nunca se admite. Restaurantes con mesas de 2, 4 o 6 definen sus propias combinaciones y\ncapacidades."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Propuesta de representación: TableCombination + sus integrantes, y ReservationTable/ocupaciones por mesa\nfísica. Cambiar el DER y migraciones es trabajo posterior; aquí solo se ajusta el flujo."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "La compatibilidad física la configura el restaurante; no se deduce del número de mesa ni exige coordenadas.\nNo se añade ampliación con sillas sueltas ni antelación de 48 h."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "PENDIENTE técnico: política de edición de una combinación con reservas futuras. Propuesta conservadora:\nrechazar cambio incompatible o requerir reasignación, sin sobrescribir la reserva previa."
+        },
+        {
+          "id": "note-4",
+          "type": "node",
+          "parent": "1",
+          "label": "Una combinación contiene al menos dos mesas; dos o tres son ejemplos, no un máximo universal. Su\nconjunto de integrantes debe ser único por restaurante. Validaciones propuestas: capacidad real no superior\na las plazas individuales sumadas y modificación incompatible bloqueada."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 17/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-18",
+      "name": "18 · Consultar carta pública",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-04 · Consulta pública de carta y menús"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "OICO-89/104/108/138 · HU-CAR-02/05/06/12 · CAR-04/05/08"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Visitante sin iniciar sesión\nSelecciona restaurante y consulta"
+        },
+        {
+          "id": "input",
+          "type": "node",
+          "parent": "1",
+          "label": "Validar filtros, identificador y paginación\nCategoría, disponibilidad y exclusión\nde alérgenos; límites de página"
+        },
+        {
+          "id": "kind",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Recurso consultado?"
+        },
+        {
+          "id": "dish",
+          "type": "node",
+          "parent": "1",
+          "label": "PLATOS\nFiltrar restaurante, activos y publicados\nAplicar filtros combinados\nMostrar agotados como no disponibles"
+        },
+        {
+          "id": "menu",
+          "type": "node",
+          "parent": "1",
+          "label": "MENÚS\nFiltrar activos y colección vigente/activa\nDisponibilidad según platos obligatorios\nPrecio propio y bebida incluida"
+        },
+        {
+          "id": "allergens",
+          "type": "node",
+          "parent": "1",
+          "label": "Unir alérgenos de todos sus platos\nSin duplicados; menú vacío → []\nEl cálculo no escribe en BD"
+        },
+        {
+          "id": "single",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Detalle inexistente\no no público?"
+        },
+        {
+          "id": "404",
+          "type": "node",
+          "parent": "1",
+          "label": "404 · Recurso no visible"
+        },
+        {
+          "id": "done",
+          "type": "node",
+          "parent": "1",
+          "label": "200 · Datos públicos y paginados\nSin datos internos ni de otros restaurantes"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "input"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "input",
+          "target": "kind"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "kind",
+          "target": "dish"
+        },
+        {
+          "id": "label-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Platos"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "kind",
+          "target": "menu"
+        },
+        {
+          "id": "label-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Menús"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "dish",
+          "target": "single"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "menu",
+          "target": "allergens"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "allergens",
+          "target": "single"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "single",
+          "target": "404"
+        },
+        {
+          "id": "label-7",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-8",
+          "type": "edge",
+          "parent": "1",
+          "source": "single",
+          "target": "done"
+        },
+        {
+          "id": "label-8",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "GET /allergens: catálogo común, público, 14 elementos con código único; GET /categories: categorías\npúblicas del restaurante. Los filtros de alérgeno excluyen platos que lo contengan, según OICO-104."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Colección inactiva o vencida: sus menús no aparecen. No hay activación automática por calendario; se\naplica visibilidad al consultar. Una colección opcional requiere política final coherente con OICO-108."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Pruebas: OICO-91, 105–107, 111–112 y 139–140; combinar filtros, página límite, elemento no público,\nalérgeno repetido y menú sin platos."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 18/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-19",
+      "name": "19 · Auditoría y precios",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-02/04 · Auditoría e historial de precios"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "OICO-70/HU-AUT-08 y OICO-134/HU-CAR-11 · RNF-05/06"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Consulta autorizada o cambio de precio"
+        },
+        {
+          "id": "type",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Operación?"
+        },
+        {
+          "id": "read",
+          "type": "node",
+          "parent": "1",
+          "label": "CONSULTAR\nExigir audit:view o permiso de histórico\nFiltrar restaurante, entidad, autor y fecha\nExcluir secretos"
+        },
+        {
+          "id": "res",
+          "type": "node",
+          "parent": "1",
+          "label": "200 · Historial permitido\nRegistros anteriores conservados"
+        },
+        {
+          "id": "price",
+          "type": "node",
+          "parent": "1",
+          "label": "CAMBIAR PRECIO\nExigir permiso específico y ámbito\nValidar nuevo precio no negativo"
+        },
+        {
+          "id": "tx",
+          "type": "node",
+          "parent": "1",
+          "label": "Una transacción: actualizar precio\nAñadir PriceHistory (anterior/nuevo)\nAñadir AuditLog con autor y fecha"
+        },
+        {
+          "id": "ok",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Commit correcto?"
+        },
+        {
+          "id": "err",
+          "type": "node",
+          "parent": "1",
+          "label": "Rollback · Mantener precio e histórico\nSin registros huérfanos"
+        },
+        {
+          "id": "end",
+          "type": "node",
+          "parent": "1",
+          "label": "200 · Precio actualizado\nHistórico anterior inmutable"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "type"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "type",
+          "target": "read"
+        },
+        {
+          "id": "label-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Consulta"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "type",
+          "target": "price"
+        },
+        {
+          "id": "label-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Cambio"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "read",
+          "target": "res"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "price",
+          "target": "tx"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "tx",
+          "target": "ok"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "err"
+        },
+        {
+          "id": "label-6",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "end"
+        },
+        {
+          "id": "label-7",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "GET /audit-logs exige audit:view. Consulta de PriceHistory exige permiso administrativo acordado; no se\ninventa una ruta que Jira no define. Permiso insuficiente 403, recurso ajeno 404 → 03."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "Todas las acciones administrativas relevantes usan el mismo servicio AuditLog dentro de la transacción:\nroles, bajas, estados, cascadas y cambios tras publicar. Nunca guardar contraseñas, hashes ni tokens."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Historial de precios tiene HU propia en Jira, pero su prioridad de entrega debe acordarse. No sustituye a la\nauditoría general. Pruebas OICO-72–74, 116 y 135–137."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 19/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-20",
+      "name": "20 · Calidad y trazabilidad",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-05 · Regla, decisión y prueba verificable"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "OICO-18/HU-GES-04; OICO-24/HU-GES-05; OICO-75/HU-AUT-09 · Diseño documental"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Historia/refinamiento o cambio de regla"
+        },
+        {
+          "id": "rule",
+          "type": "node",
+          "parent": "1",
+          "label": "Identificar RF y regla de negocio\nOrigen: Jira o acuerdo del chat\nRegistrar decisiones abiertas"
+        },
+        {
+          "id": "flow",
+          "type": "node",
+          "parent": "1",
+          "label": "Relacionar HU y subtareas con pestaña\ny decisiones del diagrama\nMantener camino correcto y errores"
+        },
+        {
+          "id": "case",
+          "type": "node",
+          "parent": "1",
+          "label": "Definir escenarios Dado/Cuando/Entonces\nResultados concretos: estado, código HTTP\ny cambios que deben/no deben persistir"
+        },
+        {
+          "id": "test",
+          "type": "node",
+          "parent": "1",
+          "label": "En implementación: pruebas unitarias,\nAPI, integración BD y concurrencia\nEjecutar y adjuntar resultados a la PR"
+        },
+        {
+          "id": "ok",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Pruebas y revisión\nsatisfacen aceptación?"
+        },
+        {
+          "id": "fix",
+          "type": "node",
+          "parent": "1",
+          "label": "Corregir implementación/regla ambigua\nRevalidar solo lo afectado"
+        },
+        {
+          "id": "end",
+          "type": "node",
+          "parent": "1",
+          "label": "Versionar diagrama y contrato\nen la misma PR que cambia la regla\nNo cerrar solo por tener el dibujo"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "rule"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "rule",
+          "target": "flow"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "flow",
+          "target": "case"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "case",
+          "target": "test"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "test",
+          "target": "ok"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "fix"
+        },
+        {
+          "id": "label-5",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "ok",
+          "target": "end"
+        },
+        {
+          "id": "label-6",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "fix",
+          "target": "rule"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "Error uniforme: {error:{code,message}}. 400 malformada; 401 identidad; 403 permiso; 404 recurso\najeno/inexistente; 409 conflicto; 422 validación; 500 inesperado sin detalles internos. Healthcheck /health:\n200 o 503 si BD inaccesible (OICO-34)."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "T-COM-01: A=4/B=4, A+B=6; grupo 5 y 6 admitido, 7 rechazado; grupo 4 usa individual. T-COM-02: A+B y\nB+C simultáneas: como máximo una obtiene B. T-COM-03: fallo de una asignación revierte todas. T-COM-04:\ncancelar/completar/noShow libera cada mesa."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "T-COM-05: dos mesas unidas reservadas para 5 no ofrecen sus sillas sobrantes a otro grupo. T-COM-06: no\nsumar plazas de combinaciones solapadas. T-COM-07: cambiar de combinación con conflicto conserva\nasignaciones anteriores."
+        },
+        {
+          "id": "note-3",
+          "type": "node",
+          "parent": "1",
+          "label": "Token: logout 204 y reutilización 401; inactivo con token vigente 401. Ámbito: 404 por recurso ajeno;\npermiso ausente 403. Cascada: fallo intermedio revierte todo. Jornada: contiguidad, nocturno y descanso\nbloqueante."
+        },
+        {
+          "id": "note-4",
+          "type": "node",
+          "parent": "1",
+          "label": "Este archivo no acredita código ni tests ejecutados. Modelo y migraciones → OICO-13/35; conexión y\nhealthcheck → OICO-30; versionado → OICO-7/18. La matriz de auditoría previa conserva el estado anterior y\nno se sobrescribe como si validara estas reglas nuevas."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 20/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    },
+    {
+      "id": "oido-21",
+      "name": "21 · Selección automática",
+      "cells": [
+        {
+          "id": "1",
+          "type": "layer"
+        },
+        {
+          "id": "title",
+          "type": "node",
+          "parent": "1",
+          "label": "EP-03 · Proponer una opción de mesas"
+        },
+        {
+          "id": "source",
+          "type": "node",
+          "parent": "1",
+          "label": "OICO-247/HU-RES-12 + COM-02–05 · Extensión del criterio para combinaciones (chat)"
+        },
+        {
+          "id": "s",
+          "type": "node",
+          "parent": "1",
+          "label": "Personal pide propuesta automática\nGrupo, fecha e intervalo"
+        },
+        {
+          "id": "guard",
+          "type": "node",
+          "parent": "1",
+          "label": "Validar permiso reservation:assign\ny ámbito → 03"
+        },
+        {
+          "id": "opts",
+          "type": "node",
+          "parent": "1",
+          "label": "Calcular opciones libres → 08\nIndividuales antes de combinaciones\nCapacidad real y rango de uso"
+        },
+        {
+          "id": "any",
+          "type": "node",
+          "parent": "1",
+          "label": "¿Existe opción válida?"
+        },
+        {
+          "id": "none",
+          "type": "node",
+          "parent": "1",
+          "label": "409 · Sin opción\nOfrecer lista de espera → 11"
+        },
+        {
+          "id": "rank",
+          "type": "node",
+          "parent": "1",
+          "label": "Ordenar opciones elegibles\nIndividual antes que combinación\nMenos mesas; menor capacidad suficiente\nDesempate estable por números de mesa"
+        },
+        {
+          "id": "choose",
+          "type": "node",
+          "parent": "1",
+          "label": "Proponer primera opción\nIdentificar todas sus mesas y capacidad"
+        },
+        {
+          "id": "save",
+          "type": "node",
+          "parent": "1",
+          "label": "Si se confirma/asigna: flujo 09 o 10\nRevalidar bajo bloqueo de TODAS\nGuardar ocupaciones atómicamente"
+        },
+        {
+          "id": "end",
+          "type": "node",
+          "parent": "1",
+          "label": "200 / 201 · Resultado de asignación\n409 si surgió conflicto concurrente"
+        },
+        {
+          "id": "edge-0",
+          "type": "edge",
+          "parent": "1",
+          "source": "s",
+          "target": "guard"
+        },
+        {
+          "id": "edge-1",
+          "type": "edge",
+          "parent": "1",
+          "source": "guard",
+          "target": "opts"
+        },
+        {
+          "id": "edge-2",
+          "type": "edge",
+          "parent": "1",
+          "source": "opts",
+          "target": "any"
+        },
+        {
+          "id": "edge-3",
+          "type": "edge",
+          "parent": "1",
+          "source": "any",
+          "target": "none"
+        },
+        {
+          "id": "label-3",
+          "type": "node",
+          "parent": "1",
+          "label": "No"
+        },
+        {
+          "id": "edge-4",
+          "type": "edge",
+          "parent": "1",
+          "source": "any",
+          "target": "rank"
+        },
+        {
+          "id": "label-4",
+          "type": "node",
+          "parent": "1",
+          "label": "Sí"
+        },
+        {
+          "id": "edge-5",
+          "type": "edge",
+          "parent": "1",
+          "source": "rank",
+          "target": "choose"
+        },
+        {
+          "id": "edge-6",
+          "type": "edge",
+          "parent": "1",
+          "source": "choose",
+          "target": "save"
+        },
+        {
+          "id": "edge-7",
+          "type": "edge",
+          "parent": "1",
+          "source": "save",
+          "target": "end"
+        },
+        {
+          "id": "note-0",
+          "type": "node",
+          "parent": "1",
+          "label": "Jira concreta menor capacidad suficiente y desempate por número para mesas individuales (OICO-248).\nExtenderlo a combinaciones con prioridad individual/menos mesas es propuesta de diseño coherente con el\nchat; no implica que Jira lo haya aprobado."
+        },
+        {
+          "id": "note-1",
+          "type": "node",
+          "parent": "1",
+          "label": "La autoasignación conserva su condición Could hasta priorización explícita. No permite unir mesas no\nconfiguradas ni convertir la lista de espera en asignación automática sin confirmación del personal."
+        },
+        {
+          "id": "note-2",
+          "type": "node",
+          "parent": "1",
+          "label": "Una consulta no reserva. Antes de escribir, una opción puede dejar de estar disponible: transacción,\nrevalidación y conflicto 409. Pruebas OICO-248–250 + T-COM-02."
+        },
+        {
+          "id": "footer",
+          "type": "node",
+          "parent": "1",
+          "label": "Oido_Cocina · Backend · 21/21 · Jira OICO + acuerdos del chat · Diseño para revisión del equipo"
+        }
+      ]
+    }
+  ]
+}
