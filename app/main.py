@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.api import employees
 from app.api.allergen_routes import router as allergen_router
 from app.api.category_routes import router as category_router
 from app.api.dish_routes import router as dish_router
@@ -35,3 +36,4 @@ app.include_router(dish_router, prefix=settings.api_prefix)
 app.include_router(category_router, prefix=settings.api_prefix)
 app.include_router(allergen_router, prefix=settings.api_prefix)
 app.include_router(reservations_router, prefix=settings.api_prefix)
+app.include_router(employees.router, prefix=settings.api_prefix)

@@ -14,7 +14,6 @@ def _number_taken() -> AppError:
 
 
 def _is_duplicate_number(error: IntegrityError) -> bool:
-    """Solo el índice único de número es un 409; otra violación se propaga."""
     diag = getattr(error.orig, "diag", None)
     return getattr(diag, "constraint_name", None) == UNIQUE_NUMBER_CONSTRAINT
 
@@ -49,10 +48,33 @@ def create_table(
 
 
 def get_table(db: Session, table_id: int, restaurant_id: int) -> DiningTable:
-    table = db.get(DiningTable, table_id)
-    if table is None or table.restaurant_id != restaurant_id:
+    table = db.scalar(
+        select(DiningTable).where(
+            DiningTable.id == table_id,
+            DiningTable.restaurant_id == restaurant_id,
+        )
+    )
+    if table is None:
         raise AppError("TABLE_NOT_FOUND", "No existe la mesa", 404)
     return table
+
+
+def _set_table_active(
+    db: Session, table_id: int, restaurant_id: int, is_active: bool
+) -> DiningTable:
+    table = get_table(db, table_id, restaurant_id)
+    table.is_active = is_active
+    db.commit()
+    db.refresh(table)
+    return table
+
+
+def enable_table(db: Session, table_id: int, restaurant_id: int) -> DiningTable:
+    return _set_table_active(db, table_id, restaurant_id, True)
+
+
+def disable_table(db: Session, table_id: int, restaurant_id: int) -> DiningTable:
+    return _set_table_active(db, table_id, restaurant_id, False)
 
 
 def update_table(
@@ -61,8 +83,6 @@ def update_table(
     table = get_table(db, table_id, restaurant_id)
     changes = payload.model_dump(exclude_unset=True, mode="json")
 
-    # La validación cruzada no puede vivir en Pydantic: el payload es parcial y el rango
-    # válido depende de la fila guardada.
     min_capacity = changes.get("min_capacity", table.min_capacity)
     max_capacity = changes.get("max_capacity", table.max_capacity)
     if max_capacity < min_capacity:
