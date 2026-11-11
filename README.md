@@ -61,6 +61,8 @@ sector hostelero mediante un backend robusto, modular y altamente escalable:
 - ⚙️ **Cero Configuración Rígida:** Horarios de apertura, tiempos de
   cortesía y reglas parametrizables por base de datos.
 
+*"MVP entregado: autenticación JWT, RBAC con 5 roles y 17 permisos, y CRUD completo sobre carta, reservas, mesas, personal, usuarios y ajustes."*  
+
 ## 2. Arquitectura del Sistema
 
 El sistema está diseñado como un **Monolito Modular** estructurado en capas
@@ -225,15 +227,42 @@ pip install -r requirements.txt
 # 4. Configurar el entorno
 cp .env.example .env             # y edita DATABASE_URL con tus credenciales
 
-# 5. Crear el esquema de base de datos
-alembic upgrade head
-
-# 6. Cargar los datos iniciales
-python -m app.database.seed
-
-# 7. Arrancar el servidor de desarrollo
-uvicorn app.main:app --reload
+```bash
+cp .env.example .env
 ```
+
+```bash
+# .env
+DATABASE_URL=postgresql+psycopg://<usuario>:<clave>@localhost:5432/oido_cocina_car03
+TEST_DATABASE_URL=postgresql+psycopg://<usuario>:<clave>@localhost:5432/oido_cocina_test
+SECRET_KEY=<valor aleatorio de 48 bytes>
+```
+```
+
+Generación del valor:
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(48))"
+```
+
+**Paso 6 · Esquema y datos iniciales** (en este orden):
+
+```bash
+python -m alembic upgrade head      # aplica las migraciones versionadas
+python -m app.database.seed        # carga catálogos, roles, permisos y datos demo
+```
+
+**Paso 7 · Entorno de pruebas.** La base `oido_cocina_test` es desechable y se utiliza únicamente para ejecutar la suite. Antes de lanzarla, su esquema debe estar en la misma versión que el código:
+
+```bash
+python -m alembic upgrade head      # sobre oido_cocina_test
+```
+
+*Las pruebas vacían y recrean las tablas de esa base en cada ejecución; la base de desarrollo no se ve afectada.*
+
+
+```
+
 
 ### Explorar la API
 
@@ -242,6 +271,7 @@ uvicorn app.main:app --reload
 | Swagger UI (interactiva) | http://127.0.0.1:8000/docs |
 | ReDoc | http://127.0.0.1:8000/redoc |
 | Health check | `GET http://127.0.0.1:8000/api/v1/health` |
+```
 
 ## 7. Migraciones y Seeders
 
@@ -276,6 +306,15 @@ duplicar filas. Cargan, entre otros:
 - 👥 5 usuarios y 5 empleados de demostración
 
 ## 8. Referencia de la API
+
+| Módulo | Endpoints |
+|---|---|
+| Autenticación | `POST /auth/login`, `GET /auth/me` |
+| Carta | platos (CRUD + estado + carta pública), categorías, alérgenos, **colecciones de menú** |
+| Reservas | CRUD + confirmar / sentar / cancelar / completar, historial de estados, mesas y combinaciones |
+| Personal | empleados (CRUD + activar), **cuadrantes y turnos** |
+| Usuarios | listar, crear, **editar**, **cambiar rol**, **activar/inactivar** |
+| Ajustes | `GET/PATCH /settings` |
 
 > Prefijo base: `/api/v1`. Ejemplos con la carta de platos.
 
@@ -340,7 +379,7 @@ pytest -q                        # resumen
 python -m pytest -v              # detalle
 ```
 
-**Estado actual: 81 pruebas ✅**
+**Estado actual: 639 pruebas ✅**
 
 | Tipo | Ficheros | Qué cubren |
 |------|----------|------------|
@@ -361,6 +400,7 @@ automatizadas **y** sus escenarios Gherkin en `tests/features/*.feature`
 | `DATABASE_URL` | `postgresql+psycopg://usuario:clave@localhost:5432/oido_cocina` | Conexión a PostgreSQL (**obligatoria**) |
 | `AUTH_STUBS_ENABLED` | `true` | Permisos en modo stub temporal (se retira con HU-AUT-05) |
 | `SEED_ON_STARTUP` | `false` | Si es `true`, siembra datos en cada arranque |
+| `SECRET_KEY` | **obligatoria** | Clave de 48 bytes para firmar los tokens de sesión. La aplicación no se inicia sin ella |
 
 ## 11. Convenciones del Equipo
 
