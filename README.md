@@ -133,7 +133,7 @@ Petición HTTP del Cliente
 
 ## 4. Modelo de Datos (DER)
 
-La base de datos está organizada en **26 tablas** agrupadas en 5 áreas:
+La base de datos está organizada en **16 tablas** agrupadas en 5 áreas:
 
 | Área | Tablas |
 |------|--------|
