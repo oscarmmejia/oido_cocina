@@ -88,7 +88,7 @@ app/
     base.py                       Base declarativa única, convención de nombres y TimestampMixin
     migrations/                   Único historial de Alembic: entorno y versiones
     seeders/                      Datos de demostración (idempotentes)
-  models/                         Modelos SQLAlchemy (users, dishes) y reexportación de los demás
+  models/                         Modelos SQLAlchemy (users, dishes, menu) y reexportación de los demás
   modules/
     settings/models/              Restaurante, configuración y horarios
 tests/
@@ -102,20 +102,22 @@ No crear otro directorio `alembic/` ni otra `Base`: dos historiales sobre la mis
 
 ## Modelo de datos
 
-Diez tablas, agrupadas por módulo:
+Quince tablas, agrupadas por módulo:
 
 | Módulo | Tablas |
 |---|---|
 | `app/modules/settings/models/` | `restaurants`, `restaurant_settings`, `opening_hours` |
 | `app/models/users.py` | `roles`, `permissions`, `role_permissions`, `users`, `audit_logs` |
-| `app/models/dishes.py` | `allergens`, `categories` |
+| `app/models/dishes.py` | `allergens`, `categories`, `dishes`, `dish_allergens` |
+| `app/models/menu.py` | `menu_collections`, `menus`, `menu_dishes` |
 
 Los modelos nuevos se importan desde `app.models`, que reexporta todos y es lo que lee Alembic.
 
 Convenciones:
 
 - Nombres en `snake_case`. Todas las tablas llevan `created_at` y `updated_at` (con zona horaria),
-  salvo `role_permissions` y `audit_logs`, que solo tiene `created_at` porque no se modifica.
+  salvo las asociaciones `role_permissions`, `dish_allergens` y `menu_dishes`, y `audit_logs`,
+  que solo tiene `created_at` porque no se modifica.
 - Las restricciones tienen nombres deterministas (`pk_`, `fk_`, `uq_`, `ck_`, `ix_`), así las migraciones
   son estables y el `downgrade` puede borrarlas por nombre.
 - Baja lógica con `is_active` en lugar de borrar.
@@ -125,7 +127,12 @@ Convenciones:
 - `permissions` y `role_permissions` existen pero están vacías: se rellenarán con la matriz de permisos
   en las historias de autenticación y permisos.
 
-Las demás tablas (platos, menús, mesas, reservas, personal...) llegan con la migración de cada módulo.
+La carta y los menús siguen las decisiones cerradas en `docs/der-carta-menus.md`: `is_required`
+vive solo en `menu_dishes`, la bebida incluida se marca con `role='drink'` más `includes_drink`,
+y la vigencia (inclusiva, de un solo día y sin restricción de solapamiento) vive solo en
+`menu_collections`.
+
+Las demás tablas (mesas, reservas, personal...) llegan con la migración de cada módulo.
 
 ## Migraciones
 

@@ -18,6 +18,11 @@ EXPECTED_TABLES = {
     "allergens",
     "audit_logs",
     "categories",
+    "dish_allergens",
+    "dishes",
+    "menu_collections",
+    "menu_dishes",
+    "menus",
     "opening_hours",
     "permissions",
     "restaurant_settings",
@@ -30,7 +35,7 @@ EXPECTED_TABLES = {
 RESTAURANT_COLUMNS = {"id", "name", "timezone", "is_active", "created_at", "updated_at"}
 
 
-def test_metadata_registers_the_ten_expected_tables():
+def test_metadata_registers_the_fifteen_expected_tables():
     assert set(Base.metadata.tables) == EXPECTED_TABLES
 
 
